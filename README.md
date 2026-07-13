@@ -2,129 +2,129 @@
 
 > *Presence isn't purchased. It's cultivated.*
 
-A luxury menswear platform where technology, craftsmanship, and artificial intelligence converge.
+ASHENRITUAL is a modern full-stack menswear platform that combines luxury retail, intelligent software engineering, and artificial intelligence into a single, immersive experience.
 
-ASHENRITUAL is a modern full-stack e-commerce experience inspired by the philosophy of **Quiet Luxury**—minimal, timeless, intentional.
+Designed around the philosophy of **Quiet Luxury**, the platform emphasizes intentional design, timeless aesthetics, and a seamless user experience rather than conventional e-commerce patterns.
 
-Rather than chasing trends, the platform focuses on creating an immersive shopping experience through cinematic design, intelligent wardrobe assistance, and AI-powered personalization.
-
----
-
-## Preview
-
-> *Landing Page (Coming Soon)*
-
-*(Screenshots and demo GIFs will be added as the project evolves.)*
+Beyond being an online fashion store, ASHENRITUAL serves as a demonstration of scalable backend architecture, modern frontend engineering, AI integration, and production-ready development practices.
 
 ---
 
-# Philosophy
+# Table of Contents
 
-ASHENRITUAL is built around four principles.
-
-- **Intentional** — Every interaction has a purpose.
-- **Timeless** — Design that outlives trends.
-- **Minimal** — Luxury through restraint.
-- **Precision** — Every detail matters.
-
-Fashion is not about attention.
-
-It is about identity.
+- Overview
+- Core Features
+- System Architecture
+- Technology Stack
+- Project Structure
+- Getting Started
+- VESPER Intelligence
+- Roadmap
+- Future Enhancements
+- License
 
 ---
 
-# Features
+# Overview
 
-## Luxury Shopping Experience
+ASHENRITUAL is built as a modular, scalable web application using a decoupled architecture.
 
-- Cinematic landing page
-- Quiet luxury design language
-- Responsive experience
-- Premium product pages
-- Wishlist ("Saved Rituals")
-- Secure authentication
+The frontend is responsible for delivering a cinematic user experience through Next.js and modern UI technologies, while the backend exposes secure APIs responsible for authentication, business logic, product management, and AI services.
+
+The project is intended to demonstrate:
+
+- Modern Full Stack Development
+- REST API Design
+- Database Modeling
+- Authentication & Authorization
+- AI Integration
+- Responsive User Experience
+- Clean Software Architecture
+- Production-ready Development Practices
+
+---
+
+# Core Features
+
+## Customer Experience
+
+- Premium landing experience
+- Editorial-inspired shopping interface
+- Product catalogue with advanced filtering
+- Saved Rituals (Wishlist)
 - Shopping cart
-- Checkout flow
+- Checkout workflow
+- User profiles
 - Order history
+- Responsive design
 
----
+## VESPER Intelligence
 
-## VESPER — Wardrobe Intelligence
+VESPER is the platform's proprietary wardrobe intelligence system.
 
-VESPER is not a chatbot.
-
-It is an AI wardrobe companion designed to understand style rather than simply answer questions.
+Unlike traditional conversational chatbots, VESPER operates as an intelligent wardrobe companion capable of understanding user preferences, styling requirements, previous purchases, and contextual fashion recommendations.
 
 Capabilities include:
 
-- Outfit recommendations
-- Occasion-based styling
-- Capsule wardrobe suggestions
-- Fabric & layering advice
-- Seasonal recommendations
-- Personalized fashion guidance
-- Product discovery
-- Intelligent search
+- Personalized outfit recommendations
+- Context-aware styling advice
+- Occasion-based suggestions
+- Capsule wardrobe guidance
+- Intelligent product discovery
+- Natural language fashion search
+- Future support for wardrobe memory
 
-Built using Google Gemini.
-
----
-
-## AI Try-On (Future Integration)
-
-ASHENRITUAL will integrate a real-time AI Try-On experience allowing users to:
-
-- Upload their photo
-- Visualize garments on their body
-- Estimate garment fit
-- Compare multiple outfits
-- Receive AI styling suggestions from VESPER
+Powered by Google Gemini.
 
 ---
 
-# Architecture
+# System Architecture
 
 ```
-                Next.js Frontend
+                 Client Browser
                        │
-        ┌──────────────┼──────────────┐
-        │              │              │
- Authentication   Product APIs   VESPER AI
-        │              │              │
-        └──────────────┼──────────────┘
+        ┌──────────────┴──────────────┐
+        │                             │
+        ▼                             ▼
+     Next.js 15                 NestJS API
+        │                             │
+        │                             │
+        └──────────────┬──────────────┘
                        │
-                  NestJS Backend
-                       │
-                    Prisma ORM
+                 Prisma ORM
                        │
                   PostgreSQL
+                       │
+          Google Gemini (VESPER)
 ```
+
+The architecture intentionally separates presentation from business logic, allowing independent scalability of frontend and backend services.
 
 ---
 
-# Tech Stack
+# Technology Stack
 
 ## Frontend
 
-- Next.js 15
+- Next.js 15 (App Router)
 - React 19
+- TypeScript
 - Tailwind CSS v4
 - shadcn/ui
 - Framer Motion
-- TypeScript
 
 ## Backend
 
 - NestJS
-- Prisma ORM
 - PostgreSQL
+- Prisma ORM
 - JWT Authentication
-- Swagger
+- Swagger (OpenAPI)
 
-## AI
+## Artificial Intelligence
 
 - Google Gemini API
-- VESPER Intelligence
+- VESPER Wardrobe Intelligence
 
 ## Infrastructure
 
@@ -138,16 +138,21 @@ ASHENRITUAL will integrate a real-time AI Try-On experience allowing users to:
 ```
 ASHENRITUAL
 │
-├── frontend/
-│   ├── app/
-│   ├── components/
-│   ├── lib/
-│   └── public/
+├── frontend
+│   ├── app
+│   ├── components
+│   ├── hooks
+│   ├── lib
+│   ├── public
+│   └── styles
 │
-├── backend/
-│   ├── src/
-│   ├── prisma/
-│   └── modules/
+├── backend
+│   ├── prisma
+│   ├── src
+│   ├── modules
+│   └── common
+│
+├── docs
 │
 └── README.md
 ```
@@ -156,15 +161,13 @@ ASHENRITUAL
 
 # Getting Started
 
-## Clone
+## Clone Repository
 
 ```bash
 git clone https://github.com/m4n1kya/ASHENRITUAL.git
 
 cd ASHENRITUAL
 ```
-
----
 
 ## Backend
 
@@ -180,19 +183,11 @@ npx prisma db push
 npm run start:dev
 ```
 
-Backend runs on:
-
-```
-http://localhost:3000
-```
-
-Swagger:
+Swagger Documentation
 
 ```
 http://localhost:3000/api/docs
 ```
-
----
 
 ## Frontend
 
@@ -204,7 +199,7 @@ npm install
 npm run dev
 ```
 
-Frontend:
+Application
 
 ```
 http://localhost:3001
@@ -212,33 +207,71 @@ http://localhost:3001
 
 ---
 
-# Roadmap
+# Development Roadmap
 
-- [x] Project Architecture
-- [x] Initial Landing Page
-- [ ] Shop Experience
-- [ ] Product Details
-- [ ] Authentication
-- [ ] Saved Rituals
-- [ ] Checkout
-- [ ] Orders
-- [ ] VESPER AI
-- [ ] AI Try-On
-- [ ] Admin Dashboard
-- [ ] Deployment
+## Phase I
+
+- Landing Experience
+- Authentication
+- Product Catalogue
+- Database Design
+- Responsive UI
+
+## Phase II
+
+- Complete Shopping Experience
+- Saved Rituals
+- Checkout
+- Orders
+- User Dashboard
+
+## Phase III
+
+- VESPER Intelligence
+- Context-aware Recommendations
+- Semantic Product Search
+- Intelligent Outfit Generation
+
+## Phase IV
+
+- AI Virtual Try-On
+- Body Measurement Estimation
+- Size Recommendation
+- Garment Simulation
 
 ---
 
-# Design Inspiration
+# Future Enhancements
 
-ASHENRITUAL draws inspiration from:
+The long-term vision for ASHENRITUAL includes:
 
-- Quiet Luxury
-- Brutalist Architecture
-- Editorial Fashion
-- Architectural Minimalism
-- Museum Curation
-- Monochrome Photography
+- Real-time inventory synchronization
+- AI-generated outfit collections
+- Wardrobe memory
+- Sustainability insights
+- Virtual fitting room
+- Performance analytics dashboard
+- Administrative management portal
+- Mobile application
+
+---
+
+# Design Philosophy
+
+ASHENRITUAL follows four guiding principles.
+
+- Simplicity over complexity
+- Precision over decoration
+- Timelessness over trends
+- Experience over functionality
+
+Every interaction is intentionally designed to feel quiet, refined, and considered.
+
+---
+
+# License
+
+This project is licensed under the MIT License.
 
 ---
 
@@ -246,14 +279,8 @@ ASHENRITUAL draws inspiration from:
 
 **Manikya N**
 
-Computer Science Engineering • Full Stack Developer • AI Enthusiast
+Computer Science Engineering Student
 
-GitHub
+Full Stack Developer • AI Enthusiast • Software Engineer
 
-https://github.com/m4n1kya
-
----
-
-# License
-
-MIT License
+GitHub: https://github.com/m4n1kya
