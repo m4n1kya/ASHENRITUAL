@@ -1,131 +1,259 @@
 # ASHENRITUAL
 
-> Confidence is quiet. Discipline is attractive. Luxury doesn't need to shout. Every piece is intentional. Fashion is identity, not attention.
+> *Presence isn't purchased. It's cultivated.*
 
-ASHENRITUAL is an enterprise-grade, full-stack menswear e-commerce platform built with a focus on "quiet luxury", precision, and sophisticated design. This project demonstrates high-end full-stack engineering, microservice-like architecture, and artificial intelligence integration.
+A luxury menswear platform where technology, craftsmanship, and artificial intelligence converge.
 
-## 🏛 Architecture
+ASHENRITUAL is a modern full-stack e-commerce experience inspired by the philosophy of **Quiet Luxury**—minimal, timeless, intentional.
 
-The platform utilizes a decoupled architecture where **Next.js** serves as a fast, cinematic frontend (SSR/SSG), and **NestJS** acts as a robust API backend handling all business logic, authentication, and database operations.
+Rather than chasing trends, the platform focuses on creating an immersive shopping experience through cinematic design, intelligent wardrobe assistance, and AI-powered personalization.
 
-\`\`\`mermaid
-graph TD
-    Client[Client/Browser] -->|HTTP/HTTPS| Frontend[Next.js Frontend]
-    Client -->|API Requests| Backend[NestJS Backend]
-    Frontend -->|Server Actions / API| Backend
-    Backend -->|JWT Validation| Auth[Authentication Layer]
-    Backend -->|Prisma ORM| Database[(PostgreSQL)]
-    Backend -->|REST/gRPC| OBLIV[OBLIV Wardrobe Intelligence - Gemini]
-    
-    subgraph Infrastructure
-        Database
-    end
-\`\`\`
+---
 
-## 💾 Database Entity-Relationship (ER) Diagram
+## Preview
 
-The database is built on PostgreSQL using Prisma ORM.
+> *Landing Page (Coming Soon)*
 
-\`\`\`mermaid
-erDiagram
-    USER ||--o{ SAVED_RITUAL : saves
-    USER ||--o{ ARCHIVE : creates
-    USER ||--o{ REVIEW : writes
-    USER ||--o{ ADDRESS : has
-    CATEGORY ||--|{ PRODUCT : contains
-    PRODUCT ||--o{ SAVED_RITUAL : "saved as"
-    PRODUCT ||--o{ ORDER_ITEM : "ordered as"
-    PRODUCT ||--o{ REVIEW : receives
-    ARCHIVE ||--|{ ORDER_ITEM : contains
+*(Screenshots and demo GIFs will be added as the project evolves.)*
 
-    USER {
-        string id PK
-        string email
-        string passwordHash
-        enum role
-        DateTime createdAt
-    }
-    PRODUCT {
-        string id PK
-        string name
-        string description
-        decimal price
-        int stock
-        string categoryId FK
-    }
-    ARCHIVE {
-        string id PK
-        string userId FK
-        decimal total
-        enum status
-    }
-    ORDER_ITEM {
-        string id PK
-        string archiveId FK
-        string productId FK
-        int quantity
-        decimal price
-    }
-    OBLIV {
-        string id PK
-        string personality "Quiet, Minimal, Sophisticated"
-    }
-\`\`\`
+---
 
-## 🛠 Tech Stack
+# Philosophy
 
-**Frontend:**
-- Next.js 15 (App Router)
+ASHENRITUAL is built around four principles.
+
+- **Intentional** — Every interaction has a purpose.
+- **Timeless** — Design that outlives trends.
+- **Minimal** — Luxury through restraint.
+- **Precision** — Every detail matters.
+
+Fashion is not about attention.
+
+It is about identity.
+
+---
+
+# Features
+
+## Luxury Shopping Experience
+
+- Cinematic landing page
+- Quiet luxury design language
+- Responsive experience
+- Premium product pages
+- Wishlist ("Saved Rituals")
+- Secure authentication
+- Shopping cart
+- Checkout flow
+- Order history
+
+---
+
+## VESPER — Wardrobe Intelligence
+
+VESPER is not a chatbot.
+
+It is an AI wardrobe companion designed to understand style rather than simply answer questions.
+
+Capabilities include:
+
+- Outfit recommendations
+- Occasion-based styling
+- Capsule wardrobe suggestions
+- Fabric & layering advice
+- Seasonal recommendations
+- Personalized fashion guidance
+- Product discovery
+- Intelligent search
+
+Built using Google Gemini.
+
+---
+
+## AI Try-On (Future Integration)
+
+ASHENRITUAL will integrate a real-time AI Try-On experience allowing users to:
+
+- Upload their photo
+- Visualize garments on their body
+- Estimate garment fit
+- Compare multiple outfits
+- Receive AI styling suggestions from VESPER
+
+---
+
+# Architecture
+
+```
+                Next.js Frontend
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+ Authentication   Product APIs   VESPER AI
+        │              │              │
+        └──────────────┼──────────────┘
+                       │
+                  NestJS Backend
+                       │
+                    Prisma ORM
+                       │
+                  PostgreSQL
+```
+
+---
+
+# Tech Stack
+
+## Frontend
+
+- Next.js 15
 - React 19
 - Tailwind CSS v4
 - shadcn/ui
 - Framer Motion
+- TypeScript
 
-**Backend:**
+## Backend
+
 - NestJS
-- PostgreSQL
 - Prisma ORM
-- NextAuth / JWT Authentication
-- Swagger (OpenAPI)
+- PostgreSQL
+- JWT Authentication
+- Swagger
 
-**AI Integration:**
-- Google Gemini API (OBLIV Intelligence)
+## AI
 
-**Infrastructure:**
-- Docker & Docker Compose
+- Google Gemini API
+- VESPER Intelligence
 
-## 🚀 Getting Started
+## Infrastructure
 
-### 1. Prerequisites
-- Node.js 20+
-- Docker & Docker Compose
+- Docker
+- Docker Compose
 
-### 2. Infrastructure
-Start the PostgreSQL database:
-\`\`\`bash
-docker-compose up -d
-\`\`\`
+---
 
-### 3. Backend Setup
-\`\`\`bash
+# Project Structure
+
+```
+ASHENRITUAL
+│
+├── frontend/
+│   ├── app/
+│   ├── components/
+│   ├── lib/
+│   └── public/
+│
+├── backend/
+│   ├── src/
+│   ├── prisma/
+│   └── modules/
+│
+└── README.md
+```
+
+---
+
+# Getting Started
+
+## Clone
+
+```bash
+git clone https://github.com/m4n1kya/ASHENRITUAL.git
+
+cd ASHENRITUAL
+```
+
+---
+
+## Backend
+
+```bash
 cd backend
+
 npm install
-# Generate Prisma Client and apply migrations
+
 npx prisma generate
+
 npx prisma db push
-# Start the NestJS API
+
 npm run start:dev
-\`\`\`
-Swagger API documentation will be available at \`http://localhost:3000/api/docs\`.
+```
 
-### 4. Frontend Setup
-\`\`\`bash
+Backend runs on:
+
+```
+http://localhost:3000
+```
+
+Swagger:
+
+```
+http://localhost:3000/api/docs
+```
+
+---
+
+## Frontend
+
+```bash
 cd frontend
-npm install
-# Start Next.js Development Server
-npm run dev
-\`\`\`
-The cinematic frontend will be available at \`http://localhost:3001\`.
 
-## 👔 OBLIV - Wardrobe Intelligence
-OBLIV is not a chatbot. It is a proprietary wardrobe intelligence system designed to act as an invisible creative director, offering precise, minimal, and sophisticated styling advice based on user context and occasion.
+npm install
+
+npm run dev
+```
+
+Frontend:
+
+```
+http://localhost:3001
+```
+
+---
+
+# Roadmap
+
+- [x] Project Architecture
+- [x] Initial Landing Page
+- [ ] Shop Experience
+- [ ] Product Details
+- [ ] Authentication
+- [ ] Saved Rituals
+- [ ] Checkout
+- [ ] Orders
+- [ ] VESPER AI
+- [ ] AI Try-On
+- [ ] Admin Dashboard
+- [ ] Deployment
+
+---
+
+# Design Inspiration
+
+ASHENRITUAL draws inspiration from:
+
+- Quiet Luxury
+- Brutalist Architecture
+- Editorial Fashion
+- Architectural Minimalism
+- Museum Curation
+- Monochrome Photography
+
+---
+
+# Author
+
+**Manikya N**
+
+Computer Science Engineering • Full Stack Developer • AI Enthusiast
+
+GitHub
+
+https://github.com/m4n1kya
+
+---
+
+# License
+
+MIT License
