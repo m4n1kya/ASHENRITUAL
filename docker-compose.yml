@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: ashenritual_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ashenritual
+    ports:
+      - '5432:5432'
+    volumes:
+      - ashenritual_db_data:/var/lib/postgresql/data
+
+volumes:
+  ashenritual_db_data:

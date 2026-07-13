@@ -1,0 +1,258 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: 0rem;
+  --radius-md: 0rem;
+  --radius-lg: 0rem;
+  --radius-xl: 0rem;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   ASHENRITUAL DESIGN TOKENS — exact from reference image
+   ────────────────────────────────────────────────────────────────────────────
+   COLORS
+   Void    #0A0A0A  ← primary background
+   Coal    #111111  ← card / secondary bg
+   Ash     #1A1A1A  ← elevated surfaces
+   Graphite rgba(255,255,255,0.08) ← borders, dividers
+   Stone   #2A2A2A  ← hover states
+   Bone    #F2F2F2  ← primary text on dark
+   Ivory   #EAEAEA  ← secondary text
+   Smoke   #A8A8A8  ← muted text
+   ════════════════════════════════════════════════════════════════════════════ */
+
+:root,
+.dark {
+  /* Surfaces - Made semi-transparent so global background shows through */
+  --background:         rgba(10, 10, 10, 0.4);
+  --secondary:          rgba(14, 14, 14, 0.5);
+  --card:               rgba(17, 17, 17, 0.4);
+  --muted:              rgba(26, 26, 26, 0.5);
+  --accent:             rgba(255, 255, 255, 0.08);
+  --popover:            rgba(17, 17, 17, 0.6);
+
+  /* Text */
+  --foreground:         #F2F2F2;
+  --card-foreground:    #F2F2F2;
+  --popover-foreground: #F2F2F2;
+  --secondary-foreground: #F2F2F2;
+  --accent-foreground:  #F2F2F2;
+  --muted-foreground:   #A8A8A8;
+
+  /* Brand */
+  --primary:            #F2F2F2;
+  --primary-foreground: #0A0A0A;
+
+  /* Semantic */
+  --border:             rgba(255, 255, 255, 0.08);
+  --input:              #1A1A1A;
+  --ring:               rgba(255, 255, 255, 0.3);
+  --destructive:        #3B0000;
+  --radius:             0rem;
+
+  /* Sidebar */
+  --sidebar:            rgba(10, 10, 10, 0.6);
+  --sidebar-foreground: #F2F2F2;
+  --sidebar-primary:    #F2F2F2;
+  --sidebar-primary-foreground: #0A0A0A;
+  --sidebar-accent:     rgba(26, 26, 26, 0.5);
+  --sidebar-accent-foreground: #F2F2F2;
+  --sidebar-border:     rgba(255, 255, 255, 0.08);
+  --sidebar-ring:       rgba(255, 255, 255, 0.3);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   BASE
+────────────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    background-color: #0A0A0A;
+    background-image: url('/images/global-bg.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply text-foreground;
+    background-color: rgba(10, 10, 10, 0.4); /* Dark overlay to keep text readable but show texture */
+    font-family: var(--font-sans), system-ui, sans-serif;
+    letter-spacing: 0.01em;
+  }
+
+  ::selection {
+    background: rgba(253, 252, 251, 0.12);
+    color: #FDFCFB;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   TYPOGRAPHY — reference design tokens
+   DISPLAY      = Cormorant Garamond — editorial serif
+   SECTION TITLE = Manrope Wide — structural headings
+   Body Text    = Inter Regular
+────────────────────────────────────────────────────────────────────────────── */
+
+.font-display  { font-family: var(--font-display), 'Georgia', serif; }
+.font-heading  { font-family: var(--font-heading), system-ui, sans-serif; }
+.font-sans     { font-family: var(--font-sans), system-ui, sans-serif; }
+.font-mono     { font-family: var(--font-mono), monospace; }
+.font-gothic   { font-family: var(--font-gothic), sans-serif; }
+
+/* ────────────────────────────────────────────────────────────────────────────
+   TEXTURES — reference specifies: Concrete, Stone, Leather, Paper,
+              Brushed Metal, Film Grain
+────────────────────────────────────────────────────────────────────────────── */
+
+/* Subtle film grain overlay — applies on top of any element */
+.texture-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* Concrete texture — heavier grain for section backgrounds */
+.texture-concrete::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='6' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");
+  background-size: 512px 512px;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   MOTION — reference: cubic-bezier(0.4, 0, 0.2, 1)
+   Slow 800ms · Medium 500ms · Fast 300ms
+────────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --ease-cinematic: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-slow: 800ms;
+  --duration-medium: 500ms;
+  --duration-fast: 300ms;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   UI ELEMENTS — exact from reference
+   Primary button: thin border + uppercase + tracking + arrow
+   Secondary: no border, text only
+────────────────────────────────────────────────────────────────────────────── */
+
+/* Primary Button — "EXPLORE THE MANIFESTO" style */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  height: 2.75rem;
+  padding: 0 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  color: #F2F2F2;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  transition: background 200ms var(--ease-cinematic),
+              color 200ms var(--ease-cinematic),
+              border-color 200ms var(--ease-cinematic);
+}
+.btn-primary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Secondary Button — "VIEW COLLECTION" style */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 2.75rem;
+  padding: 0 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  color: #A8A8A8;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  transition: border-color 200ms var(--ease-cinematic),
+              color 200ms var(--ease-cinematic);
+}
+.btn-secondary:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #F2F2F2;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   SCROLLBAR
+────────────────────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #0A0A0A; }
+::-webkit-scrollbar-thumb { background: #202020; }
+::-webkit-scrollbar-thumb:hover { background: #2A2A2A; }
+
+/* ────────────────────────────────────────────────────────────────────────────
+   FOCUS
+────────────────────────────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 1px solid rgba(253, 252, 251, 0.25);
+  outline-offset: 2px;
+}
