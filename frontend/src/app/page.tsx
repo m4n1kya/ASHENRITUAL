@@ -294,11 +294,11 @@ export default function HomePage() {
           className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden md:aspect-[21/9]"
         >
           <Image
-            src="/images/new-texture-hero.jpg"
+            src="/images/vesper-texture.jpg"
             alt="Editorial"
             fill
             sizes="100vw"
-            className="object-cover"
+            className="object-cover brightness-75 opacity-90"
             priority={false}
           />
           

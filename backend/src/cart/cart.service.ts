@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ValidateCartDto } from './dto/validate-cart.dto';
 
 /** Shape of a validated cart line returned to the frontend. */
-interface ValidatedCartLine {
+export interface ValidatedCartLine {
   productId: string;
   name: string;
   price: number;
