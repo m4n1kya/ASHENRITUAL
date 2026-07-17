@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth.store';
+import { useThemeStore } from '@/store/theme.store';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
-import { LogOut, MapPin, Plus, Trash2, Package, Heart } from 'lucide-react';
+import { LogOut, MapPin, Plus, Trash2, Package, Heart, Sun, Moon } from 'lucide-react';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { cn } from '@/lib/utils';
@@ -23,6 +24,7 @@ interface Address {
 export default function AccountPage() {
   const router = useRouter();
   const { token, user, logout } = useAuthStore();
+  const { theme, toggleTheme } = useThemeStore();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -219,9 +221,54 @@ export default function AccountPage() {
               </div>
             )}
           </section>
+
+          {/* ── Settings ────────────────────────────────────────────────────── */}
+          <section className="mt-16 border-t border-border pt-10">
+            <h2 className="mb-6 font-heading text-2xl uppercase tracking-widest text-foreground">
+              Settings
+            </h2>
+
+            {/* Appearance Toggle */}
+            <div className="flex items-center justify-between border border-border bg-card px-6 py-5">
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center border border-border text-muted-foreground">
+                  {theme === 'dark' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">Appearance</p>
+                  <p className="text-xs text-muted-foreground">
+                    {theme === 'dark' ? 'Dark mode is active' : 'Light mode is active'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Toggle Switch */}
+              <button
+                id="theme-toggle"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                className={cn(
+                  'relative h-7 w-14 border transition-colors duration-500',
+                  theme === 'light'
+                    ? 'border-[#1A1A1A]/20 bg-[#1A1A1A]'
+                    : 'border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.06)]'
+                )}
+              >
+                <motion.span
+                  layout
+                  transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                  className={cn(
+                    'absolute top-1 h-5 w-5',
+                    theme === 'light' ? 'left-8 bg-white' : 'left-1 bg-[#F2F2F2]'
+                  )}
+                />
+              </button>
+            </div>
+          </section>
         </div>
       </main>
     </PageTransition>
   );
 }
+
 

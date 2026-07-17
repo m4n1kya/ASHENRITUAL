@@ -66,7 +66,7 @@ export default function HomePage() {
           • Bottom-left: 001
           • Bottom-right: ANCIENT. PERMANENT. RITUALISTIC.
       ════════════════════════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative h-screen w-full overflow-hidden" aria-label="Hero">
+      <section ref={heroRef} className="keep-light-text relative h-screen w-full overflow-hidden" aria-label="Hero">
 
         {/* ── Background image — parallax ── */}
         <motion.div style={{ y: imgY }} className="absolute inset-0 z-0 will-change-transform">
@@ -155,7 +155,7 @@ export default function HomePage() {
           style={{ opacity: heroOp }}
           className="absolute bottom-0 left-0 z-20 px-8 pb-20 md:px-14"
         >
-          <div className="max-w-[480px]">
+          <div className="keep-light-text max-w-[480px]">
             {/* MAIN HEADLINE — Gothic font, all caps */}
             <motion.h1
               initial={{ opacity: 0, y: 32 }}
@@ -179,7 +179,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...SLOW, delay: 0.8 }}
-              className="mt-5 max-w-[340px] text-[12px] leading-relaxed text-[#8D8D8D]"
+              className="mt-5 max-w-[340px] text-[12px] leading-relaxed text-[#8D8D8D] keep-light-text"
             >
               AshenRitual is not about trends. It&apos;s about
               timeless design, intentional craft, and the discipline

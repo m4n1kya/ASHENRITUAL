@@ -95,6 +95,48 @@
   --sidebar-ring:       rgba(255, 255, 255, 0.3);
 }
 
+/* ════════════════════════════════════════════════════════════════════════════
+   LIGHT MODE TOKENS
+   ════════════════════════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  /* Surfaces */
+  --background:         rgba(255, 252, 248, 0.3);
+  --secondary:          rgba(245, 240, 232, 0.4);
+  --card:               rgba(255, 252, 248, 0.45);
+  --muted:              rgba(235, 228, 218, 0.5);
+  --accent:             rgba(0, 0, 0, 0.06);
+  --popover:            rgba(255, 252, 248, 0.75);
+
+  /* Text — white like dark mode */
+  --foreground:         #F2F2F2;
+  --card-foreground:    #F2F2F2;
+  --popover-foreground: #F2F2F2;
+  --secondary-foreground: #F2F2F2;
+  --accent-foreground:  #F2F2F2;
+  --muted-foreground:   #A8A8A8;
+
+  /* Brand */
+  --primary:            #F2F2F2;
+  --primary-foreground: #0A0A0A;
+
+  /* Semantic */
+  --border:             rgba(0, 0, 0, 0.12);
+  --input:              rgba(255, 252, 248, 0.6);
+  --ring:               rgba(0, 0, 0, 0.25);
+  --destructive:        #7B0000;
+  --radius:             0rem;
+
+  /* Sidebar */
+  --sidebar:            rgba(255, 252, 248, 0.5);
+  --sidebar-foreground: #F2F2F2;
+  --sidebar-primary:    #F2F2F2;
+  --sidebar-primary-foreground: #0A0A0A;
+  --sidebar-accent:     rgba(255, 255, 255, 0.08);
+  --sidebar-accent-foreground: #F2F2F2;
+  --sidebar-border:     rgba(0, 0, 0, 0.1);
+  --sidebar-ring:       rgba(0, 0, 0, 0.2);
+}
+
 /* ────────────────────────────────────────────────────────────────────────────
    BASE
 ────────────────────────────────────────────────────────────────────────────── */
@@ -116,6 +158,29 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    transition: background-color 600ms ease, color 600ms ease;
+  }
+
+  /* Light mode background */
+  html[data-theme="light"] {
+    background-color: #BEBEBE;
+    background-image: url('/images/light-bg.jpg');
+    color-scheme: light;
+  }
+
+  /* Dim the marble texture without touching content — dark overlay via body */
+  html[data-theme="light"] body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.38);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Make text pop more in light mode using a shadow */
+  html[data-theme="light"] body {
+    text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.7), 0px 1px 3px rgba(0, 0, 0, 0.9);
   }
 
   body {
@@ -123,7 +188,14 @@
     background-color: rgba(10, 10, 10, 0.4); /* Dark overlay to keep text readable but show texture */
     font-family: var(--font-sans), system-ui, sans-serif;
     letter-spacing: 0.01em;
+    transition: background-color 600ms ease, color 600ms ease;
   }
+
+  html[data-theme="light"] body {
+    background-color: rgba(200, 200, 200, 0.15);
+    color: #1A1A1A;
+  }
+
 
   ::selection {
     background: rgba(253, 252, 251, 0.12);
@@ -247,6 +319,11 @@
 ::-webkit-scrollbar-track { background: #0A0A0A; }
 ::-webkit-scrollbar-thumb { background: #202020; }
 ::-webkit-scrollbar-thumb:hover { background: #2A2A2A; }
+
+html[data-theme="light"] ::-webkit-scrollbar-track { background: #EDE8E0; }
+html[data-theme="light"] ::-webkit-scrollbar-thumb { background: #B0A898; }
+html[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #8A8078; }
+
 
 /* ────────────────────────────────────────────────────────────────────────────
    FOCUS

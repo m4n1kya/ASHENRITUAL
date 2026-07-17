@@ -31,6 +31,19 @@ export default function VesperPage() {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Lock Vesper to dark mode regardless of global theme setting
+  useEffect(() => {
+    const html = document.documentElement;
+    const prev = html.getAttribute('data-theme') ?? 'dark';
+    const prevClass = html.className;
+    html.setAttribute('data-theme', 'dark');
+    html.classList.add('dark');
+    return () => {
+      html.setAttribute('data-theme', prev);
+      html.className = prevClass;
+    };
+  }, []);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);

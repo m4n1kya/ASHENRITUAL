@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 /* ════════════════════════════════════════════════════════════════════════════
    TYPOGRAPHY — matches reference design tokens exactly
@@ -69,7 +70,32 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" data-theme="dark" className="dark">
+      <head>
+        {/* Blocking theme script — runs before paint to prevent flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var stored = localStorage.getItem('ashenritual-theme');
+                  var parsed = stored ? JSON.parse(stored) : null;
+                  var theme = (parsed && parsed.state && parsed.state.theme) ? parsed.state.theme : 'dark';
+                  document.documentElement.setAttribute('data-theme', theme);
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch(e) {
+                  document.documentElement.setAttribute('data-theme', 'dark');
+                  document.documentElement.classList.add('dark');
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
@@ -96,6 +122,7 @@ export default function RootLayout({
           }}
         />
 
+        <ThemeProvider />
         <Navbar />
         <main id="main-content" role="main">{children}</main>
         <Footer />
