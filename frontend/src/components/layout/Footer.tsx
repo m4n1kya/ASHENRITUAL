@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 /* ════════════════════════════════════════════════════════════════════════════
    FOOTER — reference bottom panel
@@ -56,9 +57,17 @@ export function Footer() {
           <div className="col-span-2 sm:col-span-1">
             <Link
               href="/"
-              className="font-heading text-[11px] font-semibold tracking-[0.35em] text-[#FDFCFB] hover:opacity-60 transition-opacity duration-300"
+              className="flex items-center gap-1 font-heading text-[11px] font-semibold tracking-[0.35em] text-[#FDFCFB] hover:opacity-60 transition-opacity duration-300"
             >
-              ASHENRITUAL
+              <Image 
+                src="/images/logo.png" 
+                alt="ASHENRITUAL Logo" 
+                width={150} 
+                height={150} 
+                className="h-[46px] w-auto object-contain mt-[15px]" 
+                unoptimized 
+              />
+              <span className="-ml-[1px]">ASHENRITUAL</span>
             </Link>
             <p className="mt-4 text-[12px] leading-relaxed text-[#8D8D8D]/60">
               Presence isn&apos;t purchased.<br />

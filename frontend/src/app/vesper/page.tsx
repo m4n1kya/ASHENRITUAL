@@ -85,12 +85,12 @@ export default function VesperPage() {
     <main className="flex min-h-screen flex-col bg-background pt-16 texture-grain relative">
       
       {/* ── Background Texture ── */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden opacity-40">
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <Image
           src="/images/natural-texture.jpg"
           alt="Natural Texture"
           fill
-          className="object-cover"
+          className="object-cover opacity-40"
           quality={100}
           unoptimized
         />

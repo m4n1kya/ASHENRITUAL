@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Heart, ShoppingBag, User, X } from 'lucide-react';
@@ -98,9 +99,18 @@ export function Navbar() {
           <Link
             href="/"
             aria-label="ASHENRITUAL"
-            className="font-heading text-[11px] font-semibold tracking-[0.35em] text-[#FDFCFB] transition-opacity duration-300 hover:opacity-50"
+            className="flex items-center gap-1 font-heading text-[11px] font-semibold tracking-[0.35em] text-[#FDFCFB] transition-opacity duration-300 hover:opacity-70"
           >
-            ASHENRITUAL
+            <Image 
+              src="/images/logo.png" 
+              alt="ASHENRITUAL Logo" 
+              width={150} 
+              height={150} 
+              className="h-[46px] w-auto object-contain mt-3" 
+              unoptimized 
+              priority 
+            />
+            <span className="-ml-[1px]">ASHENRITUAL</span>
           </Link>
 
           {/* Center nav — exactly matching reference: SHOP CHAPTERS LOOKBOOK VESPER */}

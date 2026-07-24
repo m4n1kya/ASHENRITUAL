@@ -20,7 +20,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -70,7 +70,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-theme="dark" className="dark">
+    <html lang="en" data-theme="dark" className="dark" suppressHydrationWarning>
       <head>
         {/* Blocking theme script — runs before paint to prevent flash */}
         <script
