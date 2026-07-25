@@ -237,7 +237,7 @@ export default function AccountPage() {
                 <div>
                   <p className="text-sm font-medium text-foreground">Appearance</p>
                   <p className="text-xs text-muted-foreground">
-                    {theme === 'dark' ? 'Dark mode is active' : 'Light mode is active'}
+                    {theme === 'dark' ? 'Dark mode is active' : 'Lapis mode is active'}
                   </p>
                 </div>
               </div>

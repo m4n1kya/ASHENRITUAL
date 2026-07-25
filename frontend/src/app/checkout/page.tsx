@@ -163,6 +163,36 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
+              {/* Mocked Payment Section */}
+              <div className="border-t border-border pt-8">
+                <h2 className="mb-6 font-heading text-2xl uppercase tracking-widest text-foreground">
+                  Payment Details
+                </h2>
+                <div className="space-y-4">
+                  <div className="rounded-none border border-border bg-card p-4">
+                    <p className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                      Mocked Stripe Elements
+                    </p>
+                    <div className="space-y-4 opacity-50">
+                      <div>
+                        <label className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground">Card Number</label>
+                        <input disabled value="**** **** **** 4242" className="w-full border border-border bg-transparent px-4 py-3 text-sm text-foreground focus:outline-none" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground">Expiry</label>
+                          <input disabled value="12/28" className="w-full border border-border bg-transparent px-4 py-3 text-sm text-foreground focus:outline-none" />
+                        </div>
+                        <div>
+                          <label className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground">CVC</label>
+                          <input disabled value="***" className="w-full border border-border bg-transparent px-4 py-3 text-sm text-foreground focus:outline-none" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <button
                 type="submit"
                 disabled={submitting}
@@ -171,10 +201,10 @@ export default function CheckoutPage() {
                 {submitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Placing Order...
+                    Processing Payment...
                   </>
                 ) : (
-                  'Confirm Order'
+                  'Pay & Confirm Order'
                 )}
               </button>
             </form>

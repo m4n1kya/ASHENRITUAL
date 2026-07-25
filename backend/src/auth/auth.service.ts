@@ -1,29 +1,50 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { Resend } from 'resend';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
+  private resend: Resend;
+
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService
-  ) {}
+  ) {
+    this.resend = new Resend(process.env.RESEND_API_KEY || 're_1234');
+  }
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
     if (user && await bcrypt.compare(pass, user.passwordHash)) {
-      const { passwordHash: _, ...result } = user;
+      const { passwordHash: _, refreshToken: __, ...result } = user;
       return result;
     }
     return null;
   }
 
-  async login(user: any) {
+  async generateTokens(user: any) {
     const payload = { email: user.email, sub: user.id, role: user.role };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+    return { accessToken, refreshToken };
+  }
+
+  async login(user: any) {
+    const { accessToken, refreshToken } = await this.generateTokens(user);
+    
+    // Hash refresh token before saving
+    const salt = await bcrypt.genSalt(10);
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
+    
+    await this.usersService.update(user.id, { refreshToken: hashedRefreshToken });
+
     return {
-      access_token: this.jwtService.sign(payload),
+      accessToken,
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,
@@ -33,7 +54,53 @@ export class AuthService {
   }
 
   async register(createUserDto: CreateUserDto) {
-    const user = await this.usersService.create(createUserDto);
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(createUserDto.password, salt);
+    
+    const verificationToken = randomBytes(32).toString('hex');
+    
+    const user = await this.usersService.create({
+      email: createUserDto.email,
+      passwordHash,
+      verificationToken,
+    });
+
+    // Send verification email asynchronously
+    try {
+      await this.resend.emails.send({
+        from: 'Acme <onboarding@resend.dev>',
+        to: user.email,
+        subject: 'Verify your email for ASHENRITUAL',
+        html: `<p>Your verification token is: ${verificationToken}</p>`
+      });
+    } catch (error) {
+      console.error('Failed to send verification email:', error);
+    }
+
     return this.login(user);
+  }
+
+  async refreshTokens(userId: string, refreshToken: string) {
+    const user = await this.usersService.findById(userId);
+    if (!user || !user.refreshToken) {
+      throw new UnauthorizedException('Access denied');
+    }
+
+    const refreshTokenMatches = await bcrypt.compare(refreshToken, user.refreshToken);
+    if (!refreshTokenMatches) {
+      throw new UnauthorizedException('Access denied');
+    }
+
+    const tokens = await this.generateTokens(user);
+    const salt = await bcrypt.genSalt(10);
+    const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, salt);
+    
+    await this.usersService.update(user.id, { refreshToken: hashedRefreshToken });
+    
+    return tokens;
+  }
+
+  async logout(userId: string) {
+    await this.usersService.update(userId, { refreshToken: null });
   }
 }

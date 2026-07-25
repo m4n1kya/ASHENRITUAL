@@ -34,10 +34,12 @@ function useHourlyQuote() {
 
 /* ─── Static product strip ───────────────────────────────────────────────── */
 const FORGED = [
-  { id: '1', name: 'Noir Coat',              price: '₹ 18,990',  img: '/images/hero.png'    },
-  { id: '2', name: 'Structure Trousers',     price: '₹ 11,490',  img: '/images/texture.png' },
-  { id: '3', name: 'Ribbed Knit Turtleneck', price: '₹ 8,200',   img: '/images/product.png' },
-  { id: '4', name: 'Raw Edge Shirt',         price: '₹ 5,300',   img: '/images/hero.png'    },
+  { id: '1', name: 'Charcoal Overcoat',      price: '₹ 18,990',  img: '/images/clothes/Jackets/cmm25223_charcoal_xl.webp' },
+  { id: '2', name: 'Slate Grey Power Suit',  price: '₹ 24,990',  img: '/images/clothes/Suit/m5056611947048_grey_xl.webp'  },
+  { id: '3', name: 'Void Black Tee',         price: '₹  1,990',  img: '/images/clothes/Tshirts/cmm19350_black_xl.webp'    },
+  { id: '4', name: 'Carbon Derby',           price: '₹  9,499',  img: '/images/clothes/Shoes/bmm40163_black_xl.webp'      },
+  { id: '5', name: 'Obsidian Biker Jacket',  price: '₹ 14,300',  img: '/images/clothes/Jackets/cmm19047_black_xl.webp'    },
+  { id: '6', name: 'Graphite Overshirt',     price: '₹  4,999',  img: '/images/clothes/Shirts/cmm24428_black_xl.webp'     },
 ];
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -382,12 +384,12 @@ export default function HomePage() {
               transition={{ duration: 1.2, ease: E }}
             >
               <p
-                className="font-display font-light italic leading-snug text-[#FDFCFB]/55"
+                className="font-display font-light italic leading-snug text-[#FDFCFB]/90"
                 style={{ fontSize: 'clamp(1.6rem, 4vw, 3.5rem)' }}
               >
                 &lsquo;{quote.q}&rsquo;
               </p>
-              <p className="mt-8 font-heading text-[9px] font-medium uppercase tracking-[0.4em] text-[#8D8D8D]">
+              <p className="mt-8 font-heading text-[9px] font-medium uppercase tracking-[0.4em] text-[#FDFCFB]/70">
                 — {quote.author}
               </p>
             </motion.div>

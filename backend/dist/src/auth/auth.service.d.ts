@@ -4,10 +4,16 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 export declare class AuthService {
     private usersService;
     private jwtService;
+    private resend;
     constructor(usersService: UsersService, jwtService: JwtService);
     validateUser(email: string, pass: string): Promise<any>;
+    generateTokens(user: any): Promise<{
+        accessToken: string;
+        refreshToken: string;
+    }>;
     login(user: any): Promise<{
-        access_token: string;
+        accessToken: string;
+        refreshToken: string;
         user: {
             id: any;
             email: any;
@@ -15,11 +21,17 @@ export declare class AuthService {
         };
     }>;
     register(createUserDto: CreateUserDto): Promise<{
-        access_token: string;
+        accessToken: string;
+        refreshToken: string;
         user: {
             id: any;
             email: any;
             role: any;
         };
     }>;
+    refreshTokens(userId: string, refreshToken: string): Promise<{
+        accessToken: string;
+        refreshToken: string;
+    }>;
+    logout(userId: string): Promise<void>;
 }

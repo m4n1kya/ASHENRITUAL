@@ -1,14 +1,18 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
 export declare class UsersService {
     private prisma;
     constructor(prisma: PrismaService);
-    create(createUserDto: CreateUserDto): Promise<{
+    create(data: any): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
         email: string;
         role: import(".prisma/client").$Enums.Role;
+        refreshToken: string | null;
+        emailVerified: boolean;
+        verificationToken: string | null;
+        resetPasswordToken: string | null;
+        resetPasswordExpires: Date | null;
     }>;
     findByEmail(email: string): Promise<{
         id: string;
@@ -17,6 +21,11 @@ export declare class UsersService {
         email: string;
         passwordHash: string;
         role: import(".prisma/client").$Enums.Role;
+        refreshToken: string | null;
+        emailVerified: boolean;
+        verificationToken: string | null;
+        resetPasswordToken: string | null;
+        resetPasswordExpires: Date | null;
     } | null>;
     findById(id: string): Promise<{
         id: string;
@@ -25,5 +34,23 @@ export declare class UsersService {
         email: string;
         passwordHash: string;
         role: import(".prisma/client").$Enums.Role;
+        refreshToken: string | null;
+        emailVerified: boolean;
+        verificationToken: string | null;
+        resetPasswordToken: string | null;
+        resetPasswordExpires: Date | null;
     } | null>;
+    update(id: string, data: any): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        email: string;
+        passwordHash: string;
+        role: import(".prisma/client").$Enums.Role;
+        refreshToken: string | null;
+        emailVerified: boolean;
+        verificationToken: string | null;
+        resetPasswordToken: string | null;
+        resetPasswordExpires: Date | null;
+    }>;
 }

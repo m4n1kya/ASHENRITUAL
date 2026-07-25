@@ -93,6 +93,13 @@ export default function LoginPage() {
                   {errors[name as keyof Form]?.message}
                 </p>
               )}
+              {name === 'password' && (
+                <div className="mt-2 text-right">
+                  <Link href="/forgot-password" className="text-[10px] text-[#8D8D8D] transition-colors hover:text-[#E8E8E8]">
+                    Forgot password?
+                  </Link>
+                </div>
+              )}
             </div>
           ))}
 

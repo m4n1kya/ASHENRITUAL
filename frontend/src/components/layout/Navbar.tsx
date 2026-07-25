@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Heart, ShoppingBag, User, X } from 'lucide-react';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
+import { useThemeStore } from '@/store/theme.store';
 import { cn } from '@/lib/utils';
 
 /* ════════════════════════════════════════════════════════════════════════════
@@ -34,13 +35,14 @@ const MOBILE_SECONDARY = [
 ] as const;
 
 /* Icon button — exactly 36×36 tap target, thin icon */
-function NavIcon({ href, label, badge, children }: {
+function NavIcon({ href, label, badge, children, iconCls }: {
   href?: string;
   label: string;
   badge?: number;
   children: React.ReactNode;
+  iconCls?: string;
 }) {
-  const cls = "relative flex h-9 w-9 items-center justify-center text-[#8D8D8D] transition-colors duration-300 hover:text-[#FDFCFB]";
+  const cls = cn("relative flex h-9 w-9 items-center justify-center transition-colors duration-300", iconCls);
   const inner = (
     <>
       {children}
@@ -60,8 +62,13 @@ export function Navbar() {
   const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const cartCount     = useCartStore(s => s.totalItems());
-  const isAuthed      = useAuthStore(s => s.isAuthenticated);
+  const cartCount = useCartStore(s => s.totalItems());
+  const isAuthed  = useAuthStore(s => s.isAuthenticated);
+
+  const navTextCls  = 'text-[#8D8D8D] hover:text-[#FDFCFB]';
+  const logoTextCls = 'text-[#FDFCFB]';
+  const iconCls     = 'text-[#8D8D8D] hover:text-[#FDFCFB]';
+  const activeCls   = 'text-[#FDFCFB]';
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 12);
@@ -89,7 +96,7 @@ export function Navbar() {
         className={cn(
           'fixed inset-x-0 top-0 z-50 transition-all duration-500',
           scrolled
-            ? 'border-b border-[#202020] bg-background/96 backdrop-blur-md'
+            ? 'border-b border-[rgba(255,255,255,0.08)] bg-background/96 backdrop-blur-md'
             : 'bg-transparent',
         )}
       >
@@ -99,7 +106,10 @@ export function Navbar() {
           <Link
             href="/"
             aria-label="ASHENRITUAL"
-            className="flex items-center gap-1 font-heading text-[11px] font-semibold tracking-[0.35em] text-[#FDFCFB] transition-opacity duration-300 hover:opacity-70"
+            className={cn(
+              'flex items-center gap-1 font-heading text-[11px] font-semibold tracking-[0.35em] transition-colors duration-300 hover:opacity-70',
+              logoTextCls,
+            )}
           >
             <Image 
               src="/images/logo.png" 
@@ -123,11 +133,10 @@ export function Navbar() {
                   href={href}
                   className={cn(
                     'font-heading text-[10px] font-medium uppercase tracking-[0.2em] transition-colors duration-300',
-                    /* Vesper gets Cormorant Garamond italic — distinctive */
                     label === 'Vesper' && 'font-display italic normal-case tracking-[0.15em] text-[13px]',
-                    active
-                      ? 'text-[#FDFCFB]'
-                      : 'text-[#8D8D8D] hover:text-[#FDFCFB]',
+                    label !== 'Vesper' && (active ? activeCls : navTextCls),
+                    /* Vesper always stays its own colour regardless of theme */
+                    label === 'Vesper' && (active ? 'text-[#FDFCFB]' : 'text-[#8D8D8D] hover:text-[#FDFCFB]'),
                   )}
                 >
                   {label}
@@ -138,16 +147,16 @@ export function Navbar() {
 
           {/* Right icons — exact reference: Q heart bag person */}
           <div className="flex items-center">
-            <NavIcon href="/search" label="Search">
+            <NavIcon href="/search" label="Search" iconCls={iconCls}>
               <Search className="h-[17px] w-[17px]" strokeWidth={1.5} />
             </NavIcon>
-            <NavIcon href="/saved-rituals" label="Saved Rituals">
+            <NavIcon href="/saved-rituals" label="Saved Rituals" iconCls={iconCls}>
               <Heart className="h-[17px] w-[17px]" strokeWidth={1.5} />
             </NavIcon>
-            <NavIcon href="/cart" label={`Cart — ${cartCount} items`} badge={cartCount}>
+            <NavIcon href="/cart" label={`Cart — ${cartCount} items`} badge={cartCount} iconCls={iconCls}>
               <ShoppingBag className="h-[17px] w-[17px]" strokeWidth={1.5} />
             </NavIcon>
-            <NavIcon href={isAuthed ? '/account' : '/login'} label={isAuthed ? 'Account' : 'Sign in'}>
+            <NavIcon href={isAuthed ? '/account' : '/login'} label={isAuthed ? 'Account' : 'Sign in'} iconCls={iconCls}>
               <User className="h-[17px] w-[17px]" strokeWidth={1.5} />
             </NavIcon>
 
@@ -155,7 +164,10 @@ export function Navbar() {
             <button
               onClick={toggle}
               aria-label={mobileOpen ? 'Close menu' : 'Menu'}
-              className="ml-1 flex h-9 w-9 items-center justify-center text-[#8D8D8D] transition-colors duration-300 hover:text-[#FDFCFB] md:hidden"
+              className={cn(
+                'ml-1 flex h-9 w-9 items-center justify-center transition-colors duration-300 md:hidden',
+                iconCls,
+              )}
             >
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span

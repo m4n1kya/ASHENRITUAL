@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { StartupAnimation } from "@/components/layout/StartupAnimation";
 
 /* ════════════════════════════════════════════════════════════════════════════
    TYPOGRAPHY — matches reference design tokens exactly
@@ -122,6 +123,7 @@ export default function RootLayout({
           }}
         />
 
+        <StartupAnimation />
         <ThemeProvider />
         <Navbar />
         <main id="main-content" role="main">{children}</main>

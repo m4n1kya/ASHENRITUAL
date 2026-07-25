@@ -1,48 +1,40 @@
-import type { Metadata } from 'next';
+'use client';
+
+import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'Lookbook — ASHENRITUAL',
-  description: 'Editorial fashion photography from ASHENRITUAL. The aesthetic of restraint, captured in every frame.',
-};
-
-/* Reference: "THE LOOKBOOK — MANUALS" with numbered form entries,
-   large editorial images, side-by-side layout with arrows */
+/* ── Data ───────────────────────────────────────────────────────────────── */
 
 const EDITORIALS = [
   {
-    id: 'form-1',
+    id: '01',
     label: 'Form 1',
     title: 'Foundation',
     subtitle: 'The architecture of restraint.',
+    description: 'A study in stark geometry. Stripping away the non-essential to reveal the structural integrity of the garment itself. The silhouette becomes a monolith.',
     image: '/images/hero.png',
     href: '/chapters/foundation',
   },
   {
-    id: 'form-2',
+    id: '02',
     label: 'Form 2',
     title: 'Forged Today',
     subtitle: 'Permanence through precision.',
+    description: 'Hardware as jewelry. Heavy zippers, stark seams, and cold metal against dense wool. Industrial necessity recontextualized as luxury.',
     image: '/images/product.png',
     href: '/chapters/forged-today',
   },
   {
-    id: 'layering-1',
+    id: '03',
     label: 'Layering 1',
     title: 'Epoch',
     subtitle: 'When restraint meets dimension.',
+    description: 'The interplay of varying weights. Sheer organza layered over heavy canvas. Creating depth without resorting to loud color.',
     image: '/images/texture.png',
     href: '/chapters/epoch',
-  },
-  {
-    id: 'layering-2',
-    label: 'Layering 2',
-    title: 'Nocturne',
-    subtitle: 'After-dark silhouettes.',
-    image: '/images/hero.png',
-    href: '/shop',
   },
 ];
 
@@ -50,121 +42,165 @@ const MATERIAL_STUDIES = [
   { label: 'Concrete', image: '/images/texture.png' },
   { label: 'Stone', image: '/images/product.png' },
   { label: 'Leather', image: '/images/hero.png' },
-  { label: 'Paper', image: '/images/texture.png' },
-  { label: 'Brushed Metal', image: '/images/product.png' },
-  { label: 'Film Grain', image: '/images/hero.png' },
 ];
 
-export default function LookbookPage() {
-  return (
-    <main className="min-h-screen bg-background pt-[60px] texture-grain">
-      {/* ── Header ───────────────────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-screen-xl px-8 py-16 lg:px-12">
-        <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">
-          The Lookbook
-        </p>
-        <h1 className="mt-3 font-heading text-5xl font-semibold uppercase tracking-[0.06em] text-[#E8E8E8] md:text-7xl lg:text-9xl">
-          Manuals
-        </h1>
-        <div className="mt-6 flex items-center justify-between border-b border-[#202020] pb-8">
-          <p className="text-[13px] leading-relaxed text-[#8D8D8D]">
-            Visual language for the considered wardrobe.<br />
-            Each frame deliberate. Each silhouette precise.
-          </p>
-          <Link
-            href="/shop"
-            className="hidden items-center gap-2 text-[10px] font-medium uppercase tracking-[0.25em] text-[#8D8D8D] hover:text-[#E8E8E8] transition-colors duration-300 md:flex"
-          >
-            View All
-            <ArrowRight className="h-3 w-3" />
-          </Link>
-        </div>
-      </div>
+/* ── Components ───────────────────────────────────────────────────────────── */
 
-      {/* ── Editorial Strip — reference: horizontal row with arrows ──────────── */}
-      <div className="mx-auto max-w-screen-xl px-8 lg:px-12">
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {EDITORIALS.map((item, i) => (
-            <Link key={item.id} href={item.href} className="group">
-              <div className="relative aspect-[3/4] overflow-hidden bg-card">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  priority={i < 2}
-                  className="object-cover transition-transform duration-[1200ms] group-hover:scale-105"
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/60 via-transparent to-transparent" />
+export default function LookbookPage() {
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  });
+
+  return (
+    <main ref={containerRef} className="min-h-screen bg-background pt-[60px] texture-grain overflow-x-hidden">
+      
+      {/* ── Intro ───────────────────────────────────────────────────────────── */}
+      <section className="relative flex min-h-[80vh] flex-col items-center justify-center px-8 text-center lg:px-12">
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="font-heading text-[10px] font-medium uppercase tracking-[0.4em] text-muted-foreground"
+        >
+          The Lookbook
+        </motion.p>
+        <motion.h1 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-6 font-gothic text-6xl text-foreground md:text-8xl lg:text-[10rem] leading-none"
+        >
+          Manuals
+        </motion.h1>
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.4 }}
+          className="mt-8 max-w-xl font-serif text-lg leading-relaxed text-muted-foreground md:text-xl"
+        >
+          A visual language for the considered wardrobe. Each frame deliberate. Each silhouette precise.
+        </motion.p>
+      </section>
+
+      {/* ── Editorial Stagger ──────────────────────────────────────────────── */}
+      <section className="mx-auto max-w-screen-2xl px-4 py-24 md:px-8">
+        {EDITORIALS.map((item, index) => {
+          const isEven = index % 2 === 0;
+          
+          return (
+            <motion.div 
+              key={item.id}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className={`mb-32 flex flex-col gap-12 lg:mb-48 lg:flex-row ${isEven ? '' : 'lg:flex-row-reverse'} lg:items-center lg:gap-24`}
+            >
+              <div className="relative aspect-[3/4] w-full lg:w-3/5 overflow-hidden group">
+                <Link href={item.href}>
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    className="object-cover transition-transform duration-[2000ms] group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                  />
+                  <div className="absolute inset-0 bg-black/10 transition-colors duration-500 group-hover:bg-transparent" />
+                </Link>
               </div>
-              <div className="mt-4 flex items-start justify-between">
-                <div>
-                  <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-[#8D8D8D]">{item.label}</p>
-                  <p className="mt-1 text-[13px] font-medium text-[#E8E8E8]">{item.title}</p>
-                </div>
-                <ArrowUpRight className="mt-0.5 h-3.5 w-3.5 text-[#8D8D8D] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#E8E8E8]" />
+
+              <div className="w-full lg:w-2/5">
+                <p className="font-heading text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/50">
+                  {item.id} — {item.label}
+                </p>
+                <h2 className="mt-6 font-gothic text-4xl text-foreground md:text-6xl lg:text-7xl">
+                  {item.title}
+                </h2>
+                <p className="mt-4 font-serif text-xl italic text-muted-foreground">
+                  {item.subtitle}
+                </p>
+                <p className="mt-8 max-w-md text-sm leading-relaxed text-muted-foreground">
+                  {item.description}
+                </p>
+                <Link 
+                  href={item.href}
+                  className="group mt-12 inline-flex items-center gap-4 border-b border-border pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-foreground transition-all hover:border-foreground"
+                >
+                  Explore Chapter
+                  <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
               </div>
-            </Link>
-          ))}
+            </motion.div>
+          );
+        })}
+      </section>
+
+      {/* ── Immersive Full-Bleed ────────────────────────────────────────────── */}
+      <section className="relative h-[80vh] w-full overflow-hidden">
+        <motion.div 
+          style={{ y: useTransform(scrollYProgress, [0, 1], ['0%', '30%']) }}
+          className="absolute inset-0"
+        >
+          <Image
+            src="/images/hero.png"
+            alt="Editorial Ambient"
+            fill
+            className="object-cover opacity-80"
+            sizes="100vw"
+          />
+        </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50" />
+        
+        <div className="absolute bottom-16 left-8 md:left-16 lg:left-24">
+          <p className="font-heading text-[10px] font-medium uppercase tracking-[0.4em] text-white/50">
+            Curation
+          </p>
+          <h2 className="mt-4 font-gothic text-5xl text-white md:text-7xl">
+            The Empty Room
+          </h2>
         </div>
-      </div>
+      </section>
 
       {/* ── Material Studies ─────────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-screen-xl px-8 py-20 lg:px-12">
-        <div className="flex items-end justify-between border-b border-[#202020] pb-8 mb-10">
-          <div>
-            <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">
-              Curated Design Elements
-            </p>
-            <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-[#E8E8E8]">
-              Material Studies
-            </h2>
-          </div>
+      <section className="mx-auto max-w-screen-xl px-8 py-32 lg:px-12">
+        <div className="mb-16 flex flex-col items-center text-center">
+          <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-muted-foreground">
+            Curated Elements
+          </p>
+          <h2 className="mt-4 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-foreground md:text-3xl">
+            Material Studies
+          </h2>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 md:grid-cols-6">
-          {MATERIAL_STUDIES.map((mat) => (
-            <div key={mat.label} className="group">
-              <div className="relative aspect-square overflow-hidden bg-card border border-[#202020]">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {MATERIAL_STUDIES.map((mat, i) => (
+            <motion.div 
+              key={mat.label}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.6 }}
+              className="group"
+            >
+              <div className="relative aspect-[4/5] overflow-hidden bg-card border border-border">
                 <Image
                   src={mat.image}
                   alt={mat.label}
                   fill
-                  className="object-cover opacity-60 transition-opacity duration-700 group-hover:opacity-80"
-                  sizes="(max-width: 768px) 33vw, 16vw"
+                  className="object-cover opacity-60 transition-transform duration-[1500ms] group-hover:scale-110 group-hover:opacity-100"
+                  sizes="(max-width: 768px) 100vw, 33vw"
                 />
               </div>
-              <p className="mt-3 text-[10px] font-medium uppercase tracking-[0.25em] text-[#8D8D8D] group-hover:text-[#E8E8E8] transition-colors duration-300">
+              <p className="mt-4 text-center font-heading text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
                 {mat.label}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
 
-      {/* ── Vesper CTA Strip ─────────────────────────────────────────────────── */}
-      <section className="border-t border-[#202020] bg-[#0E0E0E]">
-        <div className="mx-auto flex max-w-screen-xl flex-col items-start gap-6 px-8 py-16 md:flex-row md:items-center md:justify-between lg:px-12">
-          <div>
-            <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">
-              Wardrobe Intelligence
-            </p>
-            <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.06em] text-[#E8E8E8]">
-              Let Vesper Complete Your Ritual
-            </h2>
-            <p className="mt-3 max-w-md text-[13px] leading-relaxed text-[#8D8D8D]">
-              Translate these editorials into your wardrobe. Vesper analyzes occasion, season, and silhouette to build a complete outfit.
-            </p>
-          </div>
-          <Link
-            href="/vesper"
-            className="group flex h-11 shrink-0 items-center gap-4 border border-[#202020] px-8 text-[10px] font-medium uppercase tracking-[0.25em] text-[#8D8D8D] transition-all duration-500 hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8]"
-          >
-            Consult Vesper
-            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1" />
-          </Link>
-        </div>
-      </section>
     </main>
   );
 }

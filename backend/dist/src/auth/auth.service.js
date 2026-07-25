@@ -46,26 +46,40 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const users_service_1 = require("../users/users.service");
-const bcrypt = __importStar(require("bcryptjs"));
+const bcrypt = __importStar(require("bcrypt"));
+const resend_1 = require("resend");
+const crypto_1 = require("crypto");
 let AuthService = class AuthService {
     usersService;
     jwtService;
+    resend;
     constructor(usersService, jwtService) {
         this.usersService = usersService;
         this.jwtService = jwtService;
+        this.resend = new resend_1.Resend(process.env.RESEND_API_KEY || 're_1234');
     }
     async validateUser(email, pass) {
         const user = await this.usersService.findByEmail(email);
         if (user && await bcrypt.compare(pass, user.passwordHash)) {
-            const { passwordHash: _, ...result } = user;
+            const { passwordHash: _, refreshToken: __, ...result } = user;
             return result;
         }
         return null;
     }
-    async login(user) {
+    async generateTokens(user) {
         const payload = { email: user.email, sub: user.id, role: user.role };
+        const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+        const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+        return { accessToken, refreshToken };
+    }
+    async login(user) {
+        const { accessToken, refreshToken } = await this.generateTokens(user);
+        const salt = await bcrypt.genSalt(10);
+        const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
+        await this.usersService.update(user.id, { refreshToken: hashedRefreshToken });
         return {
-            access_token: this.jwtService.sign(payload),
+            accessToken,
+            refreshToken,
             user: {
                 id: user.id,
                 email: user.email,
@@ -74,8 +88,44 @@ let AuthService = class AuthService {
         };
     }
     async register(createUserDto) {
-        const user = await this.usersService.create(createUserDto);
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(createUserDto.password, salt);
+        const verificationToken = (0, crypto_1.randomBytes)(32).toString('hex');
+        const user = await this.usersService.create({
+            email: createUserDto.email,
+            passwordHash,
+            verificationToken,
+        });
+        try {
+            await this.resend.emails.send({
+                from: 'Acme <onboarding@resend.dev>',
+                to: user.email,
+                subject: 'Verify your email for ASHENRITUAL',
+                html: `<p>Your verification token is: ${verificationToken}</p>`
+            });
+        }
+        catch (error) {
+            console.error('Failed to send verification email:', error);
+        }
         return this.login(user);
+    }
+    async refreshTokens(userId, refreshToken) {
+        const user = await this.usersService.findById(userId);
+        if (!user || !user.refreshToken) {
+            throw new common_1.UnauthorizedException('Access denied');
+        }
+        const refreshTokenMatches = await bcrypt.compare(refreshToken, user.refreshToken);
+        if (!refreshTokenMatches) {
+            throw new common_1.UnauthorizedException('Access denied');
+        }
+        const tokens = await this.generateTokens(user);
+        const salt = await bcrypt.genSalt(10);
+        const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, salt);
+        await this.usersService.update(user.id, { refreshToken: hashedRefreshToken });
+        return tokens;
+    }
+    async logout(userId) {
+        await this.usersService.update(userId, { refreshToken: null });
     }
 };
 exports.AuthService = AuthService;

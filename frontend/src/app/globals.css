@@ -99,15 +99,15 @@
    LIGHT MODE TOKENS
    ════════════════════════════════════════════════════════════════════════════ */
 [data-theme="light"] {
-  /* Surfaces - Made semi-transparent so global background shows through */
-  --background:         rgba(10, 10, 10, 0.4);
-  --secondary:          rgba(14, 14, 14, 0.5);
-  --card:               rgba(17, 17, 17, 0.4);
-  --muted:              rgba(26, 26, 26, 0.5);
+  /* Surfaces — transparent so the html lapis gradient shows through */
+  --background:         transparent;
+  --secondary:          rgba(18, 24, 36, 0.60);
+  --card:               rgba(38, 48, 66, 0.55);
+  --muted:              rgba(28, 36, 51, 0.60);
   --accent:             rgba(255, 255, 255, 0.08);
-  --popover:            rgba(17, 17, 17, 0.6);
+  --popover:            rgba(14, 20, 31, 0.97);
 
-  /* Text */
+  /* Text — exactly same as dark mode */
   --foreground:         #F2F2F2;
   --card-foreground:    #F2F2F2;
   --popover-foreground: #F2F2F2;
@@ -127,11 +127,11 @@
   --radius:             0rem;
 
   /* Sidebar */
-  --sidebar:            rgba(10, 10, 10, 0.6);
+  --sidebar:            rgba(18, 24, 36, 0.97);
   --sidebar-foreground: #F2F2F2;
   --sidebar-primary:    #F2F2F2;
   --sidebar-primary-foreground: #0A0A0A;
-  --sidebar-accent:     rgba(26, 26, 26, 0.5);
+  --sidebar-accent:     rgba(28, 36, 51, 0.80);
   --sidebar-accent-foreground: #F2F2F2;
   --sidebar-border:     rgba(255, 255, 255, 0.08);
   --sidebar-ring:       rgba(255, 255, 255, 0.3);
@@ -161,11 +161,14 @@
     transition: background-color 600ms ease, color 600ms ease;
   }
 
-  /* Light mode — very dark charcoal background, text untouched */
+  /* Lapis mode — deep midnight navy with vivid metallic shine & black void shadows */
   html[data-theme="light"] {
-    background-color: #111111;
+    background-color: #080C14;
     background-image:
-      linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+      radial-gradient(ellipse at 10% 10%, rgba(80, 140, 255, 0.35) 0%, rgba(50, 90, 180, 0.10) 30%, transparent 55%),
+      radial-gradient(ellipse at 90% 88%, rgba(5, 8, 18, 0.95) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(20, 35, 65, 0.50) 0%, transparent 80%),
+      linear-gradient(150deg, rgba(25, 50, 100, 0.60) 0%, rgba(1, 1, 3, 1.0) 100%),
       url('/images/light-bg.jpg');
     color-scheme: light;
   }
@@ -176,10 +179,15 @@
 
   body {
     @apply text-foreground;
-    background-color: rgba(10, 10, 10, 0.4); /* Dark overlay to keep text readable but show texture */
+    background-color: rgba(10, 10, 10, 0.4);
     font-family: var(--font-sans), system-ui, sans-serif;
     letter-spacing: 0.01em;
     transition: background-color 600ms ease, color 600ms ease;
+  }
+
+  /* Light mode body — transparent so html marble texture shows */
+  html[data-theme="light"] body {
+    background-color: transparent;
   }
 
   ::selection {
@@ -305,10 +313,9 @@
 ::-webkit-scrollbar-thumb { background: #202020; }
 ::-webkit-scrollbar-thumb:hover { background: #2A2A2A; }
 
-html[data-theme="light"] ::-webkit-scrollbar-track { background: #EDE8E0; }
-html[data-theme="light"] ::-webkit-scrollbar-thumb { background: #B0A898; }
-html[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #8A8078; }
-
+html[data-theme="light"] ::-webkit-scrollbar-track { background: #0D1118; }
+html[data-theme="light"] ::-webkit-scrollbar-thumb { background: #2A3A58; }
+html[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #4A6A9A; }
 
 /* ────────────────────────────────────────────────────────────────────────────
    FOCUS
@@ -317,4 +324,16 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #8A8078; 
 :focus-visible {
   outline: 1px solid rgba(253, 252, 251, 0.25);
   outline-offset: 2px;
+}
+
+/* Product cards — semi-transparent in Lapis mode so bg gradient shows through */
+[data-theme="light"] main .bg-card,
+[data-theme="light"] main .bg-background {
+  background-color: rgba(30, 42, 62, 0.55);
+}
+
+/* Selection */
+[data-theme="light"] ::selection {
+  background: rgba(253, 252, 251, 0.12);
+  color: #FDFCFB;
 }

@@ -22,15 +22,64 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async register(createUserDto) {
-        return this.authService.register(createUserDto);
+    async register(createUserDto, res) {
+        const { accessToken, refreshToken, user } = await this.authService.register(createUserDto);
+        this.setRefreshTokenCookie(res, refreshToken);
+        return { accessToken, user };
     }
-    async login(createUserDto) {
+    async login(createUserDto, res) {
         const user = await this.authService.validateUser(createUserDto.email, createUserDto.password);
         if (!user) {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
-        return this.authService.login(user);
+        const { accessToken, refreshToken, user: userData } = await this.authService.login(user);
+        this.setRefreshTokenCookie(res, refreshToken);
+        return { accessToken, user: userData };
+    }
+    async refresh(req, res) {
+        const refreshToken = req.cookies['refreshToken'];
+        if (!refreshToken) {
+            throw new common_1.UnauthorizedException('Refresh token missing');
+        }
+        const base64Url = refreshToken.split('.')[1];
+        if (!base64Url)
+            throw new common_1.UnauthorizedException('Invalid token format');
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const payload = JSON.parse(jsonPayload);
+        const userId = payload.sub;
+        const tokens = await this.authService.refreshTokens(userId, refreshToken);
+        this.setRefreshTokenCookie(res, tokens.refreshToken);
+        return { accessToken: tokens.accessToken };
+    }
+    async logout(req, res) {
+        const refreshToken = req.cookies['refreshToken'];
+        if (refreshToken) {
+            try {
+                const base64Url = refreshToken.split('.')[1];
+                if (base64Url) {
+                    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                    const payload = JSON.parse(Buffer.from(base64, 'base64').toString());
+                    if (payload.sub) {
+                        await this.authService.logout(payload.sub);
+                    }
+                }
+            }
+            catch (e) {
+            }
+        }
+        res.clearCookie('refreshToken');
+        return { message: 'Logged out' };
+    }
+    setRefreshTokenCookie(res, refreshToken) {
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
     }
 };
 exports.AuthController = AuthController;
@@ -40,8 +89,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 201, description: 'User successfully registered' }),
     (0, swagger_1.ApiResponse)({ status: 409, description: 'Email already exists' }),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([
@@ -51,10 +101,34 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'User successfully logged in' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Invalid credentials' }),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('refresh'),
+    (0, swagger_1.ApiOperation)({ summary: 'Refresh access token' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Token successfully refreshed' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Invalid refresh token' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "refresh", null);
+__decorate([
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('logout'),
+    (0, swagger_1.ApiOperation)({ summary: 'Logout user' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'User successfully logged out' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('Authentication'),
     (0, common_1.Controller)('auth'),

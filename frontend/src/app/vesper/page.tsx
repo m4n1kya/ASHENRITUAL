@@ -1,37 +1,62 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2 } from 'lucide-react';
+import { Loader2, ArrowRight, ChevronDown } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import type { Product } from '@/types';
 
 const EASE = [0.4, 0, 0.2, 1] as const;
 
-interface Message {
-  role: 'user' | 'vesper';
-  content: string;
+// ── Types ─────────────────────────────────────────────────────────────────
+
+interface VesperParams {
+  occasion: string;
+  weather: string;
+  dressCode: string;
+  palette: string;
+  silhouette: string;
 }
 
-const EXAMPLE_QUERIES = [
-  'I need an outfit for a formal dinner.',
-  'What should I wear to a creative agency interview?',
-  'Build me a capsule wardrobe for autumn.',
-  'I need something minimal for travel.',
-];
+interface VesperRecommendation {
+  id: string;
+  title: string;
+  description: string;
+  stylingNotes: string;
+  products: Product[]; // The actual matched products
+}
+
+// ── Options ────────────────────────────────────────────────────────────────
+
+const OPTIONS = {
+  occasion: ['Formal Gala', 'Creative Agency', 'Travel & Transit', 'Evening Dinner', 'Everyday Minimal'],
+  weather: ['Deep Winter', 'Transitional Autumn', 'Spring Rain', 'High Summer Heat'],
+  dressCode: ['Strictly Formal', 'Smart Casual', 'Avant-Garde', 'Utilitarian'],
+  palette: ['Monochrome (Black/White)', 'Earth & Stone', 'Midnight & Navy', 'Brutalist Grey'],
+  silhouette: ['Oversized & Relaxed', 'Tailored & Sharp', 'Draped & Fluid'],
+};
+
+// ── Components ─────────────────────────────────────────────────────────────
 
 export default function VesperPage() {
   const { token } = useAuthStore();
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [params, setParams] = useState<VesperParams>({
+    occasion: '',
+    weather: '',
+    dressCode: '',
+    palette: '',
+    silhouette: '',
+  });
+  
+  const [recommendation, setRecommendation] = useState<VesperRecommendation | null>(null);
 
-  // Lock Vesper to dark mode regardless of global theme setting
+  // Lock Vesper to dark mode for atmosphere
   useEffect(() => {
     const html = document.documentElement;
     const prev = html.getAttribute('data-theme') ?? 'dark';
@@ -44,189 +69,222 @@ export default function VesperPage() {
     };
   }, []);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  async function handleSubmit(e: React.FormEvent | null, overrideQuery?: string) {
-    e?.preventDefault();
-    const finalQuery = overrideQuery || query;
-    if (!finalQuery.trim() || loading) return;
-
+  const handleConsult = async () => {
     if (!token) {
-      toast.error('Sign in to consult Vesper.', { description: 'The silent curator awaits.' });
+      toast.error('Authentication Required', { description: 'Sign in to access Vesper Intelligence.' });
       return;
     }
 
-    setMessages((prev) => [...prev, { role: 'user', content: finalQuery }]);
-    setQuery('');
-    setLoading(true);
+    // Validate all selected
+    if (Object.values(params).some(v => !v)) {
+      toast.error('Incomplete Parameters', { description: 'Provide all context for accurate curation.' });
+      return;
+    }
 
+    setLoading(true);
     try {
-      const res = await api.post<{ response: string }>(
+      // Mocking the API call for now. 
+      // The backend will receive these params, query Gemini for structured JSON, and map it to DB products.
+      /*
+      const res = await api.post<VesperRecommendation>(
         '/vesper/consult',
-        { query: finalQuery },
-        { headers: { Authorization: `Bearer ${token}` } },
+        params,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      setMessages((prev) => [...prev, { role: 'vesper', content: res.response }]);
-    } catch {
-      setMessages((prev) => [...prev, {
-        role: 'vesper',
-        content: 'Vesper is currently unavailable. Return shortly.',
-      }]);
+      setRecommendation(res);
+      */
+      
+      // MOCK DELAY & RESPONSE
+      await new Promise(r => setTimeout(r, 2500));
+      setRecommendation({
+        id: 'curation-001',
+        title: 'The Architect\'s Uniform',
+        description: 'A restrained, structural approach balancing strict formality with fluid comfort.',
+        stylingNotes: 'Anchor the silhouette with the tailored coat. Layer the draped tee underneath to soften the rigid geometry. Keep accessories brutalist and minimal.',
+        products: [] // Mock products would go here in reality
+      });
+      
+    } catch (err) {
+      toast.error('Intelligence Offline', { description: 'Vesper is currently unresponsive.' });
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  const hasMessages = messages.length > 0;
+  const reset = () => {
+    setRecommendation(null);
+    setParams({ occasion: '', weather: '', dressCode: '', palette: '', silhouette: '' });
+  };
 
   return (
     <main className="flex min-h-screen flex-col bg-background pt-16 texture-grain relative">
-      
-      {/* ── Background Texture ── */}
+      {/* Background Texture */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <Image
           src="/images/natural-texture.jpg"
           alt="Natural Texture"
           fill
-          className="object-cover opacity-40"
+          className="object-cover opacity-30 mix-blend-overlay"
           quality={100}
           unoptimized
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-background" />
       </div>
 
-      {/* Container is pushed to the right */}
-      <div className="relative z-10 ml-auto mr-8 flex w-full max-w-2xl flex-1 flex-col py-16 md:mr-16 lg:mr-32 xl:mr-48">
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col px-8 py-16 lg:px-12">
         
-        {/* Header - Left Aligned */}
-        <div className={cn('transition-all duration-700 text-left flex flex-col items-start', hasMessages ? 'mb-8' : 'mb-20 mt-8')}>
-          <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">
+        {/* Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-16 flex flex-col items-center text-center"
+        >
+          <p className="font-heading text-[10px] font-medium uppercase tracking-[0.4em] text-muted-foreground">
             Wardrobe Intelligence
           </p>
-          <h1 className={cn(
-            'font-heading font-bold uppercase tracking-[0.05em] text-[#E8E8E8] transition-all duration-700',
-            hasMessages ? 'mt-2 text-3xl' : 'mt-4 text-6xl lg:text-8xl',
-          )}>
+          <h1 className="mt-4 font-heading text-4xl font-bold uppercase tracking-[0.1em] text-foreground md:text-6xl">
             Vesper
           </h1>
-          {!hasMessages && (
+          {!recommendation && (
+            <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground">
+              Define the parameters of your environment. Vesper will curate a precise, structural uniform tailored to the context.
+            </p>
+          )}
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          {!recommendation ? (
+            /* ── PARAMETER FORM ── */
             <motion.div
+              key="form"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-col items-start"
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: EASE }}
+              className="mx-auto w-full max-w-2xl space-y-12"
             >
-              <p className="mt-6 max-w-md font-display text-xl font-light italic leading-relaxed text-[#E8E8E8]/50 md:text-2xl">
-                How does form express intent?<br />
-                Can a garment hold history?
-              </p>
-              <p className="mt-4 text-sm leading-relaxed text-[#8D8D8D]">
-                Vesper observes. Vesper analyzes. Vesper refines.<br />
-                Share your occasion, and receive a wardrobe direction built on restraint.
-              </p>
-            </motion.div>
-          )}
-        </div>
-
-        {/* Messages */}
-        {hasMessages && (
-          <div className="mb-8 flex-1 space-y-6 overflow-y-auto">
-            <AnimatePresence initial={false}>
-              {messages.map((msg, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 12 }}
+              {Object.entries(OPTIONS).map(([key, options], i) => (
+                <motion.div 
+                  key={key}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, ease: EASE }}
-                  className={cn('max-w-[85%]', msg.role === 'user' ? 'ml-auto text-right' : 'mr-auto text-left')}
+                  transition={{ delay: i * 0.1 }}
+                  className="group relative border-b border-border pb-8"
                 >
-                  {msg.role === 'vesper' && (
-                    <p className="mb-2 font-heading text-[9px] font-medium uppercase tracking-[0.4em] text-[#8D8D8D]">
-                      Vesper
-                    </p>
-                  )}
-                  {msg.role === 'user' && (
-                    <p className="mb-2 font-heading text-[9px] font-medium uppercase tracking-[0.4em] text-[#8D8D8D]">
-                      You
-                    </p>
-                  )}
-                  <div className={cn(
-                    'p-5 text-sm leading-relaxed text-left',
-                    msg.role === 'user'
-                      ? 'bg-[#E8E8E8] text-[#0A0A0A]'
-                      : 'border border-[#202020] bg-card text-[#E8E8E8]',
-                  )}>
-                    {msg.content.split('\n').map((line, j) => (
-                      <p key={j} className={line === '' ? 'h-3' : ''}>{line}</p>
-                    ))}
+                  <label className="mb-4 block font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-foreground/70">
+                    0{i + 1} — {key.replace(/([A-Z])/g, ' $1').trim()}
+                  </label>
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-2">
+                    {options.map((opt) => {
+                      const isSelected = params[key as keyof VesperParams] === opt;
+                      return (
+                        <button
+                          key={opt}
+                          onClick={() => setParams(p => ({ ...p, [key]: opt }))}
+                          className={cn(
+                            "flex items-center justify-between border px-5 py-4 text-left text-xs transition-all duration-300",
+                            isSelected 
+                              ? "border-foreground bg-foreground text-background" 
+                              : "border-border bg-transparent text-muted-foreground hover:border-foreground/50 hover:text-foreground"
+                          )}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
                   </div>
                 </motion.div>
               ))}
-            </AnimatePresence>
-            {loading && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3">
-                <p className="font-heading text-[9px] font-medium uppercase tracking-[0.4em] text-[#8D8D8D]">
-                  Vesper is analyzing
-                </p>
-                <Loader2 className="h-3 w-3 animate-spin text-[#8D8D8D]" />
-              </motion.div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-        )}
 
-        {/* Prompts */}
-        {!hasMessages && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="mb-8 grid grid-cols-1 gap-2 sm:grid-cols-2"
-          >
-            {EXAMPLE_QUERIES.map((q) => (
-              <button
-                key={q}
-                onClick={() => handleSubmit(null, q)}
-                className="border border-[#202020] bg-transparent px-4 py-3 text-left text-[12px] text-[#8D8D8D] transition-all duration-500 hover:border-[#E8E8E8]/20 hover:text-[#E8E8E8]"
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="flex justify-center pt-8"
               >
-                {q}
-              </button>
-            ))}
-          </motion.div>
-        )}
-
-        {/* Input */}
-        {token ? (
-          <form onSubmit={handleSubmit} className="flex gap-3 border-t border-[#202020] pt-6">
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Describe an occasion or ask for guidance..."
-              className="flex-1 border-b border-[#202020] bg-transparent pb-3 text-sm text-[#E8E8E8] placeholder:text-[#8D8D8D]/40 focus:border-[#E8E8E8]/30 focus:outline-none transition-colors duration-500 text-left"
-              disabled={loading}
-            />
-            <button
-              type="submit"
-              disabled={!query.trim() || loading}
-              className="flex h-10 w-10 items-center justify-center border border-[#202020] text-[#8D8D8D] transition-all duration-500 hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8] disabled:opacity-20"
-              aria-label="Send to Vesper"
+                <button
+                  onClick={handleConsult}
+                  disabled={loading}
+                  className="group relative flex h-14 items-center justify-center overflow-hidden border border-border bg-transparent px-12 font-heading text-[11px] font-semibold uppercase tracking-[0.3em] text-foreground transition-all duration-500 hover:border-foreground hover:bg-foreground hover:text-background disabled:opacity-50"
+                >
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      Consult Vesper
+                      <ArrowRight className="ml-4 h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1" />
+                    </>
+                  )}
+                </button>
+              </motion.div>
+            </motion.div>
+          ) : (
+            /* ── EDITORIAL RESULT ── */
+            <motion.div
+              key="result"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: EASE }}
+              className="w-full"
             >
-              <Send className="h-4 w-4" />
-            </button>
-          </form>
-        ) : (
-          <div className="border-t border-[#202020] pt-6 text-left">
-            <p className="text-sm text-[#8D8D8D]">
-              <Link href="/login" className="text-[#E8E8E8] hover:text-[#8D8D8D] transition-colors duration-300">
-                Sign in
-              </Link>{' '}
-              to consult Vesper.
-            </p>
-          </div>
-        )}
+              <div className="mx-auto max-w-4xl border border-border bg-card/40 p-8 backdrop-blur-md md:p-16">
+                <div className="mb-12 border-b border-border pb-12">
+                  <h2 className="font-gothic text-4xl text-foreground md:text-5xl lg:text-6xl">
+                    {recommendation.title}
+                  </h2>
+                  <p className="mt-6 max-w-2xl font-serif text-lg leading-relaxed text-muted-foreground md:text-xl">
+                    {recommendation.description}
+                  </p>
+                </div>
+
+                <div className="grid gap-12 lg:grid-cols-2">
+                  <div>
+                    <h3 className="mb-6 font-heading text-[10px] font-semibold uppercase tracking-[0.3em] text-foreground">
+                      Styling Directive
+                    </h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {recommendation.stylingNotes}
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="mb-6 font-heading text-[10px] font-semibold uppercase tracking-[0.3em] text-foreground">
+                      The Pieces
+                    </h3>
+                    <div className="space-y-4">
+                      {/* Placeholder for actual mapped products */}
+                      <div className="flex items-center gap-4 border border-border bg-background/50 p-4">
+                        <div className="h-16 w-12 bg-border/50" />
+                        <div>
+                          <p className="font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">Obsidian Overcoat</p>
+                          <p className="text-xs text-muted-foreground">Outerwear</p>
+                        </div>
+                        <button className="ml-auto text-[10px] uppercase tracking-widest hover:text-foreground">View</button>
+                      </div>
+                      <div className="flex items-center gap-4 border border-border bg-background/50 p-4">
+                        <div className="h-16 w-12 bg-border/50" />
+                        <div>
+                          <p className="font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">Structured Trouser</p>
+                          <p className="text-xs text-muted-foreground">Bottoms</p>
+                        </div>
+                        <button className="ml-auto text-[10px] uppercase tracking-widest hover:text-foreground">View</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-16 flex justify-center pt-8 border-t border-border">
+                  <button
+                    onClick={reset}
+                    className="text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground"
+                  >
+                    Reset Parameters
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </main>
   );
 }
-

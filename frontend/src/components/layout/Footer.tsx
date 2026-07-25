@@ -64,10 +64,10 @@ export function Footer() {
                 alt="ASHENRITUAL Logo" 
                 width={150} 
                 height={150} 
-                className="h-[46px] w-auto object-contain mt-[15px]" 
+                className="h-[46px] w-auto object-contain mt-[14px]" 
                 unoptimized 
               />
-              <span className="-ml-[1px]">ASHENRITUAL</span>
+              <span className="-ml-[2px]">ASHENRITUAL</span>
             </Link>
             <p className="mt-4 text-[12px] leading-relaxed text-[#8D8D8D]/60">
               Presence isn&apos;t purchased.<br />

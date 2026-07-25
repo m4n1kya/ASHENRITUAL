@@ -26,17 +26,22 @@ enum DiscountType {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  email        String        @unique
-  passwordHash String
-  role         Role          @default(USER)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id                   String        @id @default(uuid())
+  email                String        @unique
+  passwordHash         String
+  role                 Role          @default(USER)
+  refreshToken         String?
+  emailVerified        Boolean       @default(false)
+  verificationToken    String?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
 
-  savedRituals SavedRitual[]
-  archives     Archive[]
-  reviews      Review[]
-  addresses    Address[]
+  savedRituals         SavedRitual[]
+  archives             Archive[]
+  reviews              Review[]
+  addresses            Address[]
 }
 
 model Category {
