@@ -38,6 +38,9 @@ let AdminController = class AdminController {
     deleteProduct(id) {
         return this.adminService.deleteProduct(id);
     }
+    getOrders() {
+        return this.adminService.getOrders();
+    }
 };
 exports.AdminController = AdminController;
 __decorate([
@@ -81,6 +84,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "deleteProduct", null);
+__decorate([
+    (0, common_1.Get)('orders'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all orders (ADMIN only)' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns all orders.' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "getOrders", null);
 exports.AdminController = AdminController = __decorate([
     (0, swagger_1.ApiTags)('Admin'),
     (0, swagger_1.ApiBearerAuth)(),

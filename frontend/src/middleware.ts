@@ -4,19 +4,27 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const protectedRoutes = ['/account', '/admin', '/checkout'];
+  // Check auth via the cookie set by our Zustand store on login
+  const isAuthenticated = request.cookies.get('isAuthenticated')?.value === 'true';
+  const hasRefreshToken = request.cookies.has('refreshToken');
+  const loggedIn = isAuthenticated || hasRefreshToken;
+
+  // Redirect authenticated users away from auth pages
+  const authRoutes = ['/login', '/register'];
+  if (loggedIn && authRoutes.some((route) => pathname.startsWith(route))) {
+    const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') ||
+                        request.nextUrl.searchParams.get('redirect') || '/';
+    return NextResponse.redirect(new URL(callbackUrl, request.url));
+  }
+
+  // Redirect unauthenticated users away from protected pages
+  const protectedRoutes = ['/account', '/admin', '/checkout', '/archive', '/saved-rituals'];
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
-  if (isProtectedRoute) {
-    // Check if the user is authenticated via our flag or a refresh token cookie
-    const isAuthenticated = request.cookies.get('isAuthenticated')?.value === 'true';
-    const hasRefreshToken = request.cookies.has('refreshToken');
-
-    if (!isAuthenticated && !hasRefreshToken) {
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('callbackUrl', pathname);
-      return NextResponse.redirect(loginUrl);
-    }
+  if (isProtectedRoute && !loggedIn) {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

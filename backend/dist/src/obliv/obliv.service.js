@@ -17,94 +17,75 @@ let OblivService = class OblivService {
     prisma;
     ai;
     systemPrompt = `
-You are OBLIV, AshenRitual's proprietary Wardrobe Intelligence.
+You are Vesper, AshenRitual's proprietary Wardrobe Intelligence.
 You are an invisible creative director with exceptional taste in tailoring, silhouettes, proportions, and timeless menswear.
 Your personality is quiet, confident, minimal, sophisticated, observant, and precise.
-You are never overly enthusiastic. You are never robotic. You never converse just to converse.
 You communicate with restraint. Every sentence feels intentional.
-Examples of tone: "This combination creates a balanced silhouette.", "Minimal contrast. Maximum presence."
-Do not use phrases like "Great choice!", "You'll love this!", or "How can I help you?".
-Analyze the user's request, considering occasion, season, and fit, and provide complete outfit recommendations or capsule wardrobe guidance.
+You MUST output strictly in JSON format matching this structure:
+{
+  "title": "A short, evocative title (e.g. 'The Architect's Uniform')",
+  "description": "A refined description of the recommended aesthetic (2-3 sentences)",
+  "stylingNotes": "Precise styling directives, focusing on layering, textures, and proportions",
+  "productIds": ["uuid-1", "uuid-2", "uuid-3"]
+}
+Only recommend productIds that are provided to you in the Product Catalog context.
 `;
     constructor(prisma) {
         this.prisma = prisma;
         this.ai = new genai_1.GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'dummy_key_for_build' });
     }
-    async consult(userQuery) {
+    async consult(params) {
         try {
-            const response = await this.ai.models.generateContent({
-                model: 'gemini-2.5-flash',
-                contents: [
-                    {
-                        role: 'user',
-                        parts: [{ text: this.systemPrompt + '\n\nUser Request: ' + userQuery }],
-                    },
-                ],
+            const products = await this.prisma.product.findMany({
+                select: { id: true, name: true, description: true, category: { select: { name: true } } },
             });
-            return { response: response.text };
+            const catalogContext = products
+                .map(p => `ID: ${p.id} | Name: ${p.name} | Category: ${p.category.name} | Desc: ${p.description}`)
+                .join('\n');
+            const userContext = `
+Context Parameters:
+- Occasion: ${params.occasion}
+- Weather: ${params.weather}
+- Dress Code: ${params.dressCode}
+- Palette: ${params.palette}
+- Silhouette: ${params.silhouette}
+
+Product Catalog (ONLY use IDs from this list):
+${catalogContext}
+`;
+            const response = await this.ai.models.generateContent({
+                model: 'gemini-2.5-pro',
+                contents: [
+                    { role: 'user', parts: [{ text: this.systemPrompt + '\n\n' + userContext }] },
+                ],
+                config: {
+                    responseMimeType: 'application/json',
+                    temperature: 0.2,
+                },
+            });
+            const jsonStr = response.text;
+            if (!jsonStr)
+                throw new Error('No response from Vesper');
+            const parsed = JSON.parse(jsonStr);
+            const recommendedProducts = await this.prisma.product.findMany({
+                where: { id: { in: parsed.productIds } },
+                include: { category: true }
+            });
+            return {
+                id: 'vesper-' + Date.now(),
+                title: parsed.title,
+                description: parsed.description,
+                stylingNotes: parsed.stylingNotes,
+                products: recommendedProducts
+            };
         }
-        catch {
-            throw new common_1.InternalServerErrorException('OBLIV is currently unavailable.');
+        catch (err) {
+            console.error(err);
+            throw new common_1.InternalServerErrorException('Vesper Intelligence is currently unavailable.');
         }
     }
     async generateOutfit(userId) {
-        const [savedRituals, recentArchives] = await Promise.all([
-            this.prisma.savedRitual.findMany({
-                where: { userId },
-                include: {
-                    product: { select: { name: true, category: { select: { name: true } } } },
-                },
-                orderBy: { createdAt: 'desc' },
-                take: 10,
-            }),
-            this.prisma.archive.findMany({
-                where: { userId },
-                include: {
-                    items: {
-                        include: {
-                            product: { select: { name: true, category: { select: { name: true } } } },
-                        },
-                    },
-                },
-                orderBy: { createdAt: 'desc' },
-                take: 5,
-            }),
-        ]);
-        const savedContext = savedRituals.length > 0
-            ? 'Saved Rituals (Wishlist): ' +
-                savedRituals
-                    .map((sr) => `${sr.product.name} (${sr.product.category.name})`)
-                    .join(', ')
-            : 'No saved rituals yet.';
-        const orderedItems = recentArchives.flatMap((a) => a.items.map((i) => `${i.product.name} (${i.product.category.name})`));
-        const orderedContext = orderedItems.length > 0
-            ? 'Previously Purchased: ' + [...new Set(orderedItems)].join(', ')
-            : 'No previous orders yet.';
-        const contextBlock = `
-User Taste Profile:
-${savedContext}
-${orderedContext}
-`;
-        const prompt = `
-${this.systemPrompt}
-
-${contextBlock}
-
-Based on the user's taste profile above, curate a complete 'Complete the Ritual' outfit recommendation. 
-Suggest specific garment types (e.g. overcoat, tailored trouser, knit, derby shoe) with styling notes.
-Reference items from their profile where relevant.
-Keep recommendations aligned with AshenRitual's quiet, precise menswear aesthetic.
-`;
-        try {
-            const response = await this.ai.models.generateContent({
-                model: 'gemini-2.5-flash',
-                contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            });
-            return { response: response.text };
-        }
-        catch {
-            throw new common_1.InternalServerErrorException('OBLIV outfit generation is currently unavailable.');
-        }
+        return this.consult({ occasion: 'Everyday Minimal', weather: 'Transitional Autumn', dressCode: 'Smart Casual', palette: 'Earth & Stone', silhouette: 'Tailored & Sharp' });
     }
 };
 exports.OblivService = OblivService;

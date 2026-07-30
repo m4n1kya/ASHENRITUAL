@@ -2,38 +2,44 @@ import { ProductsService } from './products.service';
 export declare class ProductsController {
     private readonly productsService;
     constructor(productsService: ProductsService);
-    findAll(query?: string): Promise<({
-        category: {
+    findAll(query?: string, page?: string, limit?: string): Promise<{
+        data: ({
+            category: {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                name: string;
+                slug: string;
+            };
+        } & {
             id: string;
-            name: string;
-            slug: string;
             createdAt: Date;
             updatedAt: Date;
-        };
-    } & {
-        id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        description: string;
-        price: import("@prisma/client/runtime/library").Decimal;
-        images: string[];
-        stock: number;
-        categoryId: string;
-    })[]>;
+            name: string;
+            description: string;
+            price: import("@prisma/client/runtime/library").Decimal;
+            images: string[];
+            stock: number;
+            categoryId: string;
+        })[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
     findFeatured(): Promise<({
         category: {
             id: string;
-            name: string;
-            slug: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            slug: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         price: import("@prisma/client/runtime/library").Decimal;
         images: string[];
@@ -43,16 +49,16 @@ export declare class ProductsController {
     findNewArrivals(): Promise<({
         category: {
             id: string;
-            name: string;
-            slug: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            slug: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         price: import("@prisma/client/runtime/library").Decimal;
         images: string[];
@@ -62,49 +68,48 @@ export declare class ProductsController {
     findBestSellers(): Promise<({
         category: {
             id: string;
-            name: string;
-            slug: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            slug: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         price: import("@prisma/client/runtime/library").Decimal;
         images: string[];
         stock: number;
         categoryId: string;
     })[]>;
-    findByCategory(slug: string): Promise<({
-        category: {
+    findByCategory(slug: string, page?: string, limit?: string): Promise<{
+        data: ({
+            category: {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                name: string;
+                slug: string;
+            };
+        } & {
             id: string;
-            name: string;
-            slug: string;
             createdAt: Date;
             updatedAt: Date;
-        };
-    } & {
-        id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        description: string;
-        price: import("@prisma/client/runtime/library").Decimal;
-        images: string[];
-        stock: number;
-        categoryId: string;
-    })[]>;
+            name: string;
+            description: string;
+            price: import("@prisma/client/runtime/library").Decimal;
+            images: string[];
+            stock: number;
+            categoryId: string;
+        })[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
     findOne(id: string): Promise<{
-        category: {
-            id: string;
-            name: string;
-            slug: string;
-            createdAt: Date;
-            updatedAt: Date;
-        };
         reviews: ({
             user: {
                 id: string;
@@ -119,11 +124,18 @@ export declare class ProductsController {
             rating: number;
             comment: string | null;
         })[];
+        category: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            slug: string;
+        };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         price: import("@prisma/client/runtime/library").Decimal;
         images: string[];

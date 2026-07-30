@@ -21,8 +21,10 @@ let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
     }
-    findAll(query) {
-        return this.productsService.findAll(query);
+    findAll(query, page, limit) {
+        const pageNumber = page ? parseInt(page, 10) : 1;
+        const limitNumber = limit ? parseInt(limit, 10) : 24;
+        return this.productsService.findAll(query, pageNumber, limitNumber);
     }
     findFeatured() {
         return this.productsService.findFeatured();
@@ -33,8 +35,10 @@ let ProductsController = class ProductsController {
     findBestSellers() {
         return this.productsService.findBestSellers();
     }
-    findByCategory(slug) {
-        return this.productsService.findByCategory(slug);
+    findByCategory(slug, page, limit) {
+        const pageNumber = page ? parseInt(page, 10) : 1;
+        const limitNumber = limit ? parseInt(limit, 10) : 24;
+        return this.productsService.findByCategory(slug, pageNumber, limitNumber);
     }
     findOne(id) {
         return this.productsService.findOne(id);
@@ -45,10 +49,14 @@ __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({ summary: 'Get all products, optionally search by query' }),
     (0, swagger_1.ApiQuery)({ name: 'q', required: false, description: 'Search query (name/description)' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns all matching products.' }),
+    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number, description: 'Page number' }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number, description: 'Items per page' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns paginated products.' }),
     __param(0, (0, common_1.Query)('q')),
+    __param(1, (0, common_1.Query)('page')),
+    __param(2, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findAll", null);
 __decorate([
@@ -79,11 +87,15 @@ __decorate([
     (0, common_1.Get)('category/:slug'),
     (0, swagger_1.ApiOperation)({ summary: 'Get all products in a category by its slug' }),
     (0, swagger_1.ApiParam)({ name: 'slug', description: 'Category slug (e.g. shirts, trousers)' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns products in the category.' }),
+    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number, description: 'Page number' }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number, description: 'Items per page' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns paginated products in the category.' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Category not found.' }),
     __param(0, (0, common_1.Param)('slug')),
+    __param(1, (0, common_1.Query)('page')),
+    __param(2, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findByCategory", null);
 __decorate([

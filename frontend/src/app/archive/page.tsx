@@ -25,17 +25,18 @@ const statusColors: Record<string, string> = {
 
 export default function ArchivePage() {
   const router = useRouter();
-  const { token, user, logout } = useAuthStore();
+  const { token, user, logout, _hasHydrated } = useAuthStore();
   const [orders, setOrders] = useState<Archive[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!_hasHydrated) return;
     if (!token) { router.push('/login?redirect=/archive'); return; }
     api.get<Archive[]>('/archives', { headers: { Authorization: `Bearer ${token}` } })
       .then(setOrders)
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));
-  }, [token, router]);
+  }, [token, router, _hasHydrated]);
 
   function handleLogout() {
     logout();

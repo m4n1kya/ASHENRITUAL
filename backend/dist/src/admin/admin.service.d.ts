@@ -15,16 +15,16 @@ export declare class AdminService {
     createProduct(dto: CreateProductDto): Promise<{
         category: {
             id: string;
-            name: string;
-            slug: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            slug: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         price: Decimal;
         images: string[];
@@ -34,16 +34,16 @@ export declare class AdminService {
     updateProduct(id: string, dto: UpdateProductDto): Promise<{
         category: {
             id: string;
-            name: string;
-            slug: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            slug: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         price: Decimal;
         images: string[];
@@ -53,4 +53,17 @@ export declare class AdminService {
     deleteProduct(id: string): Promise<{
         message: string;
     }>;
+    getOrders(): Promise<({
+        user: {
+            id: string;
+            email: string;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        total: Decimal;
+        userId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
+    })[]>;
 }

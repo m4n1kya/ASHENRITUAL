@@ -8,25 +8,25 @@ export declare class CategoriesService {
         };
     } & {
         id: string;
-        name: string;
-        slug: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        slug: string;
     })[]>;
     findBySlug(slug: string): Promise<{
         products: ({
             category: {
                 id: string;
-                name: string;
-                slug: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
+                slug: string;
             };
         } & {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string;
             price: import("@prisma/client/runtime/library").Decimal;
             images: string[];
@@ -35,9 +35,9 @@ export declare class CategoriesService {
         })[];
     } & {
         id: string;
-        name: string;
-        slug: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        slug: string;
     }>;
 }

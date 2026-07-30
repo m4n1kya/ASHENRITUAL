@@ -24,7 +24,7 @@ let OblivController = class OblivController {
         this.oblivService = oblivService;
     }
     consult(dto) {
-        return this.oblivService.consult(dto.query);
+        return this.oblivService.consult(dto);
     }
     generateOutfit(req) {
         return this.oblivService.generateOutfit(req.user.userId);
@@ -33,8 +33,8 @@ let OblivController = class OblivController {
 exports.OblivController = OblivController;
 __decorate([
     (0, common_1.Post)('consult'),
-    (0, swagger_1.ApiOperation)({ summary: 'Consult OBLIV for wardrobe intelligence' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'OBLIV has analyzed the request.' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Consult Vesper for wardrobe intelligence' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Vesper has curated an outfit.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [consult_obliv_dto_1.ConsultOblivDto]),

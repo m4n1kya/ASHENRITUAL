@@ -17,23 +17,31 @@ let ProductsService = class ProductsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async findAll(query) {
-        if (query) {
-            return this.prisma.product.findMany({
-                where: {
-                    OR: [
-                        { name: { contains: query, mode: 'insensitive' } },
-                        { description: { contains: query, mode: 'insensitive' } },
-                    ],
-                },
+    async findAll(query, page = 1, limit = 24) {
+        const skip = (page - 1) * limit;
+        const whereCondition = query ? {
+            OR: [
+                { name: { contains: query, mode: 'insensitive' } },
+                { description: { contains: query, mode: 'insensitive' } },
+            ],
+        } : {};
+        const [data, total] = await Promise.all([
+            this.prisma.product.findMany({
+                where: whereCondition,
                 include: { category: true },
                 orderBy: { createdAt: 'desc' },
-            });
-        }
-        return this.prisma.product.findMany({
-            include: { category: true },
-            orderBy: { createdAt: 'desc' },
-        });
+                skip,
+                take: limit,
+            }),
+            this.prisma.product.count({ where: whereCondition })
+        ]);
+        return {
+            data,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        };
     }
     async findOne(id) {
         const product = await this.prisma.product.findUnique({
@@ -45,16 +53,29 @@ let ProductsService = class ProductsService {
         }
         return product;
     }
-    async findByCategory(slug) {
+    async findByCategory(slug, page = 1, limit = 24) {
         const category = await this.prisma.category.findUnique({ where: { slug } });
         if (!category) {
             throw new common_1.NotFoundException(`Category with slug "${slug}" not found`);
         }
-        return this.prisma.product.findMany({
-            where: { categoryId: category.id },
-            include: { category: true },
-            orderBy: { createdAt: 'desc' },
-        });
+        const skip = (page - 1) * limit;
+        const [data, total] = await Promise.all([
+            this.prisma.product.findMany({
+                where: { categoryId: category.id },
+                include: { category: true },
+                orderBy: { createdAt: 'desc' },
+                skip,
+                take: limit,
+            }),
+            this.prisma.product.count({ where: { categoryId: category.id } })
+        ]);
+        return {
+            data,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        };
     }
     async findFeatured() {
         const topSaved = await this.prisma.savedRitual.groupBy({

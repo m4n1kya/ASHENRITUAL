@@ -23,21 +23,23 @@ interface Address {
 
 export default function AccountPage() {
   const router = useRouter();
-  const { token, user, logout } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [form, setForm] = useState({ street: '', city: '', zip: '', country: '' });
   const [saving, setSaving] = useState(false);
+  const { token, user, logout, _hasHydrated } = useAuthStore();
 
   useEffect(() => {
+    // Wait until the persisted store has rehydrated from localStorage
+    if (!_hasHydrated) return;
     if (!token) { router.push('/login?redirect=/account'); return; }
     api.get<Address[]>('/addresses', { headers: { Authorization: `Bearer ${token}` } })
       .then(setAddresses)
       .catch(() => setAddresses([]))
       .finally(() => setLoading(false));
-  }, [token, router]);
+  }, [token, router, _hasHydrated]);
 
   function handleLogout() {
     logout();

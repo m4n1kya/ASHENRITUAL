@@ -4,8 +4,6 @@ export declare class UsersService {
     constructor(prisma: PrismaService);
     create(data: any): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         email: string;
         role: import(".prisma/client").$Enums.Role;
         refreshToken: string | null;
@@ -13,11 +11,11 @@ export declare class UsersService {
         verificationToken: string | null;
         resetPasswordToken: string | null;
         resetPasswordExpires: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     findByEmail(email: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         email: string;
         passwordHash: string;
         role: import(".prisma/client").$Enums.Role;
@@ -26,11 +24,11 @@ export declare class UsersService {
         verificationToken: string | null;
         resetPasswordToken: string | null;
         resetPasswordExpires: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
     } | null>;
     findById(id: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         email: string;
         passwordHash: string;
         role: import(".prisma/client").$Enums.Role;
@@ -39,11 +37,11 @@ export declare class UsersService {
         verificationToken: string | null;
         resetPasswordToken: string | null;
         resetPasswordExpires: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
     } | null>;
     update(id: string, data: any): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         email: string;
         passwordHash: string;
         role: import(".prisma/client").$Enums.Role;
@@ -52,5 +50,7 @@ export declare class UsersService {
         verificationToken: string | null;
         resetPasswordToken: string | null;
         resetPasswordExpires: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
 }

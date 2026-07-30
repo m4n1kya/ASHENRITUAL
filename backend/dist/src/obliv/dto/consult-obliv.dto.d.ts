@@ -1,3 +1,7 @@
 export declare class ConsultOblivDto {
-    query: string;
+    occasion: string;
+    weather: string;
+    dressCode: string;
+    palette: string;
+    silhouette: string;
 }

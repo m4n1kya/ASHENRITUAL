@@ -63,7 +63,9 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const cartCount = useCartStore(s => s.totalItems());
-  const isAuthed  = useAuthStore(s => s.isAuthenticated);
+  const { isAuthenticated, _hasHydrated } = useAuthStore();
+  // Only trust isAuthenticated after the persisted store has rehydrated
+  const isAuthed = _hasHydrated && isAuthenticated;
 
   const navTextCls  = 'text-[#8D8D8D] hover:text-[#FDFCFB]';
   const logoTextCls = 'text-[#FDFCFB]';

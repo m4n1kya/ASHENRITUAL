@@ -11,18 +11,37 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConsultOblivDto = void 0;
 const class_validator_1 = require("class-validator");
-const swagger_1 = require("@nestjs/swagger");
 class ConsultOblivDto {
-    query;
+    occasion;
+    weather;
+    dressCode;
+    palette;
+    silhouette;
 }
 exports.ConsultOblivDto = ConsultOblivDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The wardrobe query to send to OBLIV',
-        example: 'What should I wear to a gallery opening in winter?',
-    }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], ConsultOblivDto.prototype, "query", void 0);
+], ConsultOblivDto.prototype, "occasion", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], ConsultOblivDto.prototype, "weather", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], ConsultOblivDto.prototype, "dressCode", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], ConsultOblivDto.prototype, "palette", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], ConsultOblivDto.prototype, "silhouette", void 0);
 //# sourceMappingURL=consult-obliv.dto.js.map

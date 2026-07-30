@@ -63,6 +63,14 @@ let AdminService = class AdminService {
         await this.prisma.product.delete({ where: { id } });
         return { message: `Product ${id} deleted.` };
     }
+    async getOrders() {
+        return this.prisma.archive.findMany({
+            include: {
+                user: { select: { id: true, email: true } },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+    }
 };
 exports.AdminService = AdminService;
 exports.AdminService = AdminService = __decorate([

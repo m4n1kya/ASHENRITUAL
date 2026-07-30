@@ -22,18 +22,19 @@ interface SavedRitualItem {
 
 export default function SavedRitualsPage() {
   const router = useRouter();
-  const { token } = useAuthStore();
+  const { token, _hasHydrated } = useAuthStore();
   const addItem = useCartStore((s) => s.addItem);
   const [saved, setSaved] = useState<SavedRitualItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!_hasHydrated) return;
     if (!token) { router.push('/login?redirect=/saved-rituals'); return; }
     api.get<SavedRitualItem[]>('/saved-rituals', { headers: { Authorization: `Bearer ${token}` } })
       .then(setSaved)
       .catch(() => setSaved([]))
       .finally(() => setLoading(false));
-  }, [token, router]);
+  }, [token, router, _hasHydrated]);
 
   async function handleRemove(productId: string) {
     if (!token) return;
