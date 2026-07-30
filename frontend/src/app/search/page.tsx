@@ -17,7 +17,15 @@ export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [products, setProducts] = useState<Product[]>([]);
+  const [featured, setFeatured] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // Fetch featured / recommendations
+  useEffect(() => {
+    api.get<{ data: Product[] }>('/products?limit=4')
+      .then((res) => setFeatured(res.data))
+      .catch(() => setFeatured([]));
+  }, []);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -37,8 +45,8 @@ export default function SearchPage() {
     let cancelled = false;
     setLoading(true);
     api
-      .get<Product[]>(`/products?q=${encodeURIComponent(debouncedQuery)}`)
-      .then((data) => { if (!cancelled) setProducts(data); })
+      .get<{ data: Product[] }>(`/products?q=${encodeURIComponent(debouncedQuery)}`)
+      .then((res) => { if (!cancelled) setProducts(res.data); })
       .catch(() => { if (!cancelled) setProducts([]); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
@@ -78,20 +86,35 @@ export default function SearchPage() {
       {/* Results */}
       <div className="mx-auto max-w-screen-xl px-6 py-12 lg:px-8">
         {!debouncedQuery ? (
-          <div className="text-center py-20">
-            <p className="font-heading text-3xl uppercase tracking-widest text-border">
-              Begin Your Search
-            </p>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Every piece in ASHENRITUAL awaits discovery.
-            </p>
-            <Link
-              href="/shop"
-              className="group mt-8 inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Or browse all pieces
-              <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-            </Link>
+          <div className="py-12">
+            <div className="text-center mb-16">
+              <p className="font-heading text-3xl uppercase tracking-widest text-border">
+                Begin Your Search
+              </p>
+              <p className="mt-4 text-sm text-muted-foreground">
+                Every piece in ASHENRITUAL awaits discovery.
+              </p>
+            </div>
+            
+            {featured.length > 0 && (
+              <div className="mt-8">
+                <div className="mb-8 flex items-center justify-between">
+                  <p className="font-heading text-xs font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">
+                    Forged Today
+                  </p>
+                  <Link
+                    href="/shop"
+                    className="group flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#8D8D8D] hover:text-[#FDFCFB] transition-colors"
+                  >
+                    View All
+                    <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </div>
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
+                  {featured.map((p) => <ProductCard key={p.id} product={p} />)}
+                </div>
+              </div>
+            )}
           </div>
         ) : loading ? (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">

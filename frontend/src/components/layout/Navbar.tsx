@@ -5,7 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Heart, ShoppingBag, User, X } from 'lucide-react';
+import { Search, ShoppingBag, User, X } from 'lucide-react';
+import { WebIcon } from '@/components/ui/WebIcon';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useThemeStore } from '@/store/theme.store';
@@ -153,7 +154,7 @@ export function Navbar() {
               <Search className="h-[17px] w-[17px]" strokeWidth={1.5} />
             </NavIcon>
             <NavIcon href="/saved-rituals" label="Saved Rituals" iconCls={iconCls}>
-              <Heart className="h-[17px] w-[17px]" strokeWidth={1.5} />
+              <WebIcon className="h-[17px] w-[17px]" strokeWidth={1.5} />
             </NavIcon>
             <NavIcon href="/cart" label={`Cart — ${cartCount} items`} badge={cartCount} iconCls={iconCls}>
               <ShoppingBag className="h-[17px] w-[17px]" strokeWidth={1.5} />

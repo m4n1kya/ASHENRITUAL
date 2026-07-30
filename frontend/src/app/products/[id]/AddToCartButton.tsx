@@ -6,6 +6,7 @@ import { useCartStore } from '@/store/cart.store';
 import { toast } from 'sonner';
 import type { Product } from '@/types';
 import { cn } from '@/lib/utils';
+import { SaveRitualButton } from '@/components/ui/SaveRitualButton';
 
 /* Reference: "MOVE TO REVEAL" / "ADD TO CART" primary CTA button style */
 
@@ -63,31 +64,34 @@ export function AddToCartButtonServer({ product }: { product: Product }) {
         </div>
       )}
 
-      <button
-        onClick={handle}
-        disabled={outOfStock}
-        aria-label={outOfStock ? 'Sold out' : `Add ${product.name} to cart`}
-        className={cn(
-          'group flex h-14 w-full items-center justify-center gap-4 transition-all duration-500',
-          'text-[10px] font-medium uppercase tracking-[0.3em]',
-          outOfStock
-            ? 'border border-[#202020] text-[#8D8D8D] cursor-not-allowed'
-            : added
-            ? 'bg-[#E8E8E8] text-[#0A0A0A]'
-            : 'border border-[#E8E8E8]/30 text-[#E8E8E8] hover:bg-[#E8E8E8] hover:text-[#0A0A0A]',
-        )}
-      >
-        {added ? (
-          'Added to Ritual'
-        ) : outOfStock ? (
-          'Sold Out'
-        ) : (
-          <>
-            Add to Ritual
-            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1" />
-          </>
-        )}
-      </button>
+      <div className="flex items-center gap-4">
+        <button
+          onClick={handle}
+          disabled={outOfStock}
+          aria-label={outOfStock ? 'Sold out' : `Add ${product.name} to cart`}
+          className={cn(
+            'group flex h-14 flex-1 items-center justify-center gap-4 transition-all duration-500',
+            'text-[10px] font-medium uppercase tracking-[0.3em]',
+            outOfStock
+              ? 'border border-[#202020] text-[#8D8D8D] cursor-not-allowed'
+              : added
+              ? 'bg-[#E8E8E8] text-[#0A0A0A]'
+              : 'border border-[#E8E8E8]/30 text-[#E8E8E8] hover:bg-[#E8E8E8] hover:text-[#0A0A0A]',
+          )}
+        >
+          {added ? (
+            'Added to Ritual'
+          ) : outOfStock ? (
+            'Sold Out'
+          ) : (
+            <>
+              Add to Ritual
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1" />
+            </>
+          )}
+        </button>
+        <SaveRitualButton productId={product.id} variant="full" className="flex-[0.5] h-14 px-4" />
+      </div>
     </div>
   );
 }

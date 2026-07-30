@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ChevronDown, ArrowRight, Shirt, Box, SlidersHorizontal, Search } from 'lucide-react';
@@ -30,6 +30,7 @@ export function ShopPageClient() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -91,9 +92,20 @@ export function ShopPageClient() {
     api.get<Category[]>('/categories').then(setCategories).catch(() => {});
   }, []);
 
-  const handleScrollToGrid = () => {
-    document.getElementById('shop-grid')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Auto-scroll to the grid whenever a search query is active
+  useEffect(() => {
+    if (searchQuery && gridRef.current) {
+      // Small delay so the grid has time to render first
+      const t = setTimeout(() => {
+        gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 120);
+      return () => clearTimeout(t);
+    }
+  }, [searchQuery]);
+
+  const scrollToGrid = useCallback(() => {
+    gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   return (
     <div className="w-full">
@@ -106,11 +118,16 @@ export function ShopPageClient() {
             defaultValue={searchQuery}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                updateParams({ q: e.currentTarget.value });
+                updateParams({ q: e.currentTarget.value, page: '' });
+                // Scroll immediately — the useEffect will also fire but this
+                // feels more instant from the user's perspective
+                setTimeout(scrollToGrid, 150);
               }
             }}
             onBlur={(e) => {
-              updateParams({ q: e.currentTarget.value });
+              if (e.currentTarget.value !== searchQuery) {
+                updateParams({ q: e.currentTarget.value, page: '' });
+              }
             }}
             placeholder="Seek what endures..."
             className="w-full border-b-2 border-[#202020] bg-transparent py-5 pl-14 pr-4 font-sans text-xl tracking-wide text-[#E8E8E8] placeholder:text-[#4A4A4A] focus:border-[#8D8D8D] focus:outline-none transition-colors duration-500"
@@ -186,7 +203,7 @@ export function ShopPageClient() {
             </div>
 
             <button
-              onClick={handleScrollToGrid}
+              onClick={scrollToGrid}
               className="w-full border border-[rgba(255,255,255,0.08)] bg-transparent py-4 font-sans text-[10px] font-semibold uppercase tracking-[0.25em] text-[#F2F2F2] transition-all duration-200 hover:border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.05)]"
             >
               Explore the Manifesto
@@ -213,7 +230,7 @@ export function ShopPageClient() {
       </div>
 
       {/* ── DYNAMIC GRID ────────────────────────────────────────────────────── */}
-      <div id="shop-grid" className="mx-auto max-w-screen-xl px-8 py-24 lg:px-12">
+      <div id="shop-grid" ref={gridRef} className="mx-auto max-w-screen-xl px-8 py-24 lg:px-12">
         {/* Header inside grid */}
         <div className="mb-12">
           <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">

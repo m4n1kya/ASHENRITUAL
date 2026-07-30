@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import type { Product } from '@/types';
+import { SaveRitualButton } from '@/components/ui/SaveRitualButton';
 
 /* ════════════════════════════════════════════════════════════════════════════
    PRODUCT CARD — Editorial Fashion Layout
@@ -64,12 +65,17 @@ export function ProductCard({ product, priority = false, className }: ProductCar
 
           {/* Out of stock overlay */}
           {product.stock === 0 && (
-            <div className="absolute left-0 top-0 bg-background/80 px-3 py-1.5">
+            <div className="absolute left-0 top-0 bg-background/80 px-3 py-1.5 z-10">
               <span className="font-sans text-[8px] font-medium uppercase tracking-[0.35em] text-[#A8A8A8]">
                 Sold Out
               </span>
             </div>
           )}
+
+          {/* Save Button Overlay */}
+          <div className="absolute right-3 top-3 z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+            <SaveRitualButton productId={product.id} />
+          </div>
         </div>
 
         {/* Minimal Divider */}

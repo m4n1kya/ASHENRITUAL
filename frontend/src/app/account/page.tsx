@@ -8,7 +8,8 @@ import { useAuthStore } from '@/store/auth.store';
 import { useThemeStore } from '@/store/theme.store';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
-import { LogOut, MapPin, Plus, Trash2, Package, Heart, Sun, Moon } from 'lucide-react';
+import { LogOut, MapPin, Plus, Trash2, Package, Sun, Moon } from 'lucide-react';
+import { WebIcon } from '@/components/ui/WebIcon';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { cn } from '@/lib/utils';
@@ -105,7 +106,7 @@ export default function AccountPage() {
           <div className="mb-12 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {[
               { href: '/archive', icon: Package, label: 'Order Archive', desc: 'View past orders' },
-              { href: '/saved-rituals', icon: Heart, label: 'Saved Rituals', desc: 'Your saved pieces' },
+              { href: '/saved-rituals', icon: WebIcon, label: 'Saved Rituals', desc: 'Your saved pieces' },
               { href: '/vesper', icon: () => <span className="font-premium text-xs">O</span>, label: 'VESPER', desc: 'Consult wardrobe intelligence' },
             ].map(({ href, icon: Icon, label, desc }) => (
               <Link

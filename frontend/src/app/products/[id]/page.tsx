@@ -224,3 +224,4 @@ export default async function ProductPage({ params }: ProductPageProps) {
 }
 
 import { AddToCartButtonServer } from './AddToCartButton';
+import { SaveRitualButton } from '@/components/ui/SaveRitualButton';

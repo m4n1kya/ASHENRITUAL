@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
+import { WebIcon } from '@/components/ui/WebIcon';
 import Image from 'next/image';
 import { useAuthStore } from '@/store/auth.store';
 import { useCartStore } from '@/store/cart.store';
@@ -74,7 +75,7 @@ export default function SavedRitualsPage() {
             </div>
           ) : saved.length === 0 ? (
             <EmptyState
-              icon={<Heart className="h-8 w-8" />}
+              icon={<WebIcon className="h-8 w-8" />}
               title="No Saved Rituals"
               description="Save pieces that speak to you. Your ritual evolves with every selection."
               action={{ label: 'Explore Pieces', href: '/shop' }}
@@ -124,7 +125,7 @@ export default function SavedRitualsPage() {
                       className="flex h-9 w-9 items-center justify-center border border-border text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
                       aria-label="Remove from saved"
                     >
-                      <Heart className="h-3.5 w-3.5 fill-current" />
+                      <WebIcon className="h-3.5 w-3.5 fill-current" />
                     </button>
                   </div>
                 </motion.div>

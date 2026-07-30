@@ -5,10 +5,14 @@ import { PrismaService } from '../prisma/prisma.service';
 export class ChaptersService {
   constructor(private prisma: PrismaService) {}
 
-  /** Return all Chapters (Collections) ordered by creation date. */
   async findAll() {
     return this.prisma.chapter.findMany({
       orderBy: { createdAt: 'asc' },
+      include: {
+        _count: {
+          select: { products: true }
+        }
+      }
     });
   }
 
@@ -19,16 +23,14 @@ export class ChaptersService {
    * This query matches the slug stored directly on the record.
    */
   async findBySlug(slug: string) {
-    // Chapters don't have a slug field in the schema, so we find by name
-    // derived from slug (slug is the lowercased, hyphenated name).
-    const name = slug
-      .split('-')
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(' ');
-
-    const chapter = await this.prisma.chapter.findFirst({
-      where: {
-        name: { equals: name, mode: 'insensitive' },
+    const chapter = await this.prisma.chapter.findUnique({
+      where: { slug },
+      include: {
+        products: {
+          include: {
+            category: true,
+          }
+        },
       },
     });
 

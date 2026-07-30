@@ -20,16 +20,22 @@ let ChaptersService = class ChaptersService {
     async findAll() {
         return this.prisma.chapter.findMany({
             orderBy: { createdAt: 'asc' },
+            include: {
+                _count: {
+                    select: { products: true }
+                }
+            }
         });
     }
     async findBySlug(slug) {
-        const name = slug
-            .split('-')
-            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' ');
-        const chapter = await this.prisma.chapter.findFirst({
-            where: {
-                name: { equals: name, mode: 'insensitive' },
+        const chapter = await this.prisma.chapter.findUnique({
+            where: { slug },
+            include: {
+                products: {
+                    include: {
+                        category: true,
+                    }
+                },
             },
         });
         if (!chapter) {

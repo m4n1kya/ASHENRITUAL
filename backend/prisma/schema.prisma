@@ -57,10 +57,15 @@ model Category {
 model Chapter {
   id          String    @id @default(uuid())
   name        String    @unique
+  slug        String?   @unique
   description String?
+  quote       String?   @db.Text
+  quoteAuthor String?
   image       String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  products    Product[] @relation("ChapterProducts")
 }
 
 model Product {
@@ -78,6 +83,7 @@ model Product {
   savedBy     SavedRitual[]
   orderItems  OrderItem[]
   reviews     Review[]
+  chapters    Chapter[]     @relation("ChapterProducts")
 }
 
 model SavedRitual {
