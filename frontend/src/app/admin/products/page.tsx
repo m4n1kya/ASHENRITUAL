@@ -18,8 +18,8 @@ export default function AdminProductsPage() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    api.get<Product[]>('/products')
-      .then(setProducts)
+    api.get<{ data: Product[] }>('/products?limit=100') // fetch more for admin view
+      .then((res) => setProducts(res.data))
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
   }, []);

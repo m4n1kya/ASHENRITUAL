@@ -5,25 +5,35 @@ import { PrismaService } from '../prisma/prisma.service';
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
-  /** Fetch all products, optionally filtered by a search query. */
-  async findAll(query?: string) {
-    if (query) {
-      return this.prisma.product.findMany({
-        where: {
-          OR: [
-            { name: { contains: query, mode: 'insensitive' } },
-            { description: { contains: query, mode: 'insensitive' } },
-          ],
-        },
+  /** Fetch all products, optionally filtered by a search query, with pagination. */
+  async findAll(query?: string, page: number = 1, limit: number = 24) {
+    const skip = (page - 1) * limit;
+    
+    const whereCondition = query ? {
+      OR: [
+        { name: { contains: query, mode: 'insensitive' as const } },
+        { description: { contains: query, mode: 'insensitive' as const } },
+      ],
+    } : {};
+
+    const [data, total] = await Promise.all([
+      this.prisma.product.findMany({
+        where: whereCondition,
         include: { category: true },
         orderBy: { createdAt: 'desc' },
-      });
-    }
+        skip,
+        take: limit,
+      }),
+      this.prisma.product.count({ where: whereCondition })
+    ]);
 
-    return this.prisma.product.findMany({
-      include: { category: true },
-      orderBy: { createdAt: 'desc' },
-    });
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 
   /** Fetch a single product by ID, including category and reviews. */
@@ -41,21 +51,35 @@ export class ProductsService {
   }
 
   /**
-   * Fetch all products belonging to a category by its slug.
-   * Uses the Category relation via category.slug.
+   * Fetch all products belonging to a category by its slug with pagination.
    */
-  async findByCategory(slug: string) {
+  async findByCategory(slug: string, page: number = 1, limit: number = 24) {
     const category = await this.prisma.category.findUnique({ where: { slug } });
 
     if (!category) {
       throw new NotFoundException(`Category with slug "${slug}" not found`);
     }
 
-    return this.prisma.product.findMany({
-      where: { categoryId: category.id },
-      include: { category: true },
-      orderBy: { createdAt: 'desc' },
-    });
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.prisma.product.findMany({
+        where: { categoryId: category.id },
+        include: { category: true },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.product.count({ where: { categoryId: category.id } })
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 
   /**

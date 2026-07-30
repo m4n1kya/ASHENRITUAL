@@ -1,7 +1,9 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/auth.store';
 import {
   LayoutDashboard,
   Package,
@@ -31,6 +33,18 @@ const NAV_ITEMS = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { user } = useAuthStore();
+  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+    if (user && user.role !== 'ADMIN') {
+      router.replace('/');
+    }
+  }, [user, router]);
+
+  if (!mounted || (user && user.role !== 'ADMIN')) return null;
 
   return (
     <div className="flex min-h-screen bg-background pt-[52px]">

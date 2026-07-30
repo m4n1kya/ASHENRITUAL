@@ -22,7 +22,7 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     if (!token) return;
-    api.get<Archive[]>('/archives', { headers: { Authorization: `Bearer ${token}` } })
+    api.get<Archive[]>('/admin/orders', { headers: { Authorization: `Bearer ${token}` } })
       .then(setOrders)
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));

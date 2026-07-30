@@ -72,4 +72,14 @@ export class AdminService {
     await this.prisma.product.delete({ where: { id } });
     return { message: `Product ${id} deleted.` };
   }
+
+  /** Gets all orders (admin only). */
+  async getOrders() {
+    return this.prisma.archive.findMany({
+      include: {
+        user: { select: { id: true, email: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 }

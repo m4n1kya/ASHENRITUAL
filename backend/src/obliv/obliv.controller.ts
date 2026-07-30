@@ -18,10 +18,10 @@ export class OblivController {
   constructor(private readonly oblivService: OblivService) {}
 
   @Post('consult')
-  @ApiOperation({ summary: 'Consult OBLIV for wardrobe intelligence' })
-  @ApiResponse({ status: 200, description: 'OBLIV has analyzed the request.' })
+  @ApiOperation({ summary: 'Consult Vesper for wardrobe intelligence' })
+  @ApiResponse({ status: 200, description: 'Vesper has curated an outfit.' })
   consult(@Body() dto: ConsultOblivDto) {
-    return this.oblivService.consult(dto.query);
+    return this.oblivService.consult(dto);
   }
 
   @Post('outfit')

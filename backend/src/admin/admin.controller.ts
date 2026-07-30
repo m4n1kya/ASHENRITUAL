@@ -69,4 +69,13 @@ export class AdminController {
   deleteProduct(@Param('id') id: string) {
     return this.adminService.deleteProduct(id);
   }
+
+  // ── Orders ────────────────────────────────────────────────────────────────
+
+  @Get('orders')
+  @ApiOperation({ summary: 'Get all orders (ADMIN only)' })
+  @ApiResponse({ status: 200, description: 'Returns all orders.' })
+  getOrders() {
+    return this.adminService.getOrders();
+  }
 }

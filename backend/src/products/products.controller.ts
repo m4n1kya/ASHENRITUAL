@@ -10,9 +10,17 @@ export class ProductsController {
   @Get()
   @ApiOperation({ summary: 'Get all products, optionally search by query' })
   @ApiQuery({ name: 'q', required: false, description: 'Search query (name/description)' })
-  @ApiResponse({ status: 200, description: 'Returns all matching products.' })
-  findAll(@Query('q') query?: string) {
-    return this.productsService.findAll(query);
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
+  @ApiResponse({ status: 200, description: 'Returns paginated products.' })
+  findAll(
+    @Query('q') query?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    const limitNumber = limit ? parseInt(limit, 10) : 24;
+    return this.productsService.findAll(query, pageNumber, limitNumber);
   }
 
   // ── Special named routes MUST come before :id to avoid route collisions ──
@@ -41,10 +49,18 @@ export class ProductsController {
   @Get('category/:slug')
   @ApiOperation({ summary: 'Get all products in a category by its slug' })
   @ApiParam({ name: 'slug', description: 'Category slug (e.g. shirts, trousers)' })
-  @ApiResponse({ status: 200, description: 'Returns products in the category.' })
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
+  @ApiResponse({ status: 200, description: 'Returns paginated products in the category.' })
   @ApiResponse({ status: 404, description: 'Category not found.' })
-  findByCategory(@Param('slug') slug: string) {
-    return this.productsService.findByCategory(slug);
+  findByCategory(
+    @Param('slug') slug: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    const limitNumber = limit ? parseInt(limit, 10) : 24;
+    return this.productsService.findByCategory(slug, pageNumber, limitNumber);
   }
 
   @Get(':id')

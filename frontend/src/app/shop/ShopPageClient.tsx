@@ -34,10 +34,13 @@ export function ShopPageClient() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   const selectedCategory = searchParams.get('category') || '';
   const selectedSort = searchParams.get('sort') || 'newest';
   const searchQuery = searchParams.get('q') || '';
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
   const updateParams = useCallback(
     (updates: Record<string, string>) => {
@@ -56,25 +59,33 @@ export function ShopPageClient() {
     async function load() {
       setLoading(true);
       try {
-        let url = '/products';
-        if (selectedCategory) url = `/products/category/${selectedCategory}`;
-        if (searchQuery) url = `/products?q=${encodeURIComponent(searchQuery)}`;
-        const data = await api.get<Product[]>(url);
+        let url = `/products?page=${currentPage}&limit=12`;
+        if (selectedCategory) url = `/products/category/${selectedCategory}?page=${currentPage}&limit=12`;
+        if (searchQuery) url = `/products?q=${encodeURIComponent(searchQuery)}&page=${currentPage}&limit=12`;
+        
+        const res = await api.get<{ data: Product[], total: number, totalPages: number }>(url);
+        
         if (!cancelled) {
-          let sorted = [...data];
+          let sorted = [...res.data];
           if (selectedSort === 'price_asc') sorted.sort((a, b) => a.price - b.price);
           if (selectedSort === 'price_desc') sorted.sort((a, b) => b.price - a.price);
           setProducts(sorted);
+          setTotalPages(res.totalPages || 1);
+          setTotalItems(res.total || 0);
         }
       } catch {
-        if (!cancelled) setProducts([]);
+        if (!cancelled) {
+          setProducts([]);
+          setTotalPages(1);
+          setTotalItems(0);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
     load();
     return () => { cancelled = true; };
-  }, [selectedCategory, selectedSort, searchQuery]);
+  }, [selectedCategory, selectedSort, searchQuery, currentPage]);
 
   useEffect(() => {
     api.get<Category[]>('/categories').then(setCategories).catch(() => {});
@@ -249,7 +260,7 @@ export function ShopPageClient() {
         {/* Sort + count */}
         <div className="flex items-center gap-6">
           <span className="text-[11px] text-[#8D8D8D]">
-            {products.length} {products.length === 1 ? 'piece' : 'pieces'}
+            {totalItems} {totalItems === 1 ? 'piece' : 'pieces'}
           </span>
           <div className="relative flex items-center">
             <select
@@ -286,16 +297,47 @@ export function ShopPageClient() {
           action={{ label: 'Clear Filters', href: '/shop' }}
         />
       ) : (
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12"
-        >
-          {products.map((product, i) => (
-            <ProductCard key={product.id} product={product} priority={i < 4} />
-          ))}
-        </motion.div>
+        <>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12"
+          >
+            {products.map((product, i) => (
+              <ProductCard key={product.id} product={product} priority={i < 4} />
+            ))}
+          </motion.div>
+          
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="mt-16 flex items-center justify-center gap-4">
+              <button
+                onClick={() => {
+                  updateParams({ page: Math.max(1, currentPage - 1).toString() });
+                  handleScrollToGrid();
+                }}
+                disabled={currentPage === 1}
+                className="flex h-10 items-center justify-center border border-[#202020] px-6 text-[10px] font-medium uppercase tracking-[0.2em] text-[#8D8D8D] hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8] disabled:opacity-30 disabled:hover:border-[#202020] disabled:hover:text-[#8D8D8D] transition-all"
+              >
+                Previous
+              </button>
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#8D8D8D]">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                onClick={() => {
+                  updateParams({ page: Math.min(totalPages, currentPage + 1).toString() });
+                  handleScrollToGrid();
+                }}
+                disabled={currentPage === totalPages}
+                className="flex h-10 items-center justify-center border border-[#202020] px-6 text-[10px] font-medium uppercase tracking-[0.2em] text-[#8D8D8D] hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8] disabled:opacity-30 disabled:hover:border-[#202020] disabled:hover:text-[#8D8D8D] transition-all"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   </div>

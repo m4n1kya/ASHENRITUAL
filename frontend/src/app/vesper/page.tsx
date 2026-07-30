@@ -83,26 +83,12 @@ export default function VesperPage() {
 
     setLoading(true);
     try {
-      // Mocking the API call for now. 
-      // The backend will receive these params, query Gemini for structured JSON, and map it to DB products.
-      /*
       const res = await api.post<VesperRecommendation>(
-        '/vesper/consult',
+        '/obliv/consult',
         params,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setRecommendation(res);
-      */
-      
-      // MOCK DELAY & RESPONSE
-      await new Promise(r => setTimeout(r, 2500));
-      setRecommendation({
-        id: 'curation-001',
-        title: 'The Architect\'s Uniform',
-        description: 'A restrained, structural approach balancing strict formality with fluid comfort.',
-        stylingNotes: 'Anchor the silhouette with the tailored coat. Layer the draped tee underneath to soften the rigid geometry. Keep accessories brutalist and minimal.',
-        products: [] // Mock products would go here in reality
-      });
       
     } catch (err) {
       toast.error('Intelligence Offline', { description: 'Vesper is currently unresponsive.' });
@@ -251,23 +237,22 @@ export default function VesperPage() {
                       The Pieces
                     </h3>
                     <div className="space-y-4">
-                      {/* Placeholder for actual mapped products */}
-                      <div className="flex items-center gap-4 border border-border bg-background/50 p-4">
-                        <div className="h-16 w-12 bg-border/50" />
-                        <div>
-                          <p className="font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">Obsidian Overcoat</p>
-                          <p className="text-xs text-muted-foreground">Outerwear</p>
+                      {recommendation.products.map(product => (
+                        <div key={product.id} className="flex items-center gap-4 border border-border bg-background/50 p-4">
+                          <div className="relative h-16 w-12 bg-border/50 overflow-hidden">
+                            {product.images?.[0] && (
+                              <Image src={product.images[0]} alt={product.name} fill className="object-cover" sizes="48px" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-foreground truncate">{product.name}</p>
+                            <p className="text-xs text-muted-foreground">{product.category?.name || 'Curated Piece'}</p>
+                          </div>
+                          <Link href={`/products/${product.id}`} className="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground shrink-0">
+                            View
+                          </Link>
                         </div>
-                        <button className="ml-auto text-[10px] uppercase tracking-widest hover:text-foreground">View</button>
-                      </div>
-                      <div className="flex items-center gap-4 border border-border bg-background/50 p-4">
-                        <div className="h-16 w-12 bg-border/50" />
-                        <div>
-                          <p className="font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">Structured Trouser</p>
-                          <p className="text-xs text-muted-foreground">Bottoms</p>
-                        </div>
-                        <button className="ml-auto text-[10px] uppercase tracking-widest hover:text-foreground">View</button>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
