@@ -7,45 +7,45 @@ export declare class ChaptersService {
             products: number;
         };
     } & {
-        id: string;
-        name: string;
         slug: string | null;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
         description: string | null;
         quote: string | null;
         quoteAuthor: string | null;
         image: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     })[]>;
     findBySlug(slug: string): Promise<{
         products: ({
             category: {
-                id: string;
-                name: string;
                 slug: string;
+                id: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
             };
         } & {
             id: string;
-            name: string;
-            description: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            description: string;
             price: import("@prisma/client/runtime/library").Decimal;
             images: string[];
             stock: number;
             categoryId: string;
         })[];
     } & {
-        id: string;
-        name: string;
         slug: string | null;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
         description: string | null;
         quote: string | null;
         quoteAuthor: string | null;
         image: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
 }

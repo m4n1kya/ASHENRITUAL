@@ -8,51 +8,54 @@ function toSlug(name: string) {
 
 const seasons = [
   {
-    name: 'The Autumnal Fade',
-    description: 'When the heat recedes and the world begins to strip itself bare. A collection of structured layers and earth-bound tones, designed for the quiet descent into the darker months.',
-    quote: '"Autumn is a second spring when every leaf is a flower."',
-    quoteAuthor: 'Albert Camus',
-    image: '/images/hero.png'
-  },
-  {
-    name: "Winter's Embrace",
-    description: 'The world stands still in silent frost. Heavy textures, monolithic silhouettes, and warmth forged against the biting cold.',
-    quote: '"In the depth of winter, I finally learned that within me there lay an invincible summer."',
-    quoteAuthor: 'Albert Camus',
-    image: '/images/texture.png'
-  },
-  {
-    name: 'Spring\'s Awakening',
+    name: 'Vernal Silence',
     description: 'A violent rebirth. Light layers that breathe, shedding the weight of the past. Pieces that move with the returning wind.',
     quote: '"It is spring again. The earth is like a child that knows poems by heart."',
     quoteAuthor: 'Rainer Maria Rilke',
-    image: '/images/hero.png'
+    image: '/images/chapters/Vernal Silence.jpg'
   },
   {
-    name: 'The Summer Void',
+    name: 'Summer Afterglow',
     description: 'Sun-drenched minimalism. The bare essentials. Fluid fabrics and architectural cuts that let the skin breathe beneath the relentless sun.',
     quote: '"And so with the sunshine and the great bursts of leaves growing on the trees, just as things grow in fast movies, I had that familiar conviction that life was beginning over again with the summer."',
     quoteAuthor: 'F. Scott Fitzgerald',
-    image: '/images/product.png'
+    image: '/images/chapters/Summer Afterglow.jpg'
   },
   {
-    name: 'Monsoon\'s Weep',
+    name: 'Autumn Ashes',
+    description: 'When the heat recedes and the world begins to strip itself bare. A collection of structured layers and earth-bound tones, designed for the quiet descent into the darker months.',
+    quote: '"Autumn is a second spring when every leaf is a flower."',
+    quoteAuthor: 'Albert Camus',
+    image: '/images/chapters/Autumn Ashes.jpg'
+  },
+  {
+    name: 'Winter Solitude',
+    description: 'The world stands still in silent frost. Heavy textures, monolithic silhouettes, and warmth forged against the biting cold.',
+    quote: '"In the depth of winter, I finally learned that within me there lay an invincible summer."',
+    quoteAuthor: 'Albert Camus',
+    image: '/images/chapters/Winter Solitude.jpg'
+  },
+  {
+    name: 'Monsoon Reverie',
     description: 'The sky tears itself open. Waterproof layers, utilitarian design, and deep greys. Clothing built to withstand the melancholic downpour.',
     quote: '"Let the rain kiss you. Let the rain beat upon your head with silver liquid drops. Let the rain sing you a lullaby."',
     quoteAuthor: 'Langston Hughes',
-    image: '/images/hero.png'
+    image: '/images/chapters/Monsoon Reverie.jpg'
   },
   {
-    name: 'The Frostbite',
+    name: 'The White Hour',
     description: 'The edge of existence. Extreme insulation, technical fabrics, and sharp lines that cut through the frozen haze. A survival ritual.',
     quote: '"To appreciate the beauty of a snowflake it is necessary to stand out in the cold."',
     quoteAuthor: 'Aristotle',
-    image: '/images/texture.png'
+    image: '/images/chapters/The White Hour.jpg'
   }
 ];
 
 async function main() {
   console.log('🌱 Seeding poetic seasons (chapters)...');
+  
+  // Clear existing chapters first to apply new names cleanly
+  await prisma.chapter.deleteMany();
   
   const allProducts = await prisma.product.findMany();
 

@@ -17,11 +17,11 @@ export declare class OblivService {
         stylingNotes: any;
         products: ({
             category: {
+                slug: string;
                 id: string;
                 createdAt: Date;
                 updatedAt: Date;
                 name: string;
-                slug: string;
             };
         } & {
             id: string;
@@ -42,11 +42,11 @@ export declare class OblivService {
         stylingNotes: any;
         products: ({
             category: {
+                slug: string;
                 id: string;
                 createdAt: Date;
                 updatedAt: Date;
                 name: string;
-                slug: string;
             };
         } & {
             id: string;

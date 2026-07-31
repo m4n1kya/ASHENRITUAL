@@ -9,11 +9,11 @@ export declare class SavedRitualsService {
     findAll(userId: string): Promise<({
         product: {
             category: {
+                slug: string;
                 id: string;
                 createdAt: Date;
                 updatedAt: Date;
                 name: string;
-                slug: string;
             };
         } & {
             id: string;
