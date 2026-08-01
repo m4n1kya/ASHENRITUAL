@@ -84,7 +84,7 @@ export default function VesperPage() {
     setLoading(true);
     try {
       const res = await api.post<VesperRecommendation>(
-        '/obliv/consult',
+        '/vesper/consult',
         params,
         { headers: { Authorization: `Bearer ${token}` } }
       );

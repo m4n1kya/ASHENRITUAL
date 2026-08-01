@@ -2,9 +2,7 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { ArrowRight, MoveRight } from 'lucide-react';
+import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 
 /* ══════════════════════════════════════════════════════════════════════════
    ATELIER — THE CREATIVE STUDIO
@@ -30,7 +28,7 @@ export function AtelierClient() {
 }
 
 /* ── 1. Hero ─────────────────────────────────────────────────────────────── */
-function HeroSection({ scrollYProgress }: { scrollYProgress: any }) {
+function HeroSection({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
   const opacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
@@ -72,7 +70,7 @@ function HeroSection({ scrollYProgress }: { scrollYProgress: any }) {
           className="mt-12 max-w-xl space-y-4"
         >
           <p className="font-display italic text-2xl text-[#E8E8E8] md:text-3xl">
-            "Where silence becomes form."
+            &quot;Where silence becomes form.&quot;
           </p>
           <p className="font-sans text-[13px] tracking-widest text-[#8D8D8D] uppercase">
             Every collection begins long before the first garment is worn.
@@ -371,6 +369,7 @@ function InspirationWall() {
               transition={{ duration: 0.8, delay: (i % 3) * 0.1 }}
               className="relative w-full overflow-hidden break-inside-avoid bg-[#111]"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={src}
                 alt="Inspiration reference"

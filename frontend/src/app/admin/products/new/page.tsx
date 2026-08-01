@@ -15,8 +15,8 @@ import { cn } from '@/lib/utils';
 const productSchema = z.object({
   name: z.string().min(2, 'Product name is required'),
   description: z.string().min(10, 'Description must be at least 10 characters'),
-  price: z.coerce.number().min(1, 'Price must be positive'),
-  stock: z.coerce.number().min(0, 'Stock cannot be negative'),
+  price: z.number().min(1, 'Price must be positive'),
+  stock: z.number().min(0, 'Stock cannot be negative'),
   categoryId: z.string().min(1, 'Category is required'),
   images: z.string().optional(),
 });
@@ -106,7 +106,9 @@ export default function NewProductPage() {
               <input
                 id={name}
                 type={type}
-                {...register(name as keyof ProductFormData)}
+                {...register(name as keyof ProductFormData, {
+                  ...(type === 'number' ? { valueAsNumber: true } : {}),
+                })}
                 placeholder={placeholder}
                 className={cn(
                   'w-full border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1',

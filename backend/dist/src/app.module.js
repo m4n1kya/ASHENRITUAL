@@ -21,7 +21,7 @@ const archives_module_1 = require("./archives/archives.module");
 const saved_rituals_module_1 = require("./saved-rituals/saved-rituals.module");
 const addresses_module_1 = require("./addresses/addresses.module");
 const reviews_module_1 = require("./reviews/reviews.module");
-const obliv_module_1 = require("./obliv/obliv.module");
+const vesper_module_1 = require("./vesper/vesper.module");
 const admin_module_1 = require("./admin/admin.module");
 let AppModule = class AppModule {
 };
@@ -40,7 +40,7 @@ exports.AppModule = AppModule = __decorate([
             saved_rituals_module_1.SavedRitualsModule,
             addresses_module_1.AddressesModule,
             reviews_module_1.ReviewsModule,
-            obliv_module_1.OblivModule,
+            vesper_module_1.VesperModule,
             admin_module_1.AdminModule,
         ],
         controllers: [app_controller_1.AppController],

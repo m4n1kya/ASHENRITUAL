@@ -1,4 +1,4 @@
-export declare class ConsultOblivDto {
+export declare class ConsultVesperDto {
     occasion: string;
     weather: string;
     dressCode: string;

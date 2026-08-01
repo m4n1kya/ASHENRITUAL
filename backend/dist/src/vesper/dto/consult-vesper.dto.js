@@ -9,39 +9,39 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConsultOblivDto = void 0;
+exports.ConsultVesperDto = void 0;
 const class_validator_1 = require("class-validator");
-class ConsultOblivDto {
+class ConsultVesperDto {
     occasion;
     weather;
     dressCode;
     palette;
     silhouette;
 }
-exports.ConsultOblivDto = ConsultOblivDto;
+exports.ConsultVesperDto = ConsultVesperDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], ConsultOblivDto.prototype, "occasion", void 0);
+], ConsultVesperDto.prototype, "occasion", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], ConsultOblivDto.prototype, "weather", void 0);
+], ConsultVesperDto.prototype, "weather", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], ConsultOblivDto.prototype, "dressCode", void 0);
+], ConsultVesperDto.prototype, "dressCode", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], ConsultOblivDto.prototype, "palette", void 0);
+], ConsultVesperDto.prototype, "palette", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], ConsultOblivDto.prototype, "silhouette", void 0);
-//# sourceMappingURL=consult-obliv.dto.js.map
+], ConsultVesperDto.prototype, "silhouette", void 0);
+//# sourceMappingURL=consult-vesper.dto.js.map

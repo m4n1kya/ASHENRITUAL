@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "node -r ./patch-node.js ./node_modules/next/dist/bin/next build",
     "start": "next start",
     "lint": "eslint"
   },

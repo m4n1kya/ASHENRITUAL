@@ -22,7 +22,7 @@ import { AddressesModule } from './addresses/addresses.module';
 import { ReviewsModule } from './reviews/reviews.module';
 
 // ── AI ────────────────────────────────────────────────────────────────────────
-import { OblivModule } from './obliv/obliv.module';
+import { VesperModule } from './vesper/vesper.module';
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
 import { AdminModule } from './admin/admin.module';
@@ -49,7 +49,7 @@ import { AdminModule } from './admin/admin.module';
     ReviewsModule,
 
     // AI Intelligence
-    OblivModule,
+    VesperModule,
 
     // Admin
     AdminModule,

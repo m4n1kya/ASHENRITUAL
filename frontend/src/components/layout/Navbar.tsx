@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ShoppingBag, User, X, ArrowRight } from 'lucide-react';
+import { Search, ShoppingBag, User, X, ArrowRight, LogIn, LayoutDashboard, Package, Heart, LogOut } from 'lucide-react';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
@@ -47,6 +47,115 @@ function NavIcon({ href, label, badge, children, iconCls }: {
   );
   if (href) return <Link href={href} aria-label={label} className={cls}>{inner}</Link>;
   return <span className={cls} aria-label={label}>{inner}</span>;
+}
+
+/* ── User Dropdown ───────────────────────────────────────────────────────── */
+function UserDropdown({ isAuthed, iconCls }: { isAuthed: boolean; iconCls: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const { logout } = useAuthStore();
+  const router = useRouter();
+
+  // Close on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    logout();
+    setOpen(false);
+    router.push('/');
+  }, [logout, router]);
+
+  const authedLinks = [
+    { label: 'Profile', href: '/account', icon: User },
+    { label: 'Orders', href: '/archive', icon: Package },
+    { label: 'Saved Rituals', href: '/saved-rituals', icon: Heart },
+  ];
+
+  return (
+    <div 
+      ref={ref} 
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        onClick={() => setOpen(v => !v)}
+        aria-label={isAuthed ? 'Profile' : 'Login'}
+        className={cn('relative flex h-9 w-9 items-center justify-center transition-colors duration-300', iconCls)}
+      >
+        <User className="h-[17px] w-[17px]" strokeWidth={1.5} />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="user-dropdown"
+            initial={{ opacity: 0, y: -8, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
+            className="absolute right-0 top-[calc(100%+10px)] z-[70] w-52 overflow-hidden border border-[rgba(255,255,255,0.1)] bg-[#0E0E0E]/95 backdrop-blur-xl shadow-2xl"
+          >
+            {isAuthed ? (
+              <>
+                {/* Authenticated links */}
+                <div className="py-2">
+                  {authedLinks.map(({ label, href, icon: Icon }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 font-heading text-[10px] uppercase tracking-[0.2em] text-[#8D8D8D] transition-colors hover:bg-[#1A1A1A] hover:text-[#FDFCFB]"
+                    >
+                      <Icon className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} />
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+                <div className="border-t border-[rgba(255,255,255,0.06)]">
+                  <button
+                    onClick={handleLogout}
+                    className="flex w-full items-center gap-3 px-4 py-3 font-heading text-[10px] uppercase tracking-[0.2em] text-[#8D8D8D] transition-colors hover:bg-[#1A1A1A] hover:text-[#FDFCFB]"
+                  >
+                    <LogOut className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} />
+                    Sign Out
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Guest links */}
+                <div className="py-2">
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 font-heading text-[10px] uppercase tracking-[0.2em] text-[#8D8D8D] transition-colors hover:bg-[#1A1A1A] hover:text-[#FDFCFB]"
+                  >
+                    <LogIn className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} />
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 font-heading text-[10px] uppercase tracking-[0.2em] text-[#8D8D8D] transition-colors hover:bg-[#1A1A1A] hover:text-[#FDFCFB]"
+                  >
+                    <LayoutDashboard className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} />
+                    Create Account
+                  </Link>
+                </div>
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 /* ── Inline Search with Recommendations ─────────────────────────────────── */
@@ -177,6 +286,7 @@ function NavSearch() {
                   >
                     {/* Thumbnail */}
                     <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-md bg-[#1A1A1A]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       {product.images?.[0] && (
                         <img
                           src={product.images[0]}
@@ -250,8 +360,8 @@ export function Navbar() {
       <header role="banner" className="fixed inset-x-0 top-0 z-50 transition-all duration-500">
 
         {/* Tier 1: Logo + Search + Icons */}
-        <div className="w-full bg-background/40 backdrop-blur-md border-b border-[rgba(255,255,255,0.08)]">
-          <div className="mx-auto flex h-[52px] max-w-screen-xl items-center justify-between px-6 lg:px-10">
+        <div className="relative w-full bg-background/40 backdrop-blur-md border-b border-[rgba(255,255,255,0.08)]">
+          <div className="relative z-10 mx-auto flex h-[52px] max-w-screen-xl items-center justify-between px-6 lg:px-10">
 
             {/* Logo */}
             <Link
@@ -268,7 +378,7 @@ export function Navbar() {
             {/* Inline Search (Desktop) */}
             <NavSearch />
 
-            {/* Right icons */}
+            {/* Right icons: Saved Rituals → Cart → User */}
             <div className="flex items-center gap-1 md:gap-2">
               {/* Mobile search icon */}
               <div className="md:hidden">
@@ -276,15 +386,19 @@ export function Navbar() {
                   <Search className="h-[17px] w-[17px]" strokeWidth={1.5} />
                 </NavIcon>
               </div>
+
+              {/* 1. Saved Rituals */}
               <NavIcon href="/saved-rituals" label="Saved Rituals" iconCls={iconCls}>
                 <WebIcon className="h-[17px] w-[17px]" strokeWidth={1.5} />
               </NavIcon>
-              <NavIcon href={isAuthed ? '/account' : '/login'} label={isAuthed ? 'Account' : 'Sign in'} iconCls={iconCls}>
-                <User className="h-[17px] w-[17px]" strokeWidth={1.5} />
-              </NavIcon>
+
+              {/* 2. Cart */}
               <NavIcon href="/cart" label={`Cart — ${cartCount} items`} badge={cartCount} iconCls={iconCls}>
                 <ShoppingBag className="h-[17px] w-[17px]" strokeWidth={1.5} />
               </NavIcon>
+
+              {/* 3. User icon → dropdown */}
+              <UserDropdown isAuthed={isAuthed} iconCls={iconCls} />
 
               {/* Mobile hamburger */}
               <button
@@ -313,7 +427,7 @@ export function Navbar() {
         </div>
 
         {/* Tier 2: Navigation Links — transparent */}
-        <div className="hidden md:flex mx-auto h-[48px] max-w-screen-xl items-center justify-center px-6 lg:px-10">
+        <div className="hidden md:flex mx-auto h-[32px] max-w-screen-xl items-start pt-2 justify-center px-6 lg:px-10">
           <nav aria-label="Primary navigation" className="flex items-center gap-10">
             {NAV.map(({ label, href }) => {
               const active = pathname === href || pathname.startsWith(href + '/');
@@ -322,8 +436,8 @@ export function Navbar() {
                   key={href}
                   href={href}
                   className={cn(
-                    'font-heading text-[11px] font-bold uppercase tracking-[0.25em] transition-colors duration-300',
-                    label === 'Vesper' && 'font-display italic normal-case tracking-[0.15em] text-[14px]',
+                    'font-heading text-[9px] font-bold uppercase tracking-[0.25em] transition-colors duration-300',
+                    label === 'Vesper' && 'font-display italic normal-case tracking-[0.15em] text-[12px]',
                     label !== 'Vesper' && (active ? activeCls : navTextCls),
                     label === 'Vesper' && (active ? 'text-[#FDFCFB]' : 'text-[#8D8D8D] hover:text-[#FDFCFB]'),
                   )}

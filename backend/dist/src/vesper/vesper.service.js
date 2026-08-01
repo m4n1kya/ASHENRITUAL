@@ -9,11 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OblivService = void 0;
+exports.VesperService = void 0;
 const common_1 = require("@nestjs/common");
 const genai_1 = require("@google/genai");
 const prisma_service_1 = require("../prisma/prisma.service");
-let OblivService = class OblivService {
+let VesperService = class VesperService {
     prisma;
     ai;
     systemPrompt = `
@@ -88,9 +88,9 @@ ${catalogContext}
         return this.consult({ occasion: 'Everyday Minimal', weather: 'Transitional Autumn', dressCode: 'Smart Casual', palette: 'Earth & Stone', silhouette: 'Tailored & Sharp' });
     }
 };
-exports.OblivService = OblivService;
-exports.OblivService = OblivService = __decorate([
+exports.VesperService = VesperService;
+exports.VesperService = VesperService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
-], OblivService);
-//# sourceMappingURL=obliv.service.js.map
+], VesperService);
+//# sourceMappingURL=vesper.service.js.map

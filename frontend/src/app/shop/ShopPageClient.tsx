@@ -67,7 +67,7 @@ export function ShopPageClient() {
         const res = await api.get<{ data: Product[], total: number, totalPages: number }>(url);
         
         if (!cancelled) {
-          let sorted = [...res.data];
+          const sorted = [...res.data];
           if (selectedSort === 'price_asc') sorted.sort((a, b) => a.price - b.price);
           if (selectedSort === 'price_desc') sorted.sort((a, b) => b.price - a.price);
           setProducts(sorted);
@@ -156,7 +156,7 @@ export function ShopPageClient() {
                   key={block.title}
                   onClick={() => {
                     updateParams({ category: block.cat });
-                    handleScrollToGrid();
+                    scrollToGrid();
                   }}
                   className="group flex w-full flex-col justify-between border border-[rgba(255,255,255,0.08)] bg-card p-5 text-left transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] hover:border-[rgba(255,255,255,0.2)] hover:bg-[#141414]"
                 >
@@ -306,7 +306,7 @@ export function ShopPageClient() {
               <button
                 onClick={() => {
                   updateParams({ page: Math.max(1, currentPage - 1).toString() });
-                  handleScrollToGrid();
+                  scrollToGrid();
                 }}
                 disabled={currentPage === 1}
                 className="flex h-10 items-center justify-center border border-[#202020] px-6 text-[10px] font-medium uppercase tracking-[0.2em] text-[#8D8D8D] hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8] disabled:opacity-30 disabled:hover:border-[#202020] disabled:hover:text-[#8D8D8D] transition-all"
@@ -319,7 +319,7 @@ export function ShopPageClient() {
               <button
                 onClick={() => {
                   updateParams({ page: Math.min(totalPages, currentPage + 1).toString() });
-                  handleScrollToGrid();
+                  scrollToGrid();
                 }}
                 disabled={currentPage === totalPages}
                 className="flex h-10 items-center justify-center border border-[#202020] px-6 text-[10px] font-medium uppercase tracking-[0.2em] text-[#8D8D8D] hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8] disabled:opacity-30 disabled:hover:border-[#202020] disabled:hover:text-[#8D8D8D] transition-all"

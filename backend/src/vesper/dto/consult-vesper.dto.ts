@@ -1,7 +1,7 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ConsultOblivDto {
+export class ConsultVesperDto {
   @IsString()
   @IsNotEmpty()
   occasion: string;

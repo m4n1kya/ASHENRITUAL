@@ -47,7 +47,7 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
             className="mt-6 max-w-xl font-sans text-lg font-light leading-relaxed text-secondary-foreground md:text-xl"
           >
-            Luxury doesn't need to shout. Every piece is intentional. Fashion is identity, not attention.
+            Luxury doesn&apos;t need to shout. Every piece is intentional. Fashion is identity, not attention.
           </motion.p>
 
           <motion.div 

@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
     ],
     qualities: [25, 50, 75, 85, 100],
   },
-  // Remove X-Powered-By header
   poweredByHeader: false,
 };
 

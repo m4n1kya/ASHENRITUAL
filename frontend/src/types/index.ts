@@ -69,7 +69,7 @@ export interface Archive {
 
 // ─── Auth / User ───────────────────────────────────────────────────────────────
 
-export type UserRole = 'customer' | 'admin';
+export type UserRole = 'USER' | 'ADMIN';
 
 export interface User {
   id: string;

@@ -3,7 +3,7 @@ import { GoogleGenAI } from '@google/genai';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
-export class OblivService {
+export class VesperService {
   private ai: GoogleGenAI;
 
   private readonly systemPrompt = `

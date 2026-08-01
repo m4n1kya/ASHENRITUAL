@@ -12,51 +12,51 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OblivController = void 0;
+exports.VesperController = void 0;
 const common_1 = require("@nestjs/common");
-const obliv_service_1 = require("./obliv.service");
-const consult_obliv_dto_1 = require("./dto/consult-obliv.dto");
+const vesper_service_1 = require("./vesper.service");
+const consult_vesper_dto_1 = require("./dto/consult-vesper.dto");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const swagger_1 = require("@nestjs/swagger");
-let OblivController = class OblivController {
-    oblivService;
-    constructor(oblivService) {
-        this.oblivService = oblivService;
+let VesperController = class VesperController {
+    vesperService;
+    constructor(vesperService) {
+        this.vesperService = vesperService;
     }
     consult(dto) {
-        return this.oblivService.consult(dto);
+        return this.vesperService.consult(dto);
     }
     generateOutfit(req) {
-        return this.oblivService.generateOutfit(req.user.userId);
+        return this.vesperService.generateOutfit(req.user.userId);
     }
 };
-exports.OblivController = OblivController;
+exports.VesperController = VesperController;
 __decorate([
     (0, common_1.Post)('consult'),
     (0, swagger_1.ApiOperation)({ summary: 'Consult Vesper for wardrobe intelligence' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Vesper has curated an outfit.' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'VESPER has curated an outfit.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [consult_obliv_dto_1.ConsultOblivDto]),
+    __metadata("design:paramtypes", [consult_vesper_dto_1.ConsultVesperDto]),
     __metadata("design:returntype", void 0)
-], OblivController.prototype, "consult", null);
+], VesperController.prototype, "consult", null);
 __decorate([
     (0, common_1.Post)('outfit'),
     (0, swagger_1.ApiOperation)({
         summary: 'Generate a personalized "Complete the Ritual" outfit',
-        description: 'OBLIV analyzes the user\'s Saved Rituals and past Archives to recommend a curated outfit.',
+        description: 'VESPER analyzes the user\'s Saved Rituals and past Archives to recommend a curated outfit.',
     }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns a personalized outfit recommendation.' }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], OblivController.prototype, "generateOutfit", null);
-exports.OblivController = OblivController = __decorate([
-    (0, swagger_1.ApiTags)('OBLIV - Wardrobe Intelligence'),
+], VesperController.prototype, "generateOutfit", null);
+exports.VesperController = VesperController = __decorate([
+    (0, swagger_1.ApiTags)('VESPER - Wardrobe Intelligence'),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Controller)('obliv'),
-    __metadata("design:paramtypes", [obliv_service_1.OblivService])
-], OblivController);
-//# sourceMappingURL=obliv.controller.js.map
+    (0, common_1.Controller)('vesper'),
+    __metadata("design:paramtypes", [vesper_service_1.VesperService])
+], VesperController);
+//# sourceMappingURL=vesper.controller.js.map

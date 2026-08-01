@@ -161,6 +161,12 @@ ASHENRITUAL
 
 # Getting Started
 
+## Prerequisites
+
+- **Node.js**: v20.x LTS (Required for Next.js 15 production builds)
+- **Database**: PostgreSQL (Running locally or via Docker)
+- **Package Manager**: npm
+
 ## Clone Repository
 
 ```bash

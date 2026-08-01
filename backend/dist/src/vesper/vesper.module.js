@@ -6,17 +6,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OblivModule = void 0;
+exports.VesperModule = void 0;
 const common_1 = require("@nestjs/common");
-const obliv_controller_1 = require("./obliv.controller");
-const obliv_service_1 = require("./obliv.service");
-let OblivModule = class OblivModule {
+const vesper_controller_1 = require("./vesper.controller");
+const vesper_service_1 = require("./vesper.service");
+let VesperModule = class VesperModule {
 };
-exports.OblivModule = OblivModule;
-exports.OblivModule = OblivModule = __decorate([
+exports.VesperModule = VesperModule;
+exports.VesperModule = VesperModule = __decorate([
     (0, common_1.Module)({
-        controllers: [obliv_controller_1.OblivController],
-        providers: [obliv_service_1.OblivService],
+        controllers: [vesper_controller_1.VesperController],
+        providers: [vesper_service_1.VesperService],
     })
-], OblivModule);
-//# sourceMappingURL=obliv.module.js.map
+], VesperModule);
+//# sourceMappingURL=vesper.module.js.map
