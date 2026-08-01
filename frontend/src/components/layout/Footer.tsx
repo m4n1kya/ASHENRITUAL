@@ -59,15 +59,7 @@ export function Footer() {
               href="/"
               className="flex items-center gap-1 font-heading text-[11px] font-semibold tracking-[0.35em] text-[#FDFCFB] hover:opacity-60 transition-opacity duration-300"
             >
-              <Image 
-                src="/images/logo.png" 
-                alt="ASHENRITUAL Logo" 
-                width={150} 
-                height={150} 
-                className="h-[46px] w-auto object-contain mt-[14px]" 
-                unoptimized 
-              />
-              <span className="-ml-[2px]">ASHENRITUAL</span>
+              ASHENRITUAL
             </Link>
             <p className="mt-4 text-[12px] leading-relaxed text-[#8D8D8D]/60">
               Presence isn&apos;t purchased.<br />

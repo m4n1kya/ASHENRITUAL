@@ -109,32 +109,6 @@ export function ShopPageClient() {
 
   return (
     <div className="w-full">
-      {/* ── Big Search Bar (Spanning Left & Center) ── */}
-      <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-6 pt-12 lg:px-12">
-        {/* Constrain width to cover the left text and center image (approx 2/3 of the layout) */}
-        <div className="relative group w-full lg:w-2/3 xl:w-[62%]">
-          <input
-            type="text"
-            defaultValue={searchQuery}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                updateParams({ q: e.currentTarget.value, page: '' });
-                // Scroll immediately — the useEffect will also fire but this
-                // feels more instant from the user's perspective
-                setTimeout(scrollToGrid, 150);
-              }
-            }}
-            onBlur={(e) => {
-              if (e.currentTarget.value !== searchQuery) {
-                updateParams({ q: e.currentTarget.value, page: '' });
-              }
-            }}
-            placeholder="Seek what endures..."
-            className="w-full border-b-2 border-[#202020] bg-transparent py-5 pl-14 pr-4 font-sans text-xl tracking-wide text-[#E8E8E8] placeholder:text-[#4A4A4A] focus:border-[#8D8D8D] focus:outline-none transition-colors duration-500"
-          />
-          <Search className="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-7 text-[#4A4A4A] transition-colors duration-500 group-focus-within:text-[#8D8D8D]" />
-        </div>
-      </div>
 
       {/* ── HERO CURATION SECTION ────────────────────────────────────────────── */}
       <div className="keep-light-text relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.08)] bg-transparent pb-20 pt-4">

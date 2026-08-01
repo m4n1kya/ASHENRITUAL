@@ -71,7 +71,7 @@ export default function HomePage() {
       <section ref={heroRef} className="keep-light-text relative h-screen w-full overflow-hidden" aria-label="Hero">
 
         {/* ── Background image — parallax ── */}
-        <motion.div style={{ y: imgY }} className="absolute inset-0 z-0 will-change-transform">
+        <motion.div style={{ y: imgY }} className="absolute top-[52px] inset-x-0 bottom-0 z-0 will-change-transform">
           <Image
             src="/images/home-hero.jpg"
             alt="ASHENRITUAL — Presence isn't purchased"
