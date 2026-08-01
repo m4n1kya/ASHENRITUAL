@@ -61,10 +61,10 @@ export function BrandManifesto() {
             ))}
           </div>
           <Link
-            href="/lookbook"
+            href="/atelier"
             className="group mt-10 flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
           >
-            View Lookbook
+            Explore the Atelier
             <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
           </Link>
         </motion.div>

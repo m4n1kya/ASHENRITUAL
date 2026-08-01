@@ -14,7 +14,7 @@ const COLS = [
       { label: 'All Products', href: '/shop' },
       { label: 'New Orders',   href: '/shop?sort=newest' },
       { label: 'Chapters',     href: '/chapters' },
-      { label: 'Lookbook',     href: '/lookbook' },
+      { label: 'Atelier',     href: '/atelier' },
       { label: 'Accessories',  href: '/shop?category=accessories' },
     ],
   },
@@ -25,7 +25,7 @@ const COLS = [
       { label: 'About',       href: '/about' },
       { label: 'Journal',     href: '/journal' },
       { label: 'Vesper',      href: '/vesper' },
-      { label: 'Lookbook',    href: '/lookbook' },
+      { label: 'Atelier',    href: '/atelier' },
     ],
   },
   {
