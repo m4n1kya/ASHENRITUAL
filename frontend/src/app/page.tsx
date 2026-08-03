@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Plus, Hourglass } from 'lucide-react';
+import { HomeConcierge } from '@/components/vesper/HomeConcierge';
 
 /* ─── Motion ─────────────────────────────────────────────────────────────── */
 const E = [0.4, 0, 0.2, 1] as const;
@@ -151,6 +152,10 @@ export default function HomePage() {
             </motion.div>
           </div>
         </motion.div>
+
+        {/* ── Floating Vesper Home Concierge ── */}
+        <HomeConcierge />
+
 
         {/* ── Main text content — bottom-left ── */}
         <motion.div
