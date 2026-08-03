@@ -17,7 +17,7 @@ const NAV = [
   { label: 'Chapters', href: '/chapters' },
   { label: 'Vesper',   href: '/vesper' },
   { label: 'Atelier',  href: '/atelier' },
-  { label: 'Journal',  href: '/journal' },
+  { label: 'Beyond',   href: '/beyond' },
 ] as const;
 
 const MOBILE_SECONDARY = [

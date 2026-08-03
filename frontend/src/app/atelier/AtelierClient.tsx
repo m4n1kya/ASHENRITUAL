@@ -419,10 +419,10 @@ function Craftsmanship() {
 /* ── 9. Studio Gallery ───────────────────────────────────────────────────── */
 function StudioGallery() {
   const images = [
-    "https://images.unsplash.com/photo-1556909211-36987daf7b4d?q=80&w=2070&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=1972&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1507027682794-35e6c12ad5b4?q=80&w=1974&auto=format&fit=crop",
+    "/images/atelier/Brushed Italian Wool.jpg",
+    "/images/atelier/Japanese Selvedge Denim.jpg",
+    "/images/atelier/Vegetable-Tanned Calfskin.jpg",
+    "/images/atelier/cotton-plants-still-life.jpg",
   ];
 
   return (

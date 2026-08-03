@@ -23,7 +23,7 @@ const COLS = [
     links: [
       { label: 'Foundation',  href: '/chapters/foundation' },
       { label: 'About',       href: '/about' },
-      { label: 'Journal',     href: '/journal' },
+      { label: 'Beyond',      href: '/beyond' },
       { label: 'Vesper',      href: '/vesper' },
       { label: 'Atelier',    href: '/atelier' },
     ],
