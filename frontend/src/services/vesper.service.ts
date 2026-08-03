@@ -11,12 +11,17 @@ interface ChatPayload {
   };
 }
 
+interface VesperJsonResponse {
+  actions?: any[];
+  recommendations?: any;
+}
+
 export const vesperApi = {
   async chatStream(
     payload: ChatPayload,
     token: string,
     onChunk: (text: string) => void,
-    onJson: (data: any) => void
+    onJson: (data: VesperJsonResponse) => void
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       // Helper to do the actual fetch
