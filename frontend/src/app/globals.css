@@ -22,6 +22,21 @@
   }
 }
 
+@keyframes border-beam {
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+/* ── Kill all native browser focus outlines ──────────────────────────────── */
+form:focus,
+textarea:focus,
+input:focus,
+button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

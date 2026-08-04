@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 /* ════════════════════════════════════════════════════════════════════════════
    FOOTER — reference bottom panel
@@ -42,6 +45,11 @@ const COLS = [
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const pathname = usePathname();
+
+  if (pathname === '/vesper') {
+    return null;
+  }
 
   return (
     <footer
@@ -57,7 +65,7 @@ export function Footer() {
           <div className="col-span-2 sm:col-span-1">
             <Link
               href="/"
-              className="flex items-center gap-1 font-heading text-[11px] font-semibold tracking-[0.35em] text-[#FDFCFB] hover:opacity-60 transition-opacity duration-300"
+              className="flex items-center gap-1 text-[11px] font-bold tracking-[0.35em] text-[#FDFCFB] hover:opacity-60 transition-opacity duration-300 [font-family:var(--font-logo)]"
             >
               ASHENRITUAL
             </Link>

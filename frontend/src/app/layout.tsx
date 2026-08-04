@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond, Manrope, Geist_Mono, League_Gothic } from "next/font/google";
+import { Inter, Cormorant_Garamond, Manrope, Geist_Mono, League_Gothic, Chakra_Petch } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
@@ -49,6 +49,13 @@ const geistMono = Geist_Mono({
 const gothicFont = League_Gothic({
   variable: "--font-gothic",
   weight: ["400"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const chakraPetch = Chakra_Petch({
+  variable: "--font-logo",
+  weight: ["700"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -105,6 +112,7 @@ export default function RootLayout({
           manrope.variable,
           geistMono.variable,
           gothicFont.variable,
+          chakraPetch.variable,
         )}
       >
         <Toaster

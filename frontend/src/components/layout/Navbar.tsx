@@ -368,7 +368,8 @@ export function Navbar() {
               href="/"
               aria-label="ASHENRITUAL"
               className={cn(
-                'flex items-center gap-1 font-heading text-[11px] font-semibold tracking-[0.35em] transition-colors duration-300 hover:opacity-70',
+                'flex items-center gap-1 text-[11px] font-bold tracking-[0.35em] transition-colors duration-300 hover:opacity-70',
+                '[font-family:var(--font-logo)]',
                 logoTextCls,
               )}
             >

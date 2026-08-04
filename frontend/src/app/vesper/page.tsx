@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUp, Loader2 } from 'lucide-react';
+import { ArrowUp, Loader2, RefreshCw } from 'lucide-react';
+import { BorderBeam } from '@/components/ui/border-beam';
 import { useAuthStore } from '@/store/auth.store';
 import { useVesperStore, VesperMessage } from '@/store/vesper.store';
 import { vesperApi } from '@/services/vesper.service';
@@ -154,29 +155,32 @@ export default function VesperChatPage() {
 
       {/* Input Area */}
       <div className="relative z-20 shrink-0 border-t border-[rgba(255,255,255,0.05)] bg-[#050505]/90 backdrop-blur-md p-6">
-        <form onSubmit={handleSubmit} className="mx-auto max-w-3xl relative flex items-center bg-[#111]/80 backdrop-blur-xl border border-[rgba(255,255,255,0.1)] focus-within:border-[rgba(255,255,255,0.25)] focus-within:bg-[#151515]/90 transition-all duration-300 rounded-[2rem] p-2 shadow-2xl">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Consult Vesper..."
-            className="flex-1 bg-transparent px-6 py-4 text-sm text-[#FDFCFB] placeholder:text-[#666] outline-none resize-none hide-scrollbar my-auto"
-            rows={1}
-            style={{ maxHeight: '120px' }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
-              }
-            }}
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#FDFCFB] text-[#0A0A0A] disabled:opacity-50 disabled:bg-white/10 disabled:text-[#666] hover:bg-[#E8E8E8] hover:scale-105 transition-all duration-300 ml-2"
-          >
-            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
-          </button>
-        </form>
+        <div className="mx-auto max-w-3xl relative rounded-[2rem]">
+          <form onSubmit={handleSubmit} className="relative flex items-center bg-[#111]/80 backdrop-blur-xl transition-all duration-300 rounded-[2rem] p-2 shadow-2xl outline-none" tabIndex={-1}>
+            <BorderBeam size={250} duration={12} delay={9} colorFrom="rgba(255,255,255,0.5)" colorTo="transparent" borderWidth={1.5} />
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Consult Vesper..."
+              className="flex-1 bg-transparent px-6 py-4 text-sm text-[#FDFCFB] placeholder:text-[#666] outline-none focus:outline-none focus:ring-0 border-none focus:border-transparent resize-none hide-scrollbar my-auto relative z-10"
+              rows={1}
+              style={{ maxHeight: '120px', boxShadow: 'none' }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
+            />
+            <button
+              type="submit"
+              disabled={!input.trim() || isLoading}
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#FDFCFB] text-[#0A0A0A] disabled:opacity-50 disabled:bg-white/10 disabled:text-[#666] hover:bg-[#E8E8E8] hover:scale-105 transition-all duration-300 ml-2 relative z-10"
+            >
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
+            </button>
+          </form>
+        </div>
         <div className="mt-4 text-center">
           <p className="text-[9px] uppercase tracking-widest text-[#4A4A4A]">Vesper Intelligence — Powered by Google Gemini</p>
         </div>
