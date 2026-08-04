@@ -1,4 +1,3 @@
-import { VesperMessage } from '../store/vesper.store';
 import { API_URL, api } from '../lib/api';
 import { useAuthStore } from '../store/auth.store';
 
@@ -12,8 +11,8 @@ interface ChatPayload {
 }
 
 interface VesperJsonResponse {
-  actions?: any[];
-  recommendations?: any;
+  actions?: unknown[];
+  recommendations?: Record<string, unknown>;
 }
 
 export const vesperApi = {
@@ -45,7 +44,7 @@ export const vesperApi = {
               if (newToken && newToken !== currentToken) {
                 return doFetch(newToken, true); // Retry with new token
               }
-            } catch (refreshErr) {
+            } catch {
               // Refresh failed, logout
               useAuthStore.getState().logout();
               return reject('Session expired. Please log in again.');

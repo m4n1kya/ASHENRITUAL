@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 
 // Patch Node.js v24 Windows bug where fs.readlink on a file throws EISDIR instead of EINVAL
