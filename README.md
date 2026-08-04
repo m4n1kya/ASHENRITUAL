@@ -1,292 +1,86 @@
 # ASHENRITUAL
 
-> *Presence isn't purchased. It's cultivated.*
+A modern, minimalist e-commerce platform designed with an emphasis on seamless user experience, architectural aesthetics, and integrated artificial intelligence.
 
-ASHENRITUAL is a modern full-stack menswear platform that combines luxury retail, intelligent software engineering, and artificial intelligence into a single, immersive experience.
+## 🌟 Overview
 
-Designed around the philosophy of **Quiet Luxury**, the platform emphasizes intentional design, timeless aesthetics, and a seamless user experience rather than conventional e-commerce patterns.
+ASHENRITUAL is a full-stack, production-ready e-commerce application featuring a bespoke AI shopping assistant named **Vesper**. The platform is designed to provide a premium shopping experience through fluid GSAP animations, a custom dark-mode aesthetic, and intelligent, context-aware product recommendations.
 
-Beyond being an online fashion store, ASHENRITUAL serves as a demonstration of scalable backend architecture, modern frontend engineering, AI integration, and production-ready development practices.
+## 🛠️ Technology Stack
 
----
+The project is structured as a monorepo containing a separated frontend and backend.
 
-# Table of Contents
+### Frontend
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **UI Library**: [React 19](https://react.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Animations**: [GSAP](https://gsap.com/) (GreenSock) & [Lenis](https://lenis.studiofreight.com/) (Smooth Scrolling)
+- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **Deployment**: [Vercel](https://vercel.com/)
 
-- Overview
-- Core Features
-- System Architecture
-- Technology Stack
-- Project Structure
-- Getting Started
-- VESPER Intelligence
-- Roadmap
-- Future Enhancements
-- License
+### Backend
+- **Framework**: [NestJS](https://nestjs.com/)
+- **Database**: PostgreSQL (Hosted on [Neon](https://neon.tech/))
+- **ORM**: [Prisma](https://www.prisma.io/)
+- **Authentication**: JWT (JSON Web Tokens)
+- **Deployment**: [Render](https://render.com/)
 
----
+### Artificial Intelligence
+- **Provider**: Google Gemini API
+- **Implementation**: Custom AI Orchestrator (Vesper) capable of maintaining chat history, parsing product context, and streaming JSON/Text responses to the frontend.
 
-# Overview
+## ✨ Core Features
 
-ASHENRITUAL is built as a modular, scalable web application using a decoupled architecture.
+- **Vesper AI Stylist**: An integrated AI assistant that provides tailored fashion advice, dynamically rendering product recommendations directly in the chat interface via Server-Sent Events (SSE).
+- **Premium UI/UX**: Custom cursor, smooth scroll physics, magnetic buttons, and page transition animations.
+- **Secure Authentication**: Robust JWT-based authentication with encrypted password hashing.
+- **Dynamic Cart & Checkout**: Persistent cart state management with real-time total calculations.
+- **Production Grade**: Configured with strict CORS policies, Helmet security headers, GZIP compression, and graceful shutdown hooks.
 
-The frontend is responsible for delivering a cinematic user experience through Next.js and modern UI technologies, while the backend exposes secure APIs responsible for authentication, business logic, product management, and AI services.
+## 🚀 Live Deployment
 
-The project is intended to demonstrate:
+- **Frontend**: Hosted on Vercel
+- **Backend API**: Hosted on Render
+- **Database**: Hosted on Neon
 
-- Modern Full Stack Development
-- REST API Design
-- Database Modeling
-- Authentication & Authorization
-- AI Integration
-- Responsive User Experience
-- Clean Software Architecture
-- Production-ready Development Practices
+*(Deployment is optimized for permanent free-tier cloud infrastructure).*
 
----
+## 💻 Local Development
 
-# Core Features
+### Prerequisites
+- Node.js (v20+)
+- PostgreSQL (Local or Cloud)
 
-## Customer Experience
-
-- Premium landing experience
-- Editorial-inspired shopping interface
-- Product catalogue with advanced filtering
-- Saved Rituals (Wishlist)
-- Shopping cart
-- Checkout workflow
-- User profiles
-- Order history
-- Responsive design
-
-## VESPER Intelligence
-
-VESPER is the platform's proprietary wardrobe intelligence system.
-
-Unlike traditional conversational chatbots, VESPER operates as an intelligent wardrobe companion capable of understanding user preferences, styling requirements, previous purchases, and contextual fashion recommendations.
-
-Capabilities include:
-
-- Personalized outfit recommendations
-- Context-aware styling advice
-- Occasion-based suggestions
-- Capsule wardrobe guidance
-- Intelligent product discovery
-- Natural language fashion search
-- Future support for wardrobe memory
-
-Powered by Google Gemini.
-
----
-
-# System Architecture
-
-```
-                 Client Browser
-                       │
-        ┌──────────────┴──────────────┐
-        │                             │
-        ▼                             ▼
-     Next.js 15                 NestJS API
-        │                             │
-        │                             │
-        └──────────────┬──────────────┘
-                       │
-                 Prisma ORM
-                       │
-                  PostgreSQL
-                       │
-          Google Gemini (VESPER)
-```
-
-The architecture intentionally separates presentation from business logic, allowing independent scalability of frontend and backend services.
-
----
-
-# Technology Stack
-
-## Frontend
-
-- Next.js 15 (App Router)
-- React 19
-- TypeScript
-- Tailwind CSS v4
-- shadcn/ui
-- Framer Motion
-
-## Backend
-
-- NestJS
-- PostgreSQL
-- Prisma ORM
-- JWT Authentication
-- Swagger (OpenAPI)
-
-## Artificial Intelligence
-
-- Google Gemini API
-- VESPER Wardrobe Intelligence
-
-## Infrastructure
-
-- Docker
-- Docker Compose
-
----
-
-# Project Structure
-
-```
-ASHENRITUAL
-│
-├── frontend
-│   ├── app
-│   ├── components
-│   ├── hooks
-│   ├── lib
-│   ├── public
-│   └── styles
-│
-├── backend
-│   ├── prisma
-│   ├── src
-│   ├── modules
-│   └── common
-│
-├── docs
-│
-└── README.md
-```
-
----
-
-# Getting Started
-
-## Prerequisites
-
-- **Node.js**: v20.x LTS (Required for Next.js 15 production builds)
-- **Database**: PostgreSQL (Running locally or via Docker)
-- **Package Manager**: npm
-
-## Clone Repository
-
-```bash
-git clone https://github.com/m4n1kya/ASHENRITUAL.git
-
-cd ASHENRITUAL
-```
-
-## Backend
-
+### 1. Setup Backend
 ```bash
 cd backend
-
 npm install
 
-npx prisma generate
+# Setup environment variables
+cp .env.example .env
+# Edit .env with your local PostgreSQL DATABASE_URL and Gemini API Key
 
+# Run database migrations and seed default products
 npx prisma db push
+npx prisma db seed
 
+# Start the development server
 npm run start:dev
 ```
 
-Swagger Documentation
-
-```
-http://localhost:3000/api/docs
-```
-
-## Frontend
-
+### 2. Setup Frontend
 ```bash
 cd frontend
-
 npm install
 
+# Setup environment variables
+cp .env.example .env.local
+# Edit .env.local to point NEXT_PUBLIC_API_URL to http://localhost:3001/api
+
+# Start the development server
 npm run dev
 ```
 
-Application
+## 📜 License
 
-```
-http://localhost:3001
-```
-
----
-
-# Development Roadmap
-
-## Phase I
-
-- Landing Experience
-- Authentication
-- Product Catalogue
-- Database Design
-- Responsive UI
-
-## Phase II
-
-- Complete Shopping Experience
-- Saved Rituals
-- Checkout
-- Orders
-- User Dashboard
-
-## Phase III
-
-- VESPER Intelligence
-- Context-aware Recommendations
-- Semantic Product Search
-- Intelligent Outfit Generation
-
-## Phase IV
-
-- AI Virtual Try-On
-- Body Measurement Estimation
-- Size Recommendation
-- Garment Simulation
-
----
-
-# Future Enhancements
-
-The long-term vision for ASHENRITUAL includes:
-
-- Real-time inventory synchronization
-- AI-generated outfit collections
-- Wardrobe memory
-- Sustainability insights
-- Virtual fitting room
-- Performance analytics dashboard
-- Administrative management portal
-- Mobile application
-
----
-
-# Design Philosophy
-
-ASHENRITUAL follows four guiding principles.
-
-- Simplicity over complexity
-- Precision over decoration
-- Timelessness over trends
-- Experience over functionality
-
-Every interaction is intentionally designed to feel quiet, refined, and considered.
-
----
-
-# License
-
-This project is licensed under the MIT License.
-
----
-
-# Author
-
-**Manikya N**
-
-Computer Science Engineering Student
-
-Full Stack Developer • AI Enthusiast • Software Engineer
-
-GitHub: https://github.com/m4n1kya
+Designed and engineered by m4n1kya. All rights reserved.
