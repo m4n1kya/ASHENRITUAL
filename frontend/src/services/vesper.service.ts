@@ -10,9 +10,11 @@ interface ChatPayload {
   };
 }
 
+import { VesperAction, VesperRecommendationData } from '../store/vesper.store';
+
 interface VesperJsonResponse {
-  actions?: unknown[];
-  recommendations?: Record<string, unknown>;
+  actions?: VesperAction[];
+  recommendations?: VesperRecommendationData;
 }
 
 export const vesperApi = {
