@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUp, Loader2, RefreshCw } from 'lucide-react';
 import { BorderBeam } from '@/components/ui/border-beam';
+import { CalculatingBurst } from '@/components/ui/calculating-burst';
 import { useAuthStore } from '@/store/auth.store';
 import { useVesperStore, VesperMessage } from '@/store/vesper.store';
 import { vesperApi } from '@/services/vesper.service';
@@ -181,8 +182,30 @@ export default function VesperChatPage() {
             </button>
           </form>
         </div>
-        <div className="mt-4 text-center">
-          <p className="text-[9px] uppercase tracking-widest text-[#4A4A4A]">Vesper Intelligence — Powered by Google Gemini</p>
+        <div className="mt-4 flex justify-center items-center min-h-[24px]">
+          <AnimatePresence mode="wait">
+            {isLoading ? (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.3 }}
+              >
+                <CalculatingBurst />
+              </motion.div>
+            ) : (
+              <motion.p 
+                key="idle"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="text-[9px] uppercase tracking-widest text-[#4A4A4A]"
+              >
+                Vesper Intelligence — Powered by Google Gemini
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </main>
