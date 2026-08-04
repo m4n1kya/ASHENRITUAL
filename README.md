@@ -1,86 +1,117 @@
-# ASHENRITUAL
+# ASHENRITUAL Architecture & Implementation Guide
 
-A modern, minimalist e-commerce platform designed with an emphasis on seamless user experience, architectural aesthetics, and integrated artificial intelligence.
+ASHENRITUAL is a production-grade, headless e-commerce application built on a modern TypeScript micro-architecture. It emphasizes high-performance fluid user interfaces, scalable RESTful API design, and an integrated, context-aware Artificial Intelligence orchestration layer.
 
-## 🌟 Overview
+## 1. Architectural Overview
 
-ASHENRITUAL is a full-stack, production-ready e-commerce application featuring a bespoke AI shopping assistant named **Vesper**. The platform is designed to provide a premium shopping experience through fluid GSAP animations, a custom dark-mode aesthetic, and intelligent, context-aware product recommendations.
+The application is structured as a monorepo containing two fully isolated applications: a Next.js frontend and a NestJS backend. This separation of concerns allows for independent deployment, scaling, and technology iteration.
 
-## 🛠️ Technology Stack
+### 1.1 Frontend (Next.js 15, React 19)
+The frontend utilizes the Next.js App Router to aggressively leverage Server-Side Rendering (SSR) and React Server Components (RSC) for maximum SEO performance and reduced client-side JavaScript payloads.
 
-The project is structured as a monorepo containing a separated frontend and backend.
+- **State Management**: Client-side state (authentication tokens, cart contents, UI toggles) is managed globally via Zustand.
+- **Styling**: Tailored utility classes via Tailwind CSS, strictly adhering to a brutalist, monochromatic design system.
+- **Animation Physics**: GSAP (GreenSock Animation Platform) handles complex timeline sequencing, while Lenis manages smooth scroll interpolation, bypassing native browser scroll behavior to ensure fluid 60FPS rendering.
+- **Routing**: Client-side transitions are optimized using next/navigation, preserving application state without full page reloads.
 
-### Frontend
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
-- **UI Library**: [React 19](https://react.dev/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Animations**: [GSAP](https://gsap.com/) (GreenSock) & [Lenis](https://lenis.studiofreight.com/) (Smooth Scrolling)
-- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
-- **Deployment**: [Vercel](https://vercel.com/)
+### 1.2 Backend (NestJS, Node.js)
+The backend is built on NestJS, a progressive Node.js framework providing strict architectural patterns via dependency injection, decorators, and modular encapsulation.
 
-### Backend
-- **Framework**: [NestJS](https://nestjs.com/)
-- **Database**: PostgreSQL (Hosted on [Neon](https://neon.tech/))
-- **ORM**: [Prisma](https://www.prisma.io/)
-- **Authentication**: JWT (JSON Web Tokens)
-- **Deployment**: [Render](https://render.com/)
+- **Database**: PostgreSQL hosted on Neon, accessed via Prisma ORM for type-safe database queries.
+- **Authentication**: Stateless authentication using JSON Web Tokens (JWT). The system issues short-lived access tokens and secure HttpOnly refresh tokens to mitigate XSS and CSRF vulnerabilities.
+- **Security**: The API layer is hardened using Helmet (HTTP header security), Express Rate Limiting (DDoS mitigation), and strict Cross-Origin Resource Sharing (CORS) configurations restricted to the production frontend domain.
 
-### Artificial Intelligence
-- **Provider**: Google Gemini API
-- **Implementation**: Custom AI Orchestrator (Vesper) capable of maintaining chat history, parsing product context, and streaming JSON/Text responses to the frontend.
+### 1.3 Vesper (Artificial Intelligence Layer)
+Vesper is a proprietary AI stylist and shopping assistant integrated directly into the core platform, powered by the Google Gemini API.
 
-## ✨ Core Features
+- **Context Awareness**: Vesper receives real-time context regarding the user's current navigational state (e.g., viewing a specific product or category) to inform its responses.
+- **Server-Sent Events (SSE)**: To minimize latency, Vesper's responses are streamed to the client in real-time. The orchestrator separates plain text dialogue from structured JSON payloads (product recommendations, UI actions) during the streaming process, allowing the frontend to render dynamic UI components asynchronously as the AI "types".
 
-- **Vesper AI Stylist**: An integrated AI assistant that provides tailored fashion advice, dynamically rendering product recommendations directly in the chat interface via Server-Sent Events (SSE).
-- **Premium UI/UX**: Custom cursor, smooth scroll physics, magnetic buttons, and page transition animations.
-- **Secure Authentication**: Robust JWT-based authentication with encrypted password hashing.
-- **Dynamic Cart & Checkout**: Persistent cart state management with real-time total calculations.
-- **Production Grade**: Configured with strict CORS policies, Helmet security headers, GZIP compression, and graceful shutdown hooks.
+## 2. Infrastructure & Deployment
 
-## 🚀 Live Deployment
+The deployment pipeline is fully automated via GitOps, utilizing exclusively permanent free-tier cloud infrastructure.
 
-- **Frontend**: Hosted on Vercel
-- **Backend API**: Hosted on Render
-- **Database**: Hosted on Neon
+- **Frontend Hosting**: Vercel (Edge Network)
+- **Backend Hosting**: Render (Web Service)
+- **Database Hosting**: Neon (Serverless PostgreSQL)
+- **Continuous Integration (CI)**: Push events to the `main` branch automatically trigger concurrent builds on Vercel and Render. The backend executes `npx prisma migrate deploy` prior to application startup to ensure schema synchronization.
 
-*(Deployment is optimized for permanent free-tier cloud infrastructure).*
+## 3. Local Development Setup
 
-## 💻 Local Development
+### 3.1 Prerequisites
+- Node.js (v20.x or higher)
+- PostgreSQL (Local instance or cloud connection string)
+- Google Gemini API Key
 
-### Prerequisites
-- Node.js (v20+)
-- PostgreSQL (Local or Cloud)
+### 3.2 Backend Configuration
+Navigate to the `backend` directory and install dependencies:
 
-### 1. Setup Backend
 ```bash
 cd backend
 npm install
+```
 
-# Setup environment variables
-cp .env.example .env
-# Edit .env with your local PostgreSQL DATABASE_URL and Gemini API Key
+Create a `.env` file in the root of the backend directory with the following specifications:
 
-# Run database migrations and seed default products
-npx prisma db push
+```env
+PORT=3001
+DATABASE_URL="postgresql://username:password@host/database"
+JWT_SECRET="your_cryptographic_secret"
+JWT_REFRESH_SECRET="your_cryptographic_refresh_secret"
+GOOGLE_GEMINI_API_KEY="your_gemini_api_key"
+FRONTEND_URL="http://localhost:3000"
+RESEND_API_KEY="" # Optional
+```
+
+Synchronize the Prisma schema and seed the database with initial products and administrative accounts:
+
+```bash
+npx prisma db push --accept-data-loss
 npx prisma db seed
-
-# Start the development server
 npm run start:dev
 ```
 
-### 2. Setup Frontend
+### 3.3 Frontend Configuration
+Navigate to the `frontend` directory and install dependencies:
+
 ```bash
 cd frontend
 npm install
+```
 
-# Setup environment variables
-cp .env.example .env.local
-# Edit .env.local to point NEXT_PUBLIC_API_URL to http://localhost:3001/api
+Create a `.env.local` file in the root of the frontend directory:
 
-# Start the development server
+```env
+NEXT_PUBLIC_API_URL="http://localhost:3001/api"
+```
+
+Initialize the Next.js development server:
+
+```bash
 npm run dev
 ```
 
-## 📜 License
+The application will be accessible at `http://localhost:3000`.
 
-Designed and engineered by m4n1kya. All rights reserved.
+## 4. API Reference
+
+The backend exposes a comprehensive RESTful API. Below is a high-level overview of the primary resource endpoints:
+
+- `POST /api/auth/register` - Create a new user account.
+- `POST /api/auth/login` - Authenticate and receive JWT tokens.
+- `GET /api/auth/me` - Retrieve the currently authenticated user's profile.
+- `GET /api/products` - Retrieve a paginated list of products.
+- `GET /api/products/:id` - Retrieve specific product details.
+- `GET /api/chapters` - Retrieve editorial collections and lookbooks.
+- `GET /api/categories` - Retrieve product taxonomy.
+- `POST /api/vesper/chat` - Initiate an SSE stream with the Vesper AI orchestrator.
+
+## 5. Security & Best Practices
+
+- **Environment Variables**: Never commit `.env` files to version control. The repository relies on `.env.example` templates.
+- **Type Safety**: Both frontend and backend share strict TypeScript definitions ensuring data integrity across the network boundary.
+- **ESLint Configurations**: The project adheres to strict static analysis rules. Code failing linting checks will automatically abort the Vercel production build process.
+
+## 6. License
+
+Proprietary software. All rights reserved. Do not distribute without explicit permission.
