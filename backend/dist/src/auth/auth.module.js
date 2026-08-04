@@ -22,9 +22,16 @@ exports.AuthModule = AuthModule = __decorate([
         imports: [
             users_module_1.UsersModule,
             passport_1.PassportModule,
-            jwt_1.JwtModule.register({
-                secret: process.env.JWT_SECRET || 'ashenritual_super_secret_jwt_key_2026',
-                signOptions: { expiresIn: '1d' },
+            jwt_1.JwtModule.registerAsync({
+                useFactory: () => {
+                    if (!process.env.JWT_SECRET) {
+                        throw new Error('JWT_SECRET is not defined in environment variables');
+                    }
+                    return {
+                        secret: process.env.JWT_SECRET,
+                        signOptions: { expiresIn: '15m' },
+                    };
+                },
             }),
         ],
         providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],

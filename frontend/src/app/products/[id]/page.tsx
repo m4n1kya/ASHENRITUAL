@@ -13,14 +13,14 @@ interface ProductPageProps {
 }
 
 async function getProduct(id: string) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
   const res = await fetch(`${API_URL}/products/${id}`, { cache: 'no-store' });
   if (!res.ok) return null;
   return res.json();
 }
 
 async function getRelated(categoryId: string, currentId: string): Promise<Product[]> {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
   try {
     const res = await fetch(`${API_URL}/products?category=${categoryId}`, { cache: 'no-store' });
     if (!res.ok) return [];

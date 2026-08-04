@@ -20,7 +20,7 @@ interface Chapter {
 }
 
 async function getChapters(): Promise<Chapter[]> {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
   try {
     const res = await fetch(`${API_URL}/chapters`, { cache: 'no-store' });
     if (!res.ok) return [];

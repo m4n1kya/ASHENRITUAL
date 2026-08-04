@@ -8,13 +8,15 @@ import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
-  private resend: Resend;
+  private resend: Resend | null = null;
 
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService
   ) {
-    this.resend = new Resend(process.env.RESEND_API_KEY || 're_1234');
+    if (process.env.RESEND_API_KEY) {
+      this.resend = new Resend(process.env.RESEND_API_KEY);
+    }
   }
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -65,16 +67,20 @@ export class AuthService {
       verificationToken,
     });
 
-    // Send verification email asynchronously
-    try {
-      await this.resend.emails.send({
-        from: 'Acme <onboarding@resend.dev>',
-        to: user.email,
-        subject: 'Verify your email for ASHENRITUAL',
-        html: `<p>Your verification token is: ${verificationToken}</p>`
-      });
-    } catch (error) {
-      console.error('Failed to send verification email:', error);
+    // Send verification email asynchronously if Resend is configured
+    if (this.resend) {
+      try {
+        await this.resend.emails.send({
+          from: 'ASHENRITUAL <no-reply@ashenritual.com>', // Update with your verified domain
+          to: user.email,
+          subject: 'Verify your email for ASHENRITUAL',
+          html: `<p>Your verification token is: ${verificationToken}</p>`
+        });
+      } catch (error) {
+        console.error('Failed to send verification email:', error);
+      }
+    } else {
+      console.warn('RESEND_API_KEY not configured. Verification email skipped.');
     }
 
     return this.login(user);

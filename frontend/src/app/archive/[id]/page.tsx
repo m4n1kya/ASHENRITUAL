@@ -12,7 +12,7 @@ interface ArchiveDetailPageProps {
 
 export default async function ArchiveDetailPage({ params }: ArchiveDetailPageProps) {
   const { id } = await params;
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
   let order: Archive | null = null;
   try {

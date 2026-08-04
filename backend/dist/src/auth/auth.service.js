@@ -52,11 +52,13 @@ const crypto_1 = require("crypto");
 let AuthService = class AuthService {
     usersService;
     jwtService;
-    resend;
+    resend = null;
     constructor(usersService, jwtService) {
         this.usersService = usersService;
         this.jwtService = jwtService;
-        this.resend = new resend_1.Resend(process.env.RESEND_API_KEY || 're_1234');
+        if (process.env.RESEND_API_KEY) {
+            this.resend = new resend_1.Resend(process.env.RESEND_API_KEY);
+        }
     }
     async validateUser(email, pass) {
         const user = await this.usersService.findByEmail(email);
@@ -96,16 +98,21 @@ let AuthService = class AuthService {
             passwordHash,
             verificationToken,
         });
-        try {
-            await this.resend.emails.send({
-                from: 'Acme <onboarding@resend.dev>',
-                to: user.email,
-                subject: 'Verify your email for ASHENRITUAL',
-                html: `<p>Your verification token is: ${verificationToken}</p>`
-            });
+        if (this.resend) {
+            try {
+                await this.resend.emails.send({
+                    from: 'ASHENRITUAL <no-reply@ashenritual.com>',
+                    to: user.email,
+                    subject: 'Verify your email for ASHENRITUAL',
+                    html: `<p>Your verification token is: ${verificationToken}</p>`
+                });
+            }
+            catch (error) {
+                console.error('Failed to send verification email:', error);
+            }
         }
-        catch (error) {
-            console.error('Failed to send verification email:', error);
+        else {
+            console.warn('RESEND_API_KEY not configured. Verification email skipped.');
         }
         return this.login(user);
     }

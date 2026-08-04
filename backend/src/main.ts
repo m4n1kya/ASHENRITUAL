@@ -5,17 +5,25 @@ import { AppModule } from './app.module';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
+import compression from 'compression';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
+  app.enableShutdownHooks();
+
+  const allowedOrigins = process.env.FRONTEND_URL 
+    ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+    : ['http://localhost:3000'];
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: allowedOrigins,
     credentials: true,
   });
 
-  // Security Middleware
+  // Security & Performance Middleware
+  app.use(compression());
   app.use(helmet());
   app.use(cookieParser());
   app.use(
