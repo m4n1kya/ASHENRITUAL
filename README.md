@@ -1,19 +1,18 @@
 <div align="center">
-  <img src="docs/images/home.png" alt="ASHENRITUAL Home Page" width="100%" />
+  <img src="Docs/Images/home.png" alt="ASHENRITUAL Home Page" width="100%" />
 </div>
 
 <br />
 
 <div align="center">
-  <img src="docs/images/shop.png" alt="Shop Interface" width="49%" />
-  <img src="docs/images/vesper.png" alt="VESPER AI Stylist" width="49%" />
+  <img src="Docs/Images/shop.png" alt="Shop Interface" width="100%" />
 </div>
 
 <br />
 
 <div align="center">
-  <img src="docs/images/atelier.png" alt="Atelier Layout" width="49%" />
-  <img src="docs/images/beyond.png" alt="Editorial Beyond Section" width="49%" />
+  <img src="Docs/Images/atelier.png" alt="Atelier Layout" width="49%" />
+  <img src="Docs/Images/beyond.png" alt="Editorial Beyond Section" width="49%" />
 </div>
 
 <br />
