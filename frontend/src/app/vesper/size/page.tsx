@@ -178,12 +178,14 @@ export default function SizeIntelligencePage() {
         ...finalMeasurements,
         gender,
         preferredFit
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       }) as any;
 
       const profileData: BodyProfile = {
         id: 'bp-' + Date.now(),
         measurements: finalMeasurements,
         bodyType: response.bodyType,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         preferredFit: preferredFit as any,
         gender,
         confidenceScore: response.confidenceScore,
@@ -371,7 +373,7 @@ export default function SizeIntelligencePage() {
                   </div>
 
                   <p className="text-xs text-[#8D8D8D] leading-relaxed italic border-l-2 border-[#333] pl-4 mb-8">
-                    "{profile.measurements.shoulderWidthCm}cm shoulders with a {profile.measurements.chestCircumferenceCm}cm chest."
+                    &quot;{profile.measurements.shoulderWidthCm}cm shoulders with a {profile.measurements.chestCircumferenceCm}cm chest.&quot;
                     <br/><br/>
                     This profile guarantees structural precision across the ASHENRITUAL permanent collection.
                   </p>

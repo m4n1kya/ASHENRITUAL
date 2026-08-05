@@ -43,7 +43,7 @@ export function SizeRecommendationClient() {
             </p>
             
             <p className="text-[11px] text-[#8D8D8D] leading-relaxed italic border-l border-[#333] pl-3 mt-3">
-              "Based on your {profile.bodyType} profile, this garment will provide an ideal shoulder fit with a {profile.preferredFit === 'Slim' ? 'tapered' : 'slightly relaxed'} chest."
+              &quot;Based on your {profile.bodyType} profile, this garment will provide an ideal shoulder fit with a {profile.preferredFit === 'Slim' ? 'tapered' : 'slightly relaxed'} chest.&quot;
             </p>
           </div>
         </div>

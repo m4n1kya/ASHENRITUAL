@@ -101,7 +101,7 @@ export default function FitPreviewPage() {
               <p className="text-[9px] uppercase tracking-widest text-[#4A4A4A] mb-2 relative z-10">AI Recommendation</p>
               <h2 className="font-heading text-2xl text-[#FDFCFB] relative z-10 mb-2">SIZE M</h2>
               <p className="text-xs text-[#8D8D8D] leading-relaxed relative z-10 italic">
-                "Size M offers better shoulder alignment while preserving natural drape through the torso. {profile.preferredFit === 'Slim' ? 'It provides a closer silhouette without sacrificing chest comfort.' : ''}"
+                &quot;Size M offers better shoulder alignment while preserving natural drape through the torso. {profile.preferredFit === 'Slim' ? 'It provides a closer silhouette without sacrificing chest comfort.' : ''}&quot;
               </p>
             </div>
           </div>
