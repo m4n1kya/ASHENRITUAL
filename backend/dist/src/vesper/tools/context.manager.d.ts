@@ -5,6 +5,7 @@ export interface VesperUserContext {
     savedRituals?: string[];
     recentSearches?: string[];
     localTime?: string;
+    bodyProfile?: any;
 }
 export declare class ContextManager {
     formatContext(context: VesperUserContext): string;

@@ -1,6 +1,8 @@
 import { Controller, Post, Body, Req, Res, UseGuards, HttpCode } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { VesperOrchestrator } from './vesper.orchestrator';
+import { VesperSizeService } from './vesper-size.service';
+import type { SizeAnalysisRequest } from './vesper-size.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ChatMessage } from './providers/ai.provider.interface';
 import { VesperUserContext } from './tools/context.manager';
@@ -12,7 +14,17 @@ interface ChatDto {
 
 @Controller('vesper')
 export class VesperController {
-  constructor(private readonly orchestrator: VesperOrchestrator) {}
+  constructor(
+    private readonly orchestrator: VesperOrchestrator,
+    private readonly sizeService: VesperSizeService
+  ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Post('analyze-size')
+  @HttpCode(200)
+  async analyzeSize(@Body() dto: SizeAnalysisRequest) {
+    return this.sizeService.analyzeProportions(dto);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('chat')

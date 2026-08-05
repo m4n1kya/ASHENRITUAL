@@ -5,6 +5,7 @@ import { GeminiProvider } from './providers/gemini.provider';
 import { ContextManager } from './tools/context.manager';
 import { RecommendationEngine } from './tools/recommendation.engine';
 import { PrismaModule } from '../prisma/prisma.module';
+import { VesperSizeService } from './vesper-size.service';
 
 @Module({
   imports: [PrismaModule],
@@ -13,7 +14,8 @@ import { PrismaModule } from '../prisma/prisma.module';
     VesperOrchestrator,
     GeminiProvider,
     ContextManager,
-    RecommendationEngine
+    RecommendationEngine,
+    VesperSizeService
   ],
   exports: [VesperOrchestrator],
 })

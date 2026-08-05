@@ -169,6 +169,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </span>
             </div>
 
+            {/* Size Intelligence Banner */}
+            <SizeRecommendationClient />
+
             {/* Add to Cart — reference: "MOVE TO REVEAL" style CTA with arrow */}
             <AddToCartButtonServer product={product} />
 
@@ -225,3 +228,4 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
 import { AddToCartButtonServer } from './AddToCartButton';
 import { SaveRitualButton } from '@/components/ui/SaveRitualButton';
+import { SizeRecommendationClient } from './SizeRecommendationClient';

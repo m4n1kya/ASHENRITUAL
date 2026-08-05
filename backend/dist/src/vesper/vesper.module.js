@@ -14,6 +14,7 @@ const gemini_provider_1 = require("./providers/gemini.provider");
 const context_manager_1 = require("./tools/context.manager");
 const recommendation_engine_1 = require("./tools/recommendation.engine");
 const prisma_module_1 = require("../prisma/prisma.module");
+const vesper_size_service_1 = require("./vesper-size.service");
 let VesperModule = class VesperModule {
 };
 exports.VesperModule = VesperModule;
@@ -25,7 +26,8 @@ exports.VesperModule = VesperModule = __decorate([
             vesper_orchestrator_1.VesperOrchestrator,
             gemini_provider_1.GeminiProvider,
             context_manager_1.ContextManager,
-            recommendation_engine_1.RecommendationEngine
+            recommendation_engine_1.RecommendationEngine,
+            vesper_size_service_1.VesperSizeService
         ],
         exports: [vesper_orchestrator_1.VesperOrchestrator],
     })

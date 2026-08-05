@@ -15,11 +15,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VesperController = void 0;
 const common_1 = require("@nestjs/common");
 const vesper_orchestrator_1 = require("./vesper.orchestrator");
+const vesper_size_service_1 = require("./vesper-size.service");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let VesperController = class VesperController {
     orchestrator;
-    constructor(orchestrator) {
+    sizeService;
+    constructor(orchestrator, sizeService) {
         this.orchestrator = orchestrator;
+        this.sizeService = sizeService;
+    }
+    async analyzeSize(dto) {
+        return this.sizeService.analyzeProportions(dto);
     }
     async chatStream(dto, req, res) {
         const user = req.user;
@@ -52,6 +58,15 @@ let VesperController = class VesperController {
 exports.VesperController = VesperController;
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('analyze-size'),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], VesperController.prototype, "analyzeSize", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('chat'),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Body)()),
@@ -63,6 +78,7 @@ __decorate([
 ], VesperController.prototype, "chatStream", null);
 exports.VesperController = VesperController = __decorate([
     (0, common_1.Controller)('vesper'),
-    __metadata("design:paramtypes", [vesper_orchestrator_1.VesperOrchestrator])
+    __metadata("design:paramtypes", [vesper_orchestrator_1.VesperOrchestrator,
+        vesper_size_service_1.VesperSizeService])
 ], VesperController);
 //# sourceMappingURL=vesper.controller.js.map

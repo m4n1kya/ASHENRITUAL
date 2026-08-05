@@ -1,16 +1,25 @@
 import { API_URL, api } from '../lib/api';
 import { useAuthStore } from '../store/auth.store';
 
+import { BodyProfile } from '../store/size.store';
+
 interface ChatPayload {
   messages: { role: 'user' | 'model'; content: string }[];
   context: {
     currentPage?: string;
     currentProductId?: string;
     localTime?: string;
+    bodyProfile?: BodyProfile | null;
   };
 }
 
 import { VesperAction, VesperRecommendationData } from '../store/vesper.store';
+
+export interface VesperChatContext {
+  currentPage?: string;
+  localTime?: string;
+  bodyProfile?: BodyProfile | null;
+}
 
 interface VesperJsonResponse {
   actions?: VesperAction[];

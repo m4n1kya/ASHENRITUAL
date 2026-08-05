@@ -12,6 +12,7 @@
     "@base-ui/react": "^1.6.0",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.4.2",
+    "@mediapipe/tasks-vision": "^1.0.1",
     "@tanstack/react-table": "^8.21.3",
     "@types/js-cookie": "^3.0.6",
     "class-variance-authority": "^0.7.1",
