@@ -178,7 +178,7 @@ export default function SizeIntelligencePage() {
         ...finalMeasurements,
         gender,
         preferredFit
-      });
+      }) as any;
 
       const profileData: BodyProfile = {
         id: 'bp-' + Date.now(),

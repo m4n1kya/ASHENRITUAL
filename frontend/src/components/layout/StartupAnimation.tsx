@@ -41,25 +41,88 @@ export function StartupAnimation() {
           <motion.div
             initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
             animate={{ 
-              scale: [0.8, 1, 1.05, 15], 
+              scale: [0.8, 1, 1.05, 30], 
               opacity: [0, 1, 1, 0],
-              filter: ['blur(10px)', 'blur(0px)', 'blur(0px)', 'blur(20px)']
+              filter: ['blur(10px)', 'blur(0px)', 'blur(0px)', 'blur(0px)']
             }}
             transition={{ 
               duration: 3.2, 
               times: [0, 0.3, 0.7, 1], 
               ease: "easeInOut" 
             }}
+            className="relative flex items-center justify-center will-change-transform"
           >
+            {/* SOFT BACKGROUND FOG */}
+            <div className="absolute inset-0 z-[-1] mt-16 flex items-center justify-center pointer-events-none">
+              {[...Array(3)].map((_, i) => (
+                <motion.div
+                  key={`cloud-${i}`}
+                  className="absolute rounded-full bg-[#151515]"
+                  style={{
+                    width: Math.random() * 100 + 200, 
+                    height: Math.random() * 100 + 200,
+                    filter: 'blur(40px)', // Extremely soft, almost invisible background fog
+                  }}
+                  animate={{
+                    opacity: [0, 0.5, 0],
+                    scale: [0.8, 1.2],
+                    x: [(Math.random() - 0.5) * 60, (Math.random() - 0.5) * 60],
+                    y: [(Math.random() - 0.5) * 60, (Math.random() - 0.5) * 60 - 40],
+                  }}
+                  transition={{ 
+                    duration: Math.random() * 2 + 3, 
+                    repeat: Infinity, 
+                    ease: "easeInOut",
+                    delay: Math.random()
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* SHINY LANTERN IMAGE */}
             <Image 
-              src="/images/logo.png" 
+              src="/images/lantern-logo.png" 
               alt="ASHENRITUAL" 
               width={500} 
               height={500} 
-              className="h-[250px] w-auto object-contain mt-16"
+              className="relative z-0 h-[250px] w-auto object-contain mt-16"
               unoptimized
               priority
             />
+
+            {/* COOL GLOWING ASH PARTICLES */}
+            <div className="absolute inset-0 z-[10] mt-16 flex items-center justify-center pointer-events-none">
+              {[...Array(25)].map((_, i) => {
+                const size = Math.random() * 4 + 1.5; // Tiny particles (1.5px to 5.5px)
+                const startX = (Math.random() - 0.5) * 180;
+                const startY = (Math.random() - 0.5) * 120 + 80; // Start near the bottom/center
+                
+                return (
+                  <motion.div
+                    key={`ash-${i}`}
+                    className="absolute rounded-full bg-white"
+                    style={{
+                      width: size, 
+                      height: size,
+                      boxShadow: '0 0 8px 2px rgba(200, 200, 200, 0.6)', // Glowing ember effect
+                      filter: 'blur(0.5px)',
+                    }}
+                    animate={{
+                      opacity: [0, Math.random() * 0.7 + 0.3, 0], // Flash brightly then fade
+                      y: [startY, startY - (Math.random() * 150 + 100)], // Float upwards like heat
+                      x: [startX, startX + (Math.random() * 50 - 25)], // Drift slightly left/right
+                      scale: [0, 1.5, 0.5], // Pop in, then shrink
+                    }}
+                    transition={{
+                      duration: Math.random() * 1.5 + 2, // 2 to 3.5 seconds
+                      repeat: Infinity,
+                      ease: "easeOut",
+                      delay: Math.random() * 2.5
+                    }}
+                  />
+                );
+              })}
+            </div>
           </motion.div>
         </motion.div>
       )}
