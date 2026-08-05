@@ -28,7 +28,7 @@ export default function SizeIntelligencePage() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const requestRef = useRef<number>();
+  const requestRef = useRef<number | null>(null);
   
   // Start Camera
   // Temporary holding ref for the stream until the video element mounts
