@@ -13,6 +13,7 @@ import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { API_URL } from '@/lib/api';
 
 const schema = z.object({
   email: z.string().email('Enter a valid email'),
@@ -84,7 +85,7 @@ function LoginForm() {
           setLoading(true);
           const redirect = searchParams.get('redirect') || searchParams.get('callbackUrl') || '/';
           localStorage.setItem('ashen_redirect_url', redirect);
-          window.location.href = 'http://localhost:4000/api/v1/auth/google'; // Assuming standard NestJS port
+          window.location.href = `${API_URL}/auth/google`;
         }}
         className="group flex h-11 w-full items-center justify-center gap-4 bg-[#E8E8E8] text-[10px] font-medium uppercase tracking-[0.3em] text-[#0A0A0A] transition-all duration-500 hover:bg-white disabled:opacity-40"
       >
@@ -178,7 +179,7 @@ function LoginForm() {
 /* ── Page — wraps form in Suspense (required by Next.js for useSearchParams) ── */
 export default function LoginPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-8 pt-[60px] texture-grain">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-8 pb-16 pt-[120px] texture-grain">
       <Suspense fallback={
         <div className="w-full max-w-[360px] animate-pulse space-y-6">
           <div className="mx-auto h-4 w-32 bg-[#202020]" />

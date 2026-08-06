@@ -13,6 +13,7 @@ import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { API_URL } from '@/lib/api';
 
 const registerSchema = z.object({
   email: z.string().email('Enter a valid email address'),
@@ -93,7 +94,7 @@ function RegisterForm() {
           setLoading(true);
           const redirect = searchParams.get('redirect') || searchParams.get('callbackUrl') || '/';
           localStorage.setItem('ashen_redirect_url', redirect);
-          window.location.href = 'http://localhost:4000/api/v1/auth/google'; // Assuming standard NestJS port
+          window.location.href = `${API_URL}/auth/google`;
         }}
         className="group flex h-12 w-full items-center justify-center gap-4 bg-[#E8E8E8] text-xs font-medium uppercase tracking-[0.3em] text-[#0A0A0A] transition-all duration-500 hover:bg-white disabled:opacity-40"
       >
@@ -171,9 +172,9 @@ function RegisterForm() {
 /* ── Page — wraps form in Suspense (required by Next.js for useSearchParams) ── */
 export default function RegisterPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6 pt-16">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6 pb-16 pt-[120px] texture-grain">
       <Suspense fallback={
-        <div className="w-full max-w-sm animate-pulse space-y-5">
+        <div className="flex w-full max-w-sm flex-col items-center justify-center space-y-4">
           <div className="h-8 w-40 mx-auto bg-muted" />
           <div className="h-12 w-full bg-muted" />
           <div className="h-12 w-full bg-muted" />
