@@ -103,6 +103,7 @@ export default function RootLayout({
             `,
           }}
         />
+        <link rel="preload" href="/images/lantern-logo.png" as="image" />
       </head>
       <body
         className={cn(
