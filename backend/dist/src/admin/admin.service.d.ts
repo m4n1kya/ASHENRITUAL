@@ -14,11 +14,11 @@ export declare class AdminService {
     getDashboardStats(): Promise<DashboardStats>;
     createProduct(dto: CreateProductDto): Promise<{
         category: {
-            slug: string;
             id: string;
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            slug: string;
         };
     } & {
         id: string;
@@ -33,11 +33,11 @@ export declare class AdminService {
     }>;
     updateProduct(id: string, dto: UpdateProductDto): Promise<{
         category: {
-            slug: string;
             id: string;
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            slug: string;
         };
     } & {
         id: string;

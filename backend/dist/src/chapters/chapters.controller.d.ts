@@ -7,11 +7,11 @@ export declare class ChaptersController {
             products: number;
         };
     } & {
-        slug: string | null;
         id: string;
         name: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string | null;
         description: string | null;
         quote: string | null;
         quoteAuthor: string | null;
@@ -20,11 +20,11 @@ export declare class ChaptersController {
     findBySlug(slug: string): Promise<{
         products: ({
             category: {
-                slug: string;
                 id: string;
                 name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                slug: string;
             };
         } & {
             id: string;
@@ -38,11 +38,11 @@ export declare class ChaptersController {
             categoryId: string;
         })[];
     } & {
-        slug: string | null;
         id: string;
         name: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string | null;
         description: string | null;
         quote: string | null;
         quoteAuthor: string | null;

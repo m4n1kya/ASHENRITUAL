@@ -5,11 +5,11 @@ export declare class ProductsService {
     findAll(query?: string, page?: number, limit?: number): Promise<{
         data: ({
             category: {
-                slug: string;
                 id: string;
                 name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                slug: string;
             };
         } & {
             id: string;
@@ -43,11 +43,11 @@ export declare class ProductsService {
             comment: string | null;
         })[];
         category: {
-            slug: string;
             id: string;
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            slug: string;
         };
     } & {
         id: string;
@@ -63,11 +63,11 @@ export declare class ProductsService {
     findByCategory(slug: string, page?: number, limit?: number): Promise<{
         data: ({
             category: {
-                slug: string;
                 id: string;
                 name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                slug: string;
             };
         } & {
             id: string;
@@ -87,11 +87,11 @@ export declare class ProductsService {
     }>;
     findFeatured(): Promise<({
         category: {
-            slug: string;
             id: string;
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            slug: string;
         };
     } & {
         id: string;
@@ -106,11 +106,11 @@ export declare class ProductsService {
     })[]>;
     findNewArrivals(): Promise<({
         category: {
-            slug: string;
             id: string;
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            slug: string;
         };
     } & {
         id: string;
@@ -125,11 +125,11 @@ export declare class ProductsService {
     })[]>;
     findBestSellers(): Promise<({
         category: {
-            slug: string;
             id: string;
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            slug: string;
         };
     } & {
         id: string;

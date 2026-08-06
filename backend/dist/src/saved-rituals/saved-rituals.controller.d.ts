@@ -19,11 +19,11 @@ export declare class SavedRitualsController {
     }): Promise<({
         product: {
             category: {
-                slug: string;
                 id: string;
                 name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                slug: string;
             };
         } & {
             id: string;

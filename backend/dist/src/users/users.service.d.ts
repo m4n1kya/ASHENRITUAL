@@ -5,8 +5,8 @@ export declare class UsersService {
     create(data: any): Promise<{
         id: string;
         email: string;
-        providerId: string | null;
         provider: string;
+        providerId: string | null;
         name: string | null;
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
@@ -21,8 +21,8 @@ export declare class UsersService {
     upsertOAuthUser(profile: any): Promise<{
         id: string;
         email: string;
-        providerId: string | null;
         provider: string;
+        providerId: string | null;
         name: string | null;
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
@@ -37,9 +37,9 @@ export declare class UsersService {
     findByEmail(email: string): Promise<{
         id: string;
         email: string;
-        providerId: string | null;
         passwordHash: string | null;
         provider: string;
+        providerId: string | null;
         name: string | null;
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
@@ -54,9 +54,9 @@ export declare class UsersService {
     findById(id: string): Promise<{
         id: string;
         email: string;
-        providerId: string | null;
         passwordHash: string | null;
         provider: string;
+        providerId: string | null;
         name: string | null;
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
@@ -71,9 +71,9 @@ export declare class UsersService {
     update(id: string, data: any): Promise<{
         id: string;
         email: string;
-        providerId: string | null;
         passwordHash: string | null;
         provider: string;
+        providerId: string | null;
         name: string | null;
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;

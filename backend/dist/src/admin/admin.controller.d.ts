@@ -7,11 +7,11 @@ export declare class AdminController {
     getDashboardStats(): Promise<import("./admin.service").DashboardStats>;
     createProduct(dto: CreateProductDto): Promise<{
         category: {
-            slug: string;
             id: string;
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            slug: string;
         };
     } & {
         id: string;
@@ -26,11 +26,11 @@ export declare class AdminController {
     }>;
     updateProduct(id: string, dto: UpdateProductDto): Promise<{
         category: {
-            slug: string;
             id: string;
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            slug: string;
         };
     } & {
         id: string;

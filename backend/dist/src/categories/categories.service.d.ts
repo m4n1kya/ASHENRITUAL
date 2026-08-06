@@ -7,20 +7,20 @@ export declare class CategoriesService {
             products: number;
         };
     } & {
-        slug: string;
         id: string;
         name: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
     })[]>;
     findBySlug(slug: string): Promise<{
         products: ({
             category: {
-                slug: string;
                 id: string;
                 name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                slug: string;
             };
         } & {
             id: string;
@@ -34,10 +34,10 @@ export declare class CategoriesService {
             categoryId: string;
         })[];
     } & {
-        slug: string;
         id: string;
         name: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
     }>;
 }

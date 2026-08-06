@@ -17,11 +17,11 @@ export declare class VesperService {
         stylingNotes: any;
         products: ({
             category: {
-                slug: string;
                 id: string;
                 name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                slug: string;
             };
         } & {
             id: string;
@@ -42,11 +42,11 @@ export declare class VesperService {
         stylingNotes: any;
         products: ({
             category: {
-                slug: string;
                 id: string;
                 name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                slug: string;
             };
         } & {
             id: string;

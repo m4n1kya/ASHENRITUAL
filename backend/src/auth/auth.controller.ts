@@ -46,13 +46,18 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   @ApiOperation({ summary: 'Handle Google OAuth callback' })
   async googleAuthRedirect(@Req() req: any, @Res() res: Response) {
-    const { accessToken, refreshToken, user } = await this.authService.login(req.user);
-    this.setRefreshTokenCookie(res, refreshToken);
-    
-    // Redirect back to frontend with the access token
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    const userParam = encodeURIComponent(JSON.stringify(user));
-    res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}&user=${userParam}`);
+    try {
+      const { accessToken, refreshToken, user } = await this.authService.login(req.user);
+      this.setRefreshTokenCookie(res, refreshToken);
+      
+      // Redirect back to frontend with the access token
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      const userParam = encodeURIComponent(JSON.stringify(user));
+      res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}&user=${userParam}`);
+    } catch (error: any) {
+      console.error('GOOGLE OAUTH ERROR:', error);
+      res.status(500).json({ error: error.message, stack: error.stack });
+    }
   }
 
   @HttpCode(HttpStatus.OK)

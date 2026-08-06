@@ -40,11 +40,17 @@ let AuthController = class AuthController {
     async googleAuth() {
     }
     async googleAuthRedirect(req, res) {
-        const { accessToken, refreshToken, user } = await this.authService.login(req.user);
-        this.setRefreshTokenCookie(res, refreshToken);
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-        const userParam = encodeURIComponent(JSON.stringify(user));
-        res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}&user=${userParam}`);
+        try {
+            const { accessToken, refreshToken, user } = await this.authService.login(req.user);
+            this.setRefreshTokenCookie(res, refreshToken);
+            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+            const userParam = encodeURIComponent(JSON.stringify(user));
+            res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}&user=${userParam}`);
+        }
+        catch (error) {
+            console.error('GOOGLE OAUTH ERROR:', error);
+            res.status(500).json({ error: error.message, stack: error.stack });
+        }
     }
     async refresh(req, res) {
         const refreshToken = req.cookies['refreshToken'];
