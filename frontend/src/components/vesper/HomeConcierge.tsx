@@ -8,7 +8,7 @@ export function HomeConcierge() {
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 1, duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
-      className="fixed right-16 top-16 z-50 flex items-center justify-end"
+      className="fixed right-4 top-16 md:right-8 md:top-16 xl:right-8 z-[100] flex items-center justify-end"
     >
       <Link href="/vesper" className="group relative flex items-center justify-end">
         {/* Pulsating ethereal glow */}
