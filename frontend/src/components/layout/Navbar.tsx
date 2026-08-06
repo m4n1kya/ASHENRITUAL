@@ -74,7 +74,7 @@ function UserDropdown({ isAuthed, iconCls }: { isAuthed: boolean; iconCls: strin
   const authedLinks = [
     { label: 'Profile', href: '/account', icon: User },
     { label: 'Orders', href: '/archive', icon: Package },
-    { label: 'Saved Rituals', href: '/saved-rituals', icon: Heart },
+    { label: 'Saved Rituals', href: '/saved-rituals', icon: WebIcon },
   ];
 
   return (
