@@ -92,17 +92,6 @@ export function ShopPageClient() {
     api.get<Category[]>('/categories').then(setCategories).catch(() => {});
   }, []);
 
-  // Auto-scroll to the grid whenever a search query is active
-  useEffect(() => {
-    if (searchQuery && gridRef.current) {
-      // Small delay so the grid has time to render first
-      const t = setTimeout(() => {
-        gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 120);
-      return () => clearTimeout(t);
-    }
-  }, [searchQuery]);
-
   const scrollToGrid = useCallback(() => {
     gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
@@ -111,7 +100,8 @@ export function ShopPageClient() {
     <div className="w-full">
 
       {/* ── HERO CURATION SECTION ────────────────────────────────────────────── */}
-      <div className="keep-light-text relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.08)] bg-transparent pb-20 pt-4">
+      {!searchQuery && (
+        <div className="keep-light-text relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.08)] bg-transparent pb-20 pt-4">
         
         <div className="relative z-10 mx-auto flex w-full max-w-screen-2xl flex-col items-stretch justify-between gap-12 px-6 lg:flex-row lg:gap-8 lg:px-12">
           
@@ -201,10 +191,10 @@ export function ShopPageClient() {
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* ── DYNAMIC GRID ────────────────────────────────────────────────────── */}
-      <div id="shop-grid" ref={gridRef} className="mx-auto max-w-screen-xl px-8 py-24 lg:px-12">
+      <div id="shop-grid" ref={gridRef} className={cn("mx-auto max-w-screen-xl px-8 pb-24 lg:px-12", searchQuery ? "pt-12" : "pt-24")}>
         {/* Header inside grid */}
         <div className="mb-12">
           <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">
