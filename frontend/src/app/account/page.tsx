@@ -86,7 +86,7 @@ export default function AccountPage() {
       <main className="min-h-screen bg-background pt-16 relative">
         
         {/* ── Background Lantern & Particles ── */}
-        <div className="pointer-events-none fixed left-[-35vw] top-0 h-screen w-[100vw] min-w-[1000px] z-0 opacity-60">
+        <div className="pointer-events-none fixed left-0 top-0 h-screen w-[80vw] min-w-[800px] z-0 opacity-60">
           <Image
             src="/images/lantern.png"
             alt=""
