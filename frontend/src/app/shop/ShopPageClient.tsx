@@ -191,6 +191,7 @@ export function ShopPageClient() {
             </div>
           </div>
         </div>
+      </div>
       )}
 
       {/* ── DYNAMIC GRID ────────────────────────────────────────────────────── */}
