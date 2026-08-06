@@ -179,7 +179,7 @@ function LoginForm() {
 /* ── Page — wraps form in Suspense (required by Next.js for useSearchParams) ── */
 export default function LoginPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-8 pb-16 pt-[120px] texture-grain">
+    <main className="flex min-h-screen flex-col items-center bg-background px-8 pb-16 pt-[160px] texture-grain">
       <Suspense fallback={
         <div className="w-full max-w-[360px] animate-pulse space-y-6">
           <div className="mx-auto h-4 w-32 bg-[#202020]" />

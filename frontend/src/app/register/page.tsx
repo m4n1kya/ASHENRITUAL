@@ -172,7 +172,7 @@ function RegisterForm() {
 /* ── Page — wraps form in Suspense (required by Next.js for useSearchParams) ── */
 export default function RegisterPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6 pb-16 pt-[120px] texture-grain">
+    <main className="flex min-h-screen flex-col items-center bg-background px-6 pb-16 pt-[160px] texture-grain">
       <Suspense fallback={
         <div className="flex w-full max-w-sm flex-col items-center justify-center space-y-4">
           <div className="h-8 w-40 mx-auto bg-muted" />
