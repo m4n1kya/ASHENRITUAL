@@ -1,81 +1,9 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateArchiveDto } from './dto/create-archive.dto';
-import { Decimal } from '@prisma/client/runtime/library';
 export declare class ArchivesService {
     private prisma;
     constructor(prisma: PrismaService);
-    create(userId: string, dto: CreateArchiveDto): Promise<{
-        items: ({
-            product: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                name: string;
-                description: string;
-                price: Decimal;
-                images: string[];
-                stock: number;
-                categoryId: string;
-            };
-        } & {
-            id: string;
-            price: Decimal;
-            productId: string;
-            archiveId: string;
-            quantity: number;
-        })[];
-    } & {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        total: Decimal;
-        userId: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-    }>;
-    findUserArchives(userId: string): Promise<({
-        items: ({
-            product: {
-                id: string;
-                name: string;
-                price: Decimal;
-                images: string[];
-            };
-        } & {
-            id: string;
-            price: Decimal;
-            productId: string;
-            archiveId: string;
-            quantity: number;
-        })[];
-    } & {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        total: Decimal;
-        userId: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-    })[]>;
-    findOne(id: string, userId: string): Promise<{
-        items: ({
-            product: {
-                id: string;
-                name: string;
-                price: Decimal;
-                images: string[];
-            };
-        } & {
-            id: string;
-            price: Decimal;
-            productId: string;
-            archiveId: string;
-            quantity: number;
-        })[];
-    } & {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        total: Decimal;
-        userId: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-    }>;
+    create(userId: string, dto: CreateArchiveDto): unknown;
+    findUserArchives(userId: string): unknown;
+    findOne(id: string, userId: string): unknown;
 }

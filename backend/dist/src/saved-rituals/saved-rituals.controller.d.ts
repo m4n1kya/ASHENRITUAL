@@ -10,37 +10,9 @@ export declare class SavedRitualsController {
     constructor(savedRitualsService: SavedRitualsService);
     toggle(dto: ToggleSavedRitualDto, req: {
         user: JwtUser;
-    }): Promise<{
-        action: string;
-        productId: string;
-    }>;
+    }): unknown;
     findAll(req: {
         user: JwtUser;
-    }): Promise<({
-        product: {
-            category: {
-                slug: string;
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                name: string;
-            };
-        } & {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            name: string;
-            description: string;
-            price: import("@prisma/client/runtime/library").Decimal;
-            images: string[];
-            stock: number;
-            categoryId: string;
-        };
-    } & {
-        id: string;
-        createdAt: Date;
-        userId: string;
-        productId: string;
-    })[]>;
+    }): unknown;
 }
 export {};

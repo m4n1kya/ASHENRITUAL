@@ -4,27 +4,9 @@ import type { Response, Request } from 'express';
 export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
-    register(createUserDto: CreateUserDto, res: Response): Promise<{
-        accessToken: string;
-        user: {
-            id: any;
-            email: any;
-            role: any;
-        };
-    }>;
-    login(createUserDto: CreateUserDto, res: Response): Promise<{
-        accessToken: string;
-        user: {
-            id: any;
-            email: any;
-            role: any;
-        };
-    }>;
-    refresh(req: Request, res: Response): Promise<{
-        accessToken: string;
-    }>;
-    logout(req: Request, res: Response): Promise<{
-        message: string;
-    }>;
+    register(createUserDto: CreateUserDto, res: Response): unknown;
+    login(createUserDto: CreateUserDto, res: Response): unknown;
+    refresh(req: Request, res: Response): unknown;
+    logout(req: Request, res: Response): unknown;
     private setRefreshTokenCookie;
 }

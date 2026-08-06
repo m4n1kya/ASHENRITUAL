@@ -463,7 +463,7 @@ export function Navbar() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="absolute inset-0 bg-background" onClick={close} />
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={close} />
             <motion.nav
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -472,7 +472,7 @@ export function Navbar() {
               role="dialog"
               aria-modal="true"
               aria-label="Mobile navigation"
-              className="absolute inset-y-0 right-0 flex w-full max-w-[280px] flex-col border-l border-[#202020] bg-background px-8 py-6"
+              className="absolute inset-y-0 right-0 flex w-full max-w-[280px] flex-col border-l border-[#202020] bg-background/90 backdrop-blur-3xl px-8 py-6 shadow-2xl"
             >
               <button
                 onClick={close}

@@ -10,83 +10,12 @@ export declare class ArchivesController {
     constructor(archivesService: ArchivesService);
     create(dto: CreateArchiveDto, req: {
         user: JwtUser;
-    }): Promise<{
-        items: ({
-            product: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                name: string;
-                description: string;
-                price: import("@prisma/client/runtime/library").Decimal;
-                images: string[];
-                stock: number;
-                categoryId: string;
-            };
-        } & {
-            id: string;
-            price: import("@prisma/client/runtime/library").Decimal;
-            productId: string;
-            archiveId: string;
-            quantity: number;
-        })[];
-    } & {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        total: import("@prisma/client/runtime/library").Decimal;
-        userId: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-    }>;
+    }): unknown;
     findMyArchives(req: {
         user: JwtUser;
-    }): Promise<({
-        items: ({
-            product: {
-                id: string;
-                name: string;
-                price: import("@prisma/client/runtime/library").Decimal;
-                images: string[];
-            };
-        } & {
-            id: string;
-            price: import("@prisma/client/runtime/library").Decimal;
-            productId: string;
-            archiveId: string;
-            quantity: number;
-        })[];
-    } & {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        total: import("@prisma/client/runtime/library").Decimal;
-        userId: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-    })[]>;
+    }): unknown;
     findOne(id: string, req: {
         user: JwtUser;
-    }): Promise<{
-        items: ({
-            product: {
-                id: string;
-                name: string;
-                price: import("@prisma/client/runtime/library").Decimal;
-                images: string[];
-            };
-        } & {
-            id: string;
-            price: import("@prisma/client/runtime/library").Decimal;
-            productId: string;
-            archiveId: string;
-            quantity: number;
-        })[];
-    } & {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        total: import("@prisma/client/runtime/library").Decimal;
-        userId: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-    }>;
+    }): unknown;
 }
 export {};

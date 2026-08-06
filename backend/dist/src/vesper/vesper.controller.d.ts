@@ -12,7 +12,7 @@ export declare class VesperController {
     private readonly orchestrator;
     private readonly sizeService;
     constructor(orchestrator: VesperOrchestrator, sizeService: VesperSizeService);
-    analyzeSize(dto: SizeAnalysisRequest): Promise<import("./vesper-size.service").SizeAnalysisResponse>;
-    chatStream(dto: ChatDto, req: Request, res: Response): Promise<void>;
+    analyzeSize(dto: SizeAnalysisRequest): unknown;
+    chatStream(dto: ChatDto, req: Request, res: Response): any;
 }
 export {};

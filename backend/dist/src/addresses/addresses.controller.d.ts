@@ -10,32 +10,12 @@ export declare class AddressesController {
     constructor(addressesService: AddressesService);
     create(dto: CreateAddressDto, req: {
         user: JwtUser;
-    }): Promise<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-        street: string;
-        city: string;
-        zip: string;
-        country: string;
-    }>;
+    }): unknown;
     findAll(req: {
         user: JwtUser;
-    }): Promise<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-        street: string;
-        city: string;
-        zip: string;
-        country: string;
-    }[]>;
+    }): unknown;
     remove(id: string, req: {
         user: JwtUser;
-    }): Promise<{
-        message: string;
-    }>;
+    }): unknown;
 }
 export {};

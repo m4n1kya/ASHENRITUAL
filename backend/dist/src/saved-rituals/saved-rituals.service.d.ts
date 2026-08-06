@@ -2,34 +2,6 @@ import { PrismaService } from '../prisma/prisma.service';
 export declare class SavedRitualsService {
     private prisma;
     constructor(prisma: PrismaService);
-    toggle(userId: string, productId: string): Promise<{
-        action: string;
-        productId: string;
-    }>;
-    findAll(userId: string): Promise<({
-        product: {
-            category: {
-                slug: string;
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                name: string;
-            };
-        } & {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            name: string;
-            description: string;
-            price: import("@prisma/client/runtime/library").Decimal;
-            images: string[];
-            stock: number;
-            categoryId: string;
-        };
-    } & {
-        id: string;
-        createdAt: Date;
-        userId: string;
-        productId: string;
-    })[]>;
+    toggle(userId: string, productId: string): unknown;
+    findAll(userId: string): unknown;
 }
