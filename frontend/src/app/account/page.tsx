@@ -83,10 +83,10 @@ export default function AccountPage() {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-background pt-16 relative overflow-hidden">
+      <main className="min-h-screen bg-background pt-16 relative">
         
         {/* ── Background Lantern & Particles ── */}
-        <div className="pointer-events-none absolute left-[-15%] top-[10%] bottom-0 w-[50vw] min-w-[600px] z-0 opacity-40">
+        <div className="pointer-events-none fixed left-[-25vw] top-0 h-screen w-[80vw] min-w-[800px] z-0 opacity-40">
           <Image
             src="/images/lantern.png"
             alt=""
