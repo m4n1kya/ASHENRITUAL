@@ -31,7 +31,12 @@ export default function AccountPage() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [form, setForm] = useState({ street: '', city: '', zip: '', country: '' });
   const [saving, setSaving] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { token, user, logout, _hasHydrated } = useAuthStore();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // Wait until the persisted store has rehydrated from localStorage
@@ -86,49 +91,51 @@ export default function AccountPage() {
       <main className="min-h-screen bg-background pt-16 relative">
         
         {/* ── Background Lantern & Particles ── */}
-        <div className="pointer-events-none fixed left-0 top-0 h-screen w-[80vw] min-w-[800px] z-0 opacity-60">
-          <Image
-            src="/images/lantern.png"
-            alt=""
-            fill
-            className="object-contain object-left opacity-60"
-            unoptimized
-          />
-          
-          {/* Glowing Ash Particles around the lantern */}
-          <div className="absolute inset-0 z-10 flex items-center justify-center">
-            {[...Array(20)].map((_, i) => {
-              const size = Math.random() * 4 + 1.5;
-              const startX = (Math.random() - 0.5) * 300;
-              const startY = (Math.random() - 0.5) * 400 + 100;
-              
-              return (
-                <motion.div
-                  key={`ash-${i}`}
-                  className="absolute rounded-full bg-white"
-                  style={{
-                    width: size, 
-                    height: size,
-                    boxShadow: '0 0 8px 2px rgba(200, 200, 200, 0.6)',
-                    filter: 'blur(0.5px)',
-                  }}
-                  animate={{
-                    opacity: [0, Math.random() * 0.7 + 0.3, 0],
-                    y: [startY, startY - (Math.random() * 200 + 100)],
-                    x: [startX, startX + (Math.random() * 50 - 25)],
-                    scale: [0, 1.5, 0.5],
-                  }}
-                  transition={{
-                    duration: Math.random() * 2 + 3,
-                    repeat: Infinity,
-                    ease: "easeOut",
-                    delay: Math.random() * 2.5
-                  }}
-                />
-              );
-            })}
+        {mounted && (
+          <div className="pointer-events-none fixed left-0 top-0 h-screen w-[80vw] min-w-[800px] z-0 opacity-60">
+            <Image
+              src="/images/lantern.png"
+              alt=""
+              fill
+              className="object-contain object-left opacity-60"
+              unoptimized
+            />
+            
+            {/* Glowing Ash Particles around the lantern */}
+            <div className="absolute inset-0 z-10 flex items-center justify-center">
+              {[...Array(20)].map((_, i) => {
+                const size = Math.random() * 4 + 1.5;
+                const startX = (Math.random() - 0.5) * 300;
+                const startY = (Math.random() - 0.5) * 400 + 100;
+                
+                return (
+                  <motion.div
+                    key={`ash-${i}`}
+                    className="absolute rounded-full bg-white"
+                    style={{
+                      width: size, 
+                      height: size,
+                      boxShadow: '0 0 8px 2px rgba(200, 200, 200, 0.6)',
+                      filter: 'blur(0.5px)',
+                    }}
+                    animate={{
+                      opacity: [0, Math.random() * 0.7 + 0.3, 0],
+                      y: [startY, startY - (Math.random() * 200 + 100)],
+                      x: [startX, startX + (Math.random() * 50 - 25)],
+                      scale: [0, 1.5, 0.5],
+                    }}
+                    transition={{
+                      duration: Math.random() * 2 + 3,
+                      repeat: Infinity,
+                      ease: "easeOut",
+                      delay: Math.random() * 2.5
+                    }}
+                  />
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="relative z-10 mx-auto max-w-screen-lg px-6 py-12 lg:px-8">
           {/* Profile Header */}
