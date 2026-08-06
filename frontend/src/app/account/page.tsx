@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth.store';
 import { useThemeStore } from '@/store/theme.store';
@@ -82,8 +83,54 @@ export default function AccountPage() {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-background pt-16">
-        <div className="mx-auto max-w-screen-lg px-6 py-12 lg:px-8">
+      <main className="min-h-screen bg-background pt-16 relative overflow-hidden">
+        
+        {/* ── Background Lantern & Particles ── */}
+        <div className="pointer-events-none absolute left-[-15%] top-[10%] bottom-0 w-[50vw] min-w-[600px] z-0 opacity-40">
+          <Image
+            src="/images/lantern.png"
+            alt=""
+            fill
+            className="object-contain object-left opacity-30"
+            unoptimized
+          />
+          
+          {/* Glowing Ash Particles around the lantern */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center">
+            {[...Array(20)].map((_, i) => {
+              const size = Math.random() * 4 + 1.5;
+              const startX = (Math.random() - 0.5) * 300;
+              const startY = (Math.random() - 0.5) * 400 + 100;
+              
+              return (
+                <motion.div
+                  key={`ash-${i}`}
+                  className="absolute rounded-full bg-white"
+                  style={{
+                    width: size, 
+                    height: size,
+                    boxShadow: '0 0 8px 2px rgba(200, 200, 200, 0.6)',
+                    filter: 'blur(0.5px)',
+                  }}
+                  animate={{
+                    opacity: [0, Math.random() * 0.7 + 0.3, 0],
+                    y: [startY, startY - (Math.random() * 200 + 100)],
+                    x: [startX, startX + (Math.random() * 50 - 25)],
+                    scale: [0, 1.5, 0.5],
+                  }}
+                  transition={{
+                    duration: Math.random() * 2 + 3,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                    delay: Math.random() * 2.5
+                  }}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-screen-lg px-6 py-12 lg:px-8">
           {/* Profile Header */}
           <div className="mb-12 flex flex-col gap-6 border-b border-border pb-10 sm:flex-row sm:items-end sm:justify-between">
             <div>
