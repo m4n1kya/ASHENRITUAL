@@ -1,21 +1,4 @@
-<div align="center">
-  <img src="Docs/Images/home.png" alt="ASHENRITUAL Home Page" width="100%" />
-</div>
 
-<br />
-
-<div align="center">
-  <img src="Docs/Images/shop.png" alt="Shop Interface" width="100%" />
-</div>
-
-<br />
-
-<div align="center">
-  <img src="Docs/Images/atelier.png" alt="Atelier Layout" width="49%" />
-  <img src="Docs/Images/beyond.png" alt="Editorial Beyond Section" width="49%" />
-</div>
-
-<br />
 
 <div align="center">
   <h1>ASHENRITUAL</h1>
