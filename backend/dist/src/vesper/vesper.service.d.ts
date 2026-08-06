@@ -10,6 +10,54 @@ export declare class VesperService {
         dressCode: string;
         palette: string;
         silhouette: string;
-    }): unknown;
-    generateOutfit(userId: string): unknown;
+    }): Promise<{
+        id: string;
+        title: any;
+        description: any;
+        stylingNotes: any;
+        products: ({
+            category: {
+                slug: string;
+                id: string;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+        } & {
+            id: string;
+            name: string;
+            createdAt: Date;
+            updatedAt: Date;
+            description: string;
+            price: import("@prisma/client/runtime/library").Decimal;
+            images: string[];
+            stock: number;
+            categoryId: string;
+        })[];
+    }>;
+    generateOutfit(userId: string): Promise<{
+        id: string;
+        title: any;
+        description: any;
+        stylingNotes: any;
+        products: ({
+            category: {
+                slug: string;
+                id: string;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+        } & {
+            id: string;
+            name: string;
+            createdAt: Date;
+            updatedAt: Date;
+            description: string;
+            price: import("@prisma/client/runtime/library").Decimal;
+            images: string[];
+            stock: number;
+            categoryId: string;
+        })[];
+    }>;
 }

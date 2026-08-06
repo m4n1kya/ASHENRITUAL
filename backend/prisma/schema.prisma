@@ -28,7 +28,11 @@ enum DiscountType {
 model User {
   id                   String        @id @default(uuid())
   email                String        @unique
-  passwordHash         String
+  passwordHash         String?
+  provider             String        @default("LOCAL")
+  providerId           String?       @unique
+  name                 String?
+  avatar               String?
   role                 Role          @default(USER)
   refreshToken         String?
   emailVerified        Boolean       @default(false)

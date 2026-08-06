@@ -12,11 +12,49 @@ export class UsersService {
     });
 
     if (existingUser) {
+      if (existingUser.provider !== 'LOCAL') {
+        throw new ConflictException(`User registered via ${existingUser.provider}. Please sign in with ${existingUser.provider}.`);
+      }
       throw new ConflictException('User with this email already exists');
     }
 
     const user = await this.prisma.user.create({
       data,
+    });
+
+    const { passwordHash: _, ...result } = user;
+    return result;
+  }
+
+  async upsertOAuthUser(profile: any) {
+    const existingUser = await this.findByEmail(profile.email);
+
+    if (existingUser) {
+      // Merge account
+      const user = await this.prisma.user.update({
+        where: { id: existingUser.id },
+        data: {
+          provider: 'GOOGLE',
+          providerId: profile.providerId,
+          name: existingUser.name || profile.name,
+          avatar: existingUser.avatar || profile.picture,
+          emailVerified: true,
+        },
+      });
+      const { passwordHash: _, ...result } = user;
+      return result;
+    }
+
+    // Create new
+    const user = await this.prisma.user.create({
+      data: {
+        email: profile.email,
+        provider: 'GOOGLE',
+        providerId: profile.providerId,
+        name: profile.name,
+        avatar: profile.picture,
+        emailVerified: true,
+      },
     });
 
     const { passwordHash: _, ...result } = user;

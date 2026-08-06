@@ -22,10 +22,42 @@ let UsersService = class UsersService {
             where: { email: data.email },
         });
         if (existingUser) {
+            if (existingUser.provider !== 'LOCAL') {
+                throw new common_1.ConflictException(`User registered via ${existingUser.provider}. Please sign in with ${existingUser.provider}.`);
+            }
             throw new common_1.ConflictException('User with this email already exists');
         }
         const user = await this.prisma.user.create({
             data,
+        });
+        const { passwordHash: _, ...result } = user;
+        return result;
+    }
+    async upsertOAuthUser(profile) {
+        const existingUser = await this.findByEmail(profile.email);
+        if (existingUser) {
+            const user = await this.prisma.user.update({
+                where: { id: existingUser.id },
+                data: {
+                    provider: 'GOOGLE',
+                    providerId: profile.providerId,
+                    name: existingUser.name || profile.name,
+                    avatar: existingUser.avatar || profile.picture,
+                    emailVerified: true,
+                },
+            });
+            const { passwordHash: _, ...result } = user;
+            return result;
+        }
+        const user = await this.prisma.user.create({
+            data: {
+                email: profile.email,
+                provider: 'GOOGLE',
+                providerId: profile.providerId,
+                name: profile.name,
+                avatar: profile.picture,
+                emailVerified: true,
+            },
         });
         const { passwordHash: _, ...result } = user;
         return result;

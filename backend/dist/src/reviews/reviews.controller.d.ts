@@ -10,7 +10,33 @@ export declare class ReviewsController {
     constructor(reviewsService: ReviewsService);
     create(dto: CreateReviewDto, req: {
         user: JwtUser;
-    }): unknown;
-    findByProduct(productId: string): unknown;
+    }): Promise<{
+        user: {
+            id: string;
+            email: string;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
+        productId: string;
+        rating: number;
+        comment: string | null;
+    }>;
+    findByProduct(productId: string): Promise<({
+        user: {
+            id: string;
+            email: string;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
+        productId: string;
+        rating: number;
+        comment: string | null;
+    })[]>;
 }
 export {};

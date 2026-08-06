@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
+const passport_1 = require("@nestjs/passport");
 const auth_service_1 = require("./auth.service");
 const create_user_dto_1 = require("../users/dto/create-user.dto");
 const swagger_1 = require("@nestjs/swagger");
@@ -35,6 +36,15 @@ let AuthController = class AuthController {
         const { accessToken, refreshToken, user: userData } = await this.authService.login(user);
         this.setRefreshTokenCookie(res, refreshToken);
         return { accessToken, user: userData };
+    }
+    async googleAuth() {
+    }
+    async googleAuthRedirect(req, res) {
+        const { accessToken, refreshToken, user } = await this.authService.login(req.user);
+        this.setRefreshTokenCookie(res, refreshToken);
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const userParam = encodeURIComponent(JSON.stringify(user));
+        res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}&user=${userParam}`);
     }
     async refresh(req, res) {
         const refreshToken = req.cookies['refreshToken'];
@@ -106,6 +116,24 @@ __decorate([
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Get)('google'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
+    (0, swagger_1.ApiOperation)({ summary: 'Initiate Google OAuth login' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "googleAuth", null);
+__decorate([
+    (0, common_1.Get)('google/callback'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
+    (0, swagger_1.ApiOperation)({ summary: 'Handle Google OAuth callback' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "googleAuthRedirect", null);
 __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('refresh'),

@@ -21,11 +21,21 @@ export class AuthService {
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
-    if (user && await bcrypt.compare(pass, user.passwordHash)) {
+    if (!user) return null;
+    
+    if (user.provider !== 'LOCAL' || !user.passwordHash) {
+      throw new UnauthorizedException(`This email is associated with a ${user.provider} account. Please sign in with ${user.provider}.`);
+    }
+
+    if (await bcrypt.compare(pass, user.passwordHash)) {
       const { passwordHash: _, refreshToken: __, ...result } = user;
       return result;
     }
     return null;
+  }
+
+  async validateOAuthLogin(profile: any): Promise<any> {
+    return this.usersService.upsertOAuthUser(profile);
   }
 
   async generateTokens(user: any) {

@@ -4,7 +4,7 @@ export declare class AppController {
     constructor(appService: AppService);
     getHealth(): {
         status: string;
-        timestamp: any;
+        timestamp: string;
     };
     getHello(): string;
 }

@@ -1,4 +1,5 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UnauthorizedException, Res, Req } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode, HttpStatus, UnauthorizedException, Res, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -32,6 +33,26 @@ export class AuthController {
     const { accessToken, refreshToken, user: userData } = await this.authService.login(user);
     this.setRefreshTokenCookie(res, refreshToken);
     return { accessToken, user: userData };
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  @ApiOperation({ summary: 'Initiate Google OAuth login' })
+  async googleAuth() {
+    // Passport redirects to Google
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  @ApiOperation({ summary: 'Handle Google OAuth callback' })
+  async googleAuthRedirect(@Req() req: any, @Res() res: Response) {
+    const { accessToken, refreshToken, user } = await this.authService.login(req.user);
+    this.setRefreshTokenCookie(res, refreshToken);
+    
+    // Redirect back to frontend with the access token
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const userParam = encodeURIComponent(JSON.stringify(user));
+    res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}&user=${userParam}`);
   }
 
   @HttpCode(HttpStatus.OK)

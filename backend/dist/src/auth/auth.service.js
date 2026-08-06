@@ -41,7 +41,6 @@ var __importStar = (this && this.__importStar) || (function () {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
@@ -63,11 +62,19 @@ let AuthService = class AuthService {
     }
     async validateUser(email, pass) {
         const user = await this.usersService.findByEmail(email);
-        if (user && await bcrypt.compare(pass, user.passwordHash)) {
+        if (!user)
+            return null;
+        if (user.provider !== 'LOCAL' || !user.passwordHash) {
+            throw new common_1.UnauthorizedException(`This email is associated with a ${user.provider} account. Please sign in with ${user.provider}.`);
+        }
+        if (await bcrypt.compare(pass, user.passwordHash)) {
             const { passwordHash: _, refreshToken: __, ...result } = user;
             return result;
         }
         return null;
+    }
+    async validateOAuthLogin(profile) {
+        return this.usersService.upsertOAuthUser(profile);
     }
     async generateTokens(user) {
         const payload = { email: user.email, sub: user.id, role: user.role };
@@ -139,6 +146,7 @@ let AuthService = class AuthService {
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_service_1.UsersService, typeof (_a = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [users_service_1.UsersService,
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map
