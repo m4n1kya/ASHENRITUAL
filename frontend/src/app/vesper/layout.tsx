@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutDashboard, MessageSquare, Scan, Ruler, Eye, History, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
