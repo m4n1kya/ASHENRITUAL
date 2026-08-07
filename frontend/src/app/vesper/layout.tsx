@@ -104,8 +104,8 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
           <p className="font-heading text-[10px] font-medium uppercase tracking-[0.4em] text-[#8D8D8D]">
             Workspace
           </p>
-          <h2 className="mt-2 font-heading text-xl uppercase tracking-widest text-[#FDFCFB]">
-            VESPER
+          <h2 className="mt-2 font-display italic normal-case text-2xl tracking-[0.15em] text-[#FDFCFB]">
+            Vesper
           </h2>
         </div>
 
