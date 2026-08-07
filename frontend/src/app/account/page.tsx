@@ -91,7 +91,7 @@ export default function AccountPage() {
       <main className="min-h-screen bg-background pt-16 relative transition-colors duration-500">
         
         {/* ── Background Lantern & Particles ── */}
-        {mounted && (
+        {mounted && theme !== 'light' && (
           <div className="pointer-events-none fixed right-[-25vw] top-0 h-screen w-[70vw] min-w-[700px] z-0 opacity-40 transition-all duration-1000">
             <Image
               src="/images/lantern.png"
