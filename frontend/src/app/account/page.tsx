@@ -88,7 +88,7 @@ export default function AccountPage() {
 
   return (
     <PageTransition>
-      <main className={cn("min-h-screen pt-16 relative transition-colors duration-500", theme === 'light' ? 'bg-[#0A0A0A]' : 'bg-background')}>
+      <main className={cn("min-h-screen pt-16 relative transition-colors duration-500", theme === 'light' ? 'bg-[#151515]' : 'bg-background')}>
         
         {/* ── Background Lantern & Particles ── */}
         {mounted && (
