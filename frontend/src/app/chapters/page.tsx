@@ -30,7 +30,6 @@ async function getChapters(): Promise<Chapter[]> {
   }
 }
 
-
 export default async function ChaptersPage() {
   const chapters = await getChapters();
 
@@ -88,7 +87,7 @@ export default async function ChaptersPage() {
                 </div>
 
                 <div className="mt-12 flex items-center gap-4 text-[10px] font-medium uppercase tracking-[0.3em] text-[#8D8D8D] group-hover:text-[#E8E8E8] transition-colors duration-500">
-                  Explore Season
+                  Explore Chapter
                   <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-2" />
                 </div>
               </div>

@@ -7,6 +7,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { StartupAnimation } from "@/components/layout/StartupAnimation";
+import SettingsDrawer from "@/components/layout/SettingsDrawer";
+import { ConceptUploadWizard } from "@/components/forms/ConceptUploadWizard";
 
 /* ════════════════════════════════════════════════════════════════════════════
    TYPOGRAPHY — matches reference design tokens exactly
@@ -134,6 +136,8 @@ export default function RootLayout({
 
         <StartupAnimation />
         <ThemeProvider />
+        <SettingsDrawer />
+        <ConceptUploadWizard />
         <Navbar />
         <main id="main-content" role="main">{children}</main>
         <Footer />

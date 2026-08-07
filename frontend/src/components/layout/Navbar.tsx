@@ -4,10 +4,11 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ShoppingBag, User, X, ArrowRight, LogIn, LayoutDashboard, Package, Heart, LogOut } from 'lucide-react';
+import { Search, ShoppingBag, User, X, ArrowRight, LogIn, LayoutDashboard, Package, Heart, LogOut, Settings } from 'lucide-react';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
+import { useUIStore } from '@/store/ui.store';
 import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import type { Product } from '@/types';
@@ -56,6 +57,7 @@ function UserDropdown({ isAuthed, iconCls }: { isAuthed: boolean; iconCls: strin
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { logout } = useAuthStore();
+  const { openSettings } = useUIStore();
   const router = useRouter();
 
   // Close on outside click
@@ -119,6 +121,13 @@ function UserDropdown({ isAuthed, iconCls }: { isAuthed: boolean; iconCls: strin
                       {label}
                     </Link>
                   ))}
+                  <button
+                    onClick={() => { setOpen(false); openSettings(); }}
+                    className="flex w-full items-center gap-3 px-4 py-3 font-heading text-[10px] uppercase tracking-[0.2em] text-[#8D8D8D] transition-colors hover:bg-[#1A1A1A] hover:text-[#FDFCFB]"
+                  >
+                    <Settings className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} />
+                    Settings
+                  </button>
                 </div>
                 <div className="border-t border-[rgba(255,255,255,0.06)]">
                   <button
@@ -474,7 +483,7 @@ export function Navbar() {
               role="dialog"
               aria-modal="true"
               aria-label="Mobile navigation"
-              className="absolute inset-y-0 right-0 flex w-full max-w-[280px] flex-col border-l border-[#202020] bg-background/90 backdrop-blur-xl px-8 py-6 shadow-2xl"
+              className="absolute inset-y-0 right-0 flex w-full max-w-[280px] flex-col border-l border-[#202020] bg-background/90 backdrop-blur-xl px-8 py-6 shadow-2xl overflow-y-auto hide-scrollbar"
             >
               <button
                 onClick={close}

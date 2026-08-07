@@ -83,6 +83,17 @@ export function CreatorProfileClient({ creatorId }: { creatorId: string }) {
                 </div>
               </Link>
             </div>
+
+            <div className="pt-8">
+              <h3 className="font-heading text-[10px] uppercase tracking-[0.3em] text-[#8D8D8D] mb-6 border-b border-[rgba(255,255,255,0.08)] pb-4">Collections</h3>
+              <div className="space-y-5 flex flex-col">
+                {['WINTER 2027', 'MONOLITH', 'NOIR', 'VOID', 'ARCHITECTURE OF SILENCE'].map(col => (
+                  <Link key={col} href="#" className="font-heading text-sm uppercase tracking-[0.15em] text-[#A8A8A8] hover:text-[#FDFCFB] hover:translate-x-1 transition-all duration-300">
+                    {col}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="lg:col-span-8 lg:pl-12">

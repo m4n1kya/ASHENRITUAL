@@ -8,15 +8,17 @@ export declare class ArchivesService {
         items: ({
             product: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                deletedAt: Date | null;
+                name: string;
+                brandId: string | null;
                 description: string;
                 price: Decimal;
                 images: string[];
                 stock: number;
                 categoryId: string;
-                showroomId: string | null;
+                tags: string[];
             };
         } & {
             id: string;

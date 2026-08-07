@@ -69,14 +69,44 @@ export interface Archive {
 
 // ─── Auth / User ───────────────────────────────────────────────────────────────
 
-export type UserRole = 'USER' | 'ADMIN';
+export type UserRole = 'USER' | 'CREATOR' | 'SHOWROOM_OWNER' | 'MODERATOR' | 'ADMIN';
 
 export interface User {
   id: string;
   email: string;
-  name?: string;
+  username: string;
+  displayName: string | null;
+  avatar: string | null;
+  banner: string | null;
+  bio: string | null;
+  location: string | null;
   role: UserRole;
   createdAt?: string;
+  creatorProfile?: Creator;
+}
+
+export interface Creator {
+  id: string;
+  userId: string;
+  verified: boolean;
+  specialization: string | null;
+  concepts?: Concept[];
+}
+
+export type ConceptStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+
+export interface Concept {
+  id: string;
+  creatorId: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  image: string;
+  status: ConceptStatus;
+  materials: string[];
+  software: string[];
+  tags: string[];
+  createdAt: string;
 }
 
 export interface Address {
@@ -88,6 +118,27 @@ export interface Address {
 }
 
 // ─── Cart ──────────────────────────────────────────────────────────────────────
+
+export interface Showroom {
+  id: string;
+  name: string;
+  slug: string;
+  city: string;
+  state: string;
+  country: string;
+  description: string;
+  history: string | null;
+  specialization: string | null;
+  knownFor: string | null;
+  image: string | null;
+  logo: string | null;
+  verification: string | null;
+  hours: string | null;
+  _count?: {
+    creators: number;
+    products: number;
+  };
+}
 
 export interface CartItem {
   product: Product;

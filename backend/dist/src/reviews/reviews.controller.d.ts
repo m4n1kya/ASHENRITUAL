@@ -19,10 +19,10 @@ export declare class ReviewsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        comment: string | null;
         userId: string;
         productId: string;
         rating: number;
-        comment: string | null;
     }>;
     findByProduct(productId: string): Promise<({
         user: {
@@ -33,10 +33,10 @@ export declare class ReviewsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        comment: string | null;
         userId: string;
         productId: string;
         rating: number;
-        comment: string | null;
     })[]>;
 }
 export {};

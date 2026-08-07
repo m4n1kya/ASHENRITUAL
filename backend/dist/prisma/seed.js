@@ -55,26 +55,26 @@ async function main() {
         prisma.category.create({ data: { name: 'Coats', slug: 'coats' } }),
     ]);
     console.log('  ✓ 7 categories created');
-    await Promise.all([
+    const [foundation, forged, epoch] = await Promise.all([
         prisma.chapter.create({
             data: {
                 name: 'Foundation',
                 description: 'The timeless pieces that anchor every wardrobe. Precision-cut staples designed for quiet permanence.',
-                image: '/images/clothes/Shirts/cmm24428_black_xl.webp',
+                image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?q=80&w=2000&auto=format&fit=crop',
             },
         }),
         prisma.chapter.create({
             data: {
                 name: 'Forged Today',
                 description: 'New arrivals forged with deliberate intention. Contemporary silhouettes that speak softly.',
-                image: '/images/clothes/Jackets/cmm25223_charcoal_xl.webp',
+                image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=2000&auto=format&fit=crop',
             },
         }),
         prisma.chapter.create({
             data: {
                 name: 'Epoch',
                 description: 'Limited-run pieces that define a moment. Once they are gone, they do not return.',
-                image: '/images/clothes/Suit/m5059646423853_black_xl_2.webp',
+                image: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?q=80&w=2000&auto=format&fit=crop',
             },
         }),
     ]);
@@ -88,6 +88,7 @@ async function main() {
                 images: ['/images/clothes/Shirts/cmm24428_black_xl.webp'],
                 stock: 35,
                 categoryId: shirts.id,
+                chapters: { connect: [{ id: foundation.id }, { id: forged.id }] },
             },
         }),
         prisma.product.create({
@@ -332,6 +333,14 @@ async function main() {
         }),
     ]);
     console.log(`  ✓ ${products.length} products created`);
+    for (let i = 0; i < products.length; i++) {
+        const chapterId = [foundation.id, forged.id, epoch.id][i % 3];
+        await prisma.product.update({
+            where: { id: products[i].id },
+            data: { chapters: { connect: [{ id: chapterId }] } },
+        });
+    }
+    console.log(`  ✓ Products connected to chapters`);
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash('admin123', salt);
     const admin = await prisma.user.upsert({

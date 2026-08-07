@@ -8,9 +8,9 @@ export declare class ChaptersService {
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         slug: string | null;
         description: string | null;
         quote: string | null;
@@ -21,28 +21,30 @@ export declare class ChaptersService {
         products: ({
             category: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 slug: string;
             };
         } & {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            deletedAt: Date | null;
+            name: string;
+            brandId: string | null;
             description: string;
             price: import("@prisma/client/runtime/library").Decimal;
             images: string[];
             stock: number;
             categoryId: string;
-            showroomId: string | null;
+            tags: string[];
         })[];
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         slug: string | null;
         description: string | null;
         quote: string | null;

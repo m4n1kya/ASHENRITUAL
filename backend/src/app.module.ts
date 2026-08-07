@@ -26,6 +26,10 @@ import { VesperModule } from './vesper/vesper.module';
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
 import { AdminModule } from './admin/admin.module';
+import { SearchModule } from './search/search.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { CreatorsModule } from './creators/creators.module';
+import { ShowroomsModule } from './showrooms/showrooms.module';
 
 @Module({
   imports: [
@@ -53,6 +57,14 @@ import { AdminModule } from './admin/admin.module';
 
     // Admin
     AdminModule,
+
+    SearchModule,
+
+    CloudinaryModule,
+
+    CreatorsModule,
+
+    ShowroomsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

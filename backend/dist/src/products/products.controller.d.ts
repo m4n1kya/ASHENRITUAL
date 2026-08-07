@@ -6,22 +6,24 @@ export declare class ProductsController {
         data: ({
             category: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 slug: string;
             };
         } & {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            deletedAt: Date | null;
+            name: string;
+            brandId: string | null;
             description: string;
             price: import("@prisma/client/runtime/library").Decimal;
             images: string[];
             stock: number;
             categoryId: string;
-            showroomId: string | null;
+            tags: string[];
         })[];
         total: number;
         page: number;
@@ -31,83 +33,91 @@ export declare class ProductsController {
     findFeatured(): Promise<({
         category: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             slug: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        deletedAt: Date | null;
+        name: string;
+        brandId: string | null;
         description: string;
         price: import("@prisma/client/runtime/library").Decimal;
         images: string[];
         stock: number;
         categoryId: string;
-        showroomId: string | null;
+        tags: string[];
     })[]>;
     findNewArrivals(): Promise<({
         category: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             slug: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        deletedAt: Date | null;
+        name: string;
+        brandId: string | null;
         description: string;
         price: import("@prisma/client/runtime/library").Decimal;
         images: string[];
         stock: number;
         categoryId: string;
-        showroomId: string | null;
+        tags: string[];
     })[]>;
     findBestSellers(): Promise<({
         category: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             slug: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        deletedAt: Date | null;
+        name: string;
+        brandId: string | null;
         description: string;
         price: import("@prisma/client/runtime/library").Decimal;
         images: string[];
         stock: number;
         categoryId: string;
-        showroomId: string | null;
+        tags: string[];
     })[]>;
     findByCategory(slug: string, page?: string, limit?: string): Promise<{
         data: ({
             category: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 slug: string;
             };
         } & {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            deletedAt: Date | null;
+            name: string;
+            brandId: string | null;
             description: string;
             price: import("@prisma/client/runtime/library").Decimal;
             images: string[];
             stock: number;
             categoryId: string;
-            showroomId: string | null;
+            tags: string[];
         })[];
         total: number;
         page: number;
@@ -124,28 +134,30 @@ export declare class ProductsController {
             id: string;
             createdAt: Date;
             updatedAt: Date;
+            comment: string | null;
             userId: string;
             productId: string;
             rating: number;
-            comment: string | null;
         })[];
         category: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             slug: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        deletedAt: Date | null;
+        name: string;
+        brandId: string | null;
         description: string;
         price: import("@prisma/client/runtime/library").Decimal;
         images: string[];
         stock: number;
         categoryId: string;
-        showroomId: string | null;
+        tags: string[];
     }>;
 }

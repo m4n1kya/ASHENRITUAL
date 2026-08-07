@@ -36,31 +36,29 @@ let UsersService = class UsersService {
     async upsertOAuthUser(profile) {
         const existingUser = await this.findByEmail(profile.email);
         if (existingUser) {
-            const user = await this.prisma.user.update({
+            const updatedUser = await this.prisma.user.update({
                 where: { id: existingUser.id },
                 data: {
+                    displayName: existingUser.displayName || profile.name,
+                    avatar: existingUser.avatar || profile.picture,
+                },
+            });
+            return updatedUser;
+        }
+        else {
+            const newUser = await this.prisma.user.create({
+                data: {
+                    email: profile.email,
                     provider: 'GOOGLE',
                     providerId: profile.providerId,
-                    name: existingUser.name || profile.name,
-                    avatar: existingUser.avatar || profile.picture,
+                    displayName: profile.name,
+                    avatar: profile.picture,
                     emailVerified: true,
                 },
             });
-            const { passwordHash: _, ...result } = user;
+            const { passwordHash: _, ...result } = newUser;
             return result;
         }
-        const user = await this.prisma.user.create({
-            data: {
-                email: profile.email,
-                provider: 'GOOGLE',
-                providerId: profile.providerId,
-                name: profile.name,
-                avatar: profile.picture,
-                emailVerified: true,
-            },
-        });
-        const { passwordHash: _, ...result } = user;
-        return result;
     }
     async findByEmail(email) {
         return this.prisma.user.findUnique({
@@ -77,6 +75,82 @@ let UsersService = class UsersService {
             where: { id },
             data,
         });
+    }
+    async getUserProfile(id) {
+        const user = await this.prisma.user.findUnique({
+            where: { id },
+            include: {
+                creator: true,
+                ownedBrands: true,
+                ownedShowrooms: true,
+                _count: {
+                    select: {
+                        followers: true,
+                        following: true,
+                        bookmarks: true,
+                    }
+                }
+            }
+        });
+        if (!user)
+            throw new common_1.ConflictException('User not found');
+        const { passwordHash: _, refreshToken: __, ...safeUser } = user;
+        return safeUser;
+    }
+    async updateUserProfile(id, updateData) {
+        const { displayName, bio, country, state, city, avatar, banner } = updateData;
+        const user = await this.prisma.user.update({
+            where: { id },
+            data: {
+                ...(displayName && { displayName }),
+                ...(bio !== undefined && { bio }),
+                ...(country !== undefined && { country }),
+                ...(state !== undefined && { state }),
+                ...(city !== undefined && { city }),
+                ...(avatar && { avatar }),
+                ...(banner && { banner }),
+            },
+        });
+        const { passwordHash: _, refreshToken: __, ...safeUser } = user;
+        return safeUser;
+    }
+    async isUsernameAvailable(username) {
+        const reservedWords = ['admin', 'support', 'vesper', 'forge', 'showrooms', 'sanctum', 'api', 'help'];
+        if (reservedWords.includes(username.toLowerCase())) {
+            return false;
+        }
+        const existingUser = await this.prisma.user.findUnique({
+            where: { username },
+        });
+        return !existingUser;
+    }
+    async updateUsername(id, username) {
+        const usernameRegex = /^[a-z0-9_]{3,20}$/;
+        if (!usernameRegex.test(username)) {
+            throw new common_1.ConflictException('Username must be 3-20 characters long and contain only lowercase letters, numbers, and underscores.');
+        }
+        const isAvailable = await this.isUsernameAvailable(username);
+        if (!isAvailable) {
+            throw new common_1.ConflictException('Username is not available.');
+        }
+        const user = await this.prisma.user.findUnique({ where: { id } });
+        if (!user)
+            throw new common_1.ConflictException('User not found');
+        if (user.lastUsernameChange) {
+            const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+            if (user.lastUsernameChange > thirtyDaysAgo) {
+                throw new common_1.ConflictException('You can only change your username once every 30 days.');
+            }
+        }
+        const updatedUser = await this.prisma.user.update({
+            where: { id },
+            data: {
+                username,
+                lastUsernameChange: new Date(),
+            },
+        });
+        const { passwordHash: _, refreshToken: __, ...safeUser } = updatedUser;
+        return safeUser;
     }
 };
 exports.UsersService = UsersService;

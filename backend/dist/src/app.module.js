@@ -23,6 +23,10 @@ const addresses_module_1 = require("./addresses/addresses.module");
 const reviews_module_1 = require("./reviews/reviews.module");
 const vesper_module_1 = require("./vesper/vesper.module");
 const admin_module_1 = require("./admin/admin.module");
+const search_module_1 = require("./search/search.module");
+const cloudinary_module_1 = require("./cloudinary/cloudinary.module");
+const creators_module_1 = require("./creators/creators.module");
+const showrooms_module_1 = require("./showrooms/showrooms.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -42,6 +46,10 @@ exports.AppModule = AppModule = __decorate([
             reviews_module_1.ReviewsModule,
             vesper_module_1.VesperModule,
             admin_module_1.AdminModule,
+            search_module_1.SearchModule,
+            cloudinary_module_1.CloudinaryModule,
+            creators_module_1.CreatorsModule,
+            showrooms_module_1.ShowroomsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

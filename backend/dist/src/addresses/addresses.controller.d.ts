@@ -12,25 +12,25 @@ export declare class AddressesController {
         user: JwtUser;
     }): Promise<{
         id: string;
+        country: string;
+        city: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
         street: string;
-        city: string;
         zip: string;
-        country: string;
     }>;
     findAll(req: {
         user: JwtUser;
     }): Promise<{
         id: string;
+        country: string;
+        city: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
         street: string;
-        city: string;
         zip: string;
-        country: string;
     }[]>;
     remove(id: string, req: {
         user: JwtUser;

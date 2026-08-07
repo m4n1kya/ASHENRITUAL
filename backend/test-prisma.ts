@@ -9,7 +9,7 @@ async function test() {
         email: 'test_oauth@example.com',
         provider: 'GOOGLE',
         providerId: '123456789',
-        name: null,
+        displayName: null,
         avatar: null,
         emailVerified: true,
       },
