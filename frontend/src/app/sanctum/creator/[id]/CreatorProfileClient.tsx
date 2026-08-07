@@ -4,10 +4,9 @@ import { useRef } from 'react';
 import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { MapPin, ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-export function CreatorProfileClient({ creatorId }: { creatorId: string }) {
+export function CreatorProfileClient({ creatorId: _creatorId }: { creatorId: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
 

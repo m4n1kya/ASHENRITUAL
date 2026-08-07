@@ -74,8 +74,12 @@ export function ConceptUploadWizard() {
 
       toast.success('Concept uploaded successfully');
       setStep('PUBLISH');
-    } catch (err: any) {
-      toast.error(err.message || 'Upload failed');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Upload failed');
+      }
     } finally {
       setUploading(false);
     }
@@ -226,7 +230,7 @@ export function ConceptUploadWizard() {
                     </div>
                     <h3 className="font-heading text-2xl uppercase tracking-wider text-white mb-2">Concept Immortalized</h3>
                     <p className="text-sm text-white/40 max-w-xs">
-                      "{formData.title}" has been added to the Sanctum. It is now part of the permanent exhibition.
+                      &quot;{formData.title}&quot; has been added to the Sanctum. It is now part of the permanent exhibition.
                     </p>
                   </div>
                 )}

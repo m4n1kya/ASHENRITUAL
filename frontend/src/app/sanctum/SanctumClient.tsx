@@ -80,7 +80,6 @@ export function SanctumClient() {
 
 /* ── 1. Creator Hub & The Door ───────────────────────────────────────────── */
 function CreatorHub({ profile, onEnter }: { profile: User, onEnter: () => void }) {
-  const isCreator = profile.role !== 'USER';
   const isVerified = profile.creatorProfile?.verified || false;
 
   return (

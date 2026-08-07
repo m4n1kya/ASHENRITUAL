@@ -91,6 +91,7 @@ export interface Creator {
   verified: boolean;
   specialization: string | null;
   concepts?: Concept[];
+  showrooms?: { id: string, showroom: Showroom }[];
 }
 
 export type ConceptStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';

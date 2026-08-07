@@ -6,11 +6,24 @@ import { api } from '@/lib/api';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { toast } from 'sonner';
 
+interface UserProfile {
+  id?: string;
+  username?: string;
+  displayName?: string;
+  bio?: string;
+  country?: string;
+  city?: string;
+  avatar?: string;
+  banner?: string;
+  lastUsernameChange?: string;
+  [key: string]: unknown;
+}
+
 export function UniversalProfileForm() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [usernameSaving, setUsernameSaving] = useState(false);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   const [formData, setFormData] = useState({
     displayName: '',
@@ -31,7 +44,7 @@ export function UniversalProfileForm() {
 
   const fetchProfile = async () => {
     try {
-      const { data } = await api.get('/users/me');
+      const data = await api.get<UserProfile>('/users/me');
       setProfile(data);
       setFormData({
         displayName: data.displayName || '',
@@ -40,7 +53,7 @@ export function UniversalProfileForm() {
         city: data.city || '',
       });
       setUsername(data.username || '');
-    } catch (err) {
+    } catch (_err) {
       toast.error('Failed to load profile');
     } finally {
       setLoading(false);
@@ -57,8 +70,8 @@ export function UniversalProfileForm() {
     try {
       await api.put('/users/me', formData);
       toast.success('Profile updated');
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update profile');
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to update profile');
     } finally {
       setSaving(false);
     }
@@ -71,8 +84,8 @@ export function UniversalProfileForm() {
       await api.put('/users/username', { username });
       toast.success('Username updated successfully');
       fetchProfile(); // refresh to update lastUsernameChange
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Username update failed');
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Username update failed');
     } finally {
       setUsernameSaving(false);
     }
@@ -93,10 +106,10 @@ export function UniversalProfileForm() {
       await api.put('/users/me', { [type]: url });
       
       // 3. Update local state
-      setProfile((prev: any) => ({ ...prev, [type]: url }));
+      setProfile((prev: UserProfile | null) => (prev ? { ...prev, [type]: url } : null));
       toast.success(`${type === 'avatar' ? 'Avatar' : 'Banner'} updated`);
-    } catch (err: any) {
-      toast.error(err.message || 'Upload failed');
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Upload failed');
     } finally {
       if (type === 'avatar') setUploadingAvatar(false);
       else setUploadingBanner(false);
@@ -113,6 +126,7 @@ export function UniversalProfileForm() {
       <div className="relative group">
         <div className="h-32 w-full bg-[#1A1A1A] rounded-xl overflow-hidden relative border border-white/5">
           {profile?.banner ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img src={profile.banner} alt="Banner" className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" />
           ) : (
             <div className="w-full h-full bg-gradient-to-tr from-[#121212] to-[#202020]" />
@@ -129,6 +143,7 @@ export function UniversalProfileForm() {
         <div className="absolute -bottom-6 left-6 group/avatar">
           <div className="w-16 h-16 rounded-full border-2 border-[#0a0a0a] bg-[#1A1A1A] overflow-hidden relative shadow-xl">
             {profile?.avatar ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img src={profile.avatar} alt="Avatar" className="w-full h-full object-cover group-hover/avatar:opacity-40 transition-opacity" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white/20 text-xs font-mono">{profile?.displayName?.charAt(0) || 'U'}</div>

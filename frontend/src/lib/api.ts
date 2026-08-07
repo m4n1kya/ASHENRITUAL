@@ -99,7 +99,7 @@ export async function apiRequest<T>(
     try {
       const errorData = await response.json();
       message = errorData.message || message;
-    } catch (e) {
+    } catch {
       // Ignore JSON parse error
     }
     throw new ApiError(response.status, message);
@@ -124,6 +124,13 @@ export const api = {
     apiRequest<T>(path, {
       ...options,
       method: 'PATCH',
+      body: body ? JSON.stringify(body) : undefined,
+    }),
+
+  put: <T>(path: string, body?: unknown, options?: RequestInit) =>
+    apiRequest<T>(path, {
+      ...options,
+      method: 'PUT',
       body: body ? JSON.stringify(body) : undefined,
     }),
 

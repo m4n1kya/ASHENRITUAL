@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ShoppingBag, User, X, ArrowRight, LogIn, LayoutDashboard, Package, Heart, LogOut, Settings } from 'lucide-react';
+import { Search, ShoppingBag, User, X, ArrowRight, LogIn, LayoutDashboard, Package, LogOut, Settings } from 'lucide-react';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
@@ -297,8 +297,8 @@ function NavSearch() {
                   >
                     {/* Thumbnail */}
                     <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-md bg-[#1A1A1A]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       {product.images?.[0] && (
+                        /* eslint-disable-next-line @next/next/no-img-element */
                         <img
                           src={product.images[0]}
                           alt={product.name}

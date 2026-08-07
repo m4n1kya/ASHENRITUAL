@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Share, Bookmark, Plus, Grid, Info, Users, ArrowUpRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
-import { User } from '@/types';
+import { User, Concept } from '@/types';
 
 async function getCreatorProfile(username: string): Promise<User | null> {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
@@ -13,13 +13,14 @@ async function getCreatorProfile(username: string): Promise<User | null> {
     });
     if (!res.ok) return null;
     return res.json();
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
-export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
-  const profile = await getCreatorProfile(params.username);
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
+  const { username } = await params;
+  const profile = await getCreatorProfile(username);
   if (!profile) return { title: 'Creator Not Found' };
   
   return {
@@ -28,8 +29,9 @@ export async function generateMetadata({ params }: { params: { username: string 
   };
 }
 
-export default async function CreatorProfilePage({ params }: { params: { username: string } }) {
-  const profile = await getCreatorProfile(params.username);
+export default async function CreatorProfilePage({ params }: { params: Promise<{ username: string }> }) {
+  const { username } = await params;
+  const profile = await getCreatorProfile(username);
   
   if (!profile) {
     notFound();
@@ -135,7 +137,7 @@ export default async function CreatorProfilePage({ params }: { params: { usernam
               <section>
                 <h3 className="font-heading text-[10px] uppercase tracking-[0.3em] text-[#4A4A4A] mb-4">Showrooms</h3>
                 <div className="flex flex-col gap-3">
-                  {showrooms.map((affiliation: any) => (
+                  {showrooms.map((affiliation: { id: string, showroom: { slug: string, logo: string | null, name: string, city: string | null } }) => (
                     <Link key={affiliation.id} href={`/showrooms/${affiliation.showroom.slug}`} className="group flex items-center gap-3 p-3 bg-[#050505] border border-[rgba(255,255,255,0.05)] hover:border-[rgba(255,255,255,0.15)] transition-colors">
                       <div className="w-8 h-8 bg-[#111] rounded-full overflow-hidden relative">
                         {affiliation.showroom.logo ? (
@@ -187,7 +189,7 @@ export default async function CreatorProfilePage({ params }: { params: { usernam
             {concepts.length === 0 ? (
               <div className="w-full py-24 flex flex-col items-center justify-center border border-[rgba(255,255,255,0.02)] bg-[#050505]">
                 <h3 className="font-heading text-lg uppercase tracking-widest text-[#4A4A4A] mb-2">Empty Gallery</h3>
-                <p className="text-[#4A4A4A] text-xs max-w-sm text-center">This designer hasn't published any concepts yet.</p>
+                <p className="text-[#4A4A4A] text-xs max-w-sm text-center">This designer hasn&apos;t published any concepts yet.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

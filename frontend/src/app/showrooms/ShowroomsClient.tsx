@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence, useScroll, useTransform, MotionValue } from 'framer-motion';
-import { CheckCircle, MapPin, Search, ChevronDown, ArrowRight, Users } from 'lucide-react';
+import { CheckCircle, MapPin, Search, ChevronDown, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Showroom } from '@/types';
 
@@ -50,7 +50,7 @@ export function ShowroomsClient({ initialShowrooms }: { initialShowrooms: Showro
         if (locations.countries.includes(parsed.country)) {
           setSelection(parsed);
         }
-      } catch (e) {}
+      } catch {}
     } else {
       // Default to first available country and state if nothing saved
       if (locations.countries.length > 0) {

@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth.store';
 import { api } from '@/lib/api';
+import { User } from '@/types';
 import { toast } from 'sonner';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -43,7 +44,7 @@ function LoginForm() {
   async function onSubmit(data: Form) {
     setLoading(true);
     try {
-      const res = await api.post<{ accessToken: string; user: { id: string; email: string; role: 'USER' | 'ADMIN' } }>(
+      const res = await api.post<{ accessToken: string; user: User }>(
         '/auth/login', data,
       );
       setUser(res.user, res.accessToken);

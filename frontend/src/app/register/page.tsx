@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth.store';
 import { api } from '@/lib/api';
+import { User } from '@/types';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -50,7 +51,7 @@ function RegisterForm() {
   async function onSubmit(data: RegisterFormData) {
     setLoading(true);
     try {
-      const res = await api.post<{ accessToken: string; user: { id: string; email: string; role: 'USER' | 'ADMIN' } }>(
+      const res = await api.post<{ accessToken: string; user: User }>(
         '/auth/register',
         { email: data.email, password: data.password },
       );

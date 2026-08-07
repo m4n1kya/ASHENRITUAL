@@ -3,7 +3,7 @@ import { api } from './api';
 export async function uploadToCloudinary(file: File, folder: string = 'misc'): Promise<string> {
   try {
     // 1. Get signature from our backend
-    const { data: signData } = await api.get<{
+    const signData = await api.get<{
       timestamp: number;
       signature: string;
       folder: string;

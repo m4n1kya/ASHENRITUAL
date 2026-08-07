@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle, MapPin, Clock, Users, ArrowUpRight, Grid } from 'lucide-react';
+import { ArrowLeft, CheckCircle, MapPin, Clock, Users, Grid } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
 async function getShowroom(slug: string) {
@@ -12,13 +12,14 @@ async function getShowroom(slug: string) {
     });
     if (!res.ok) return null;
     return res.json();
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const showroom = await getShowroom(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const showroom = await getShowroom(slug);
   if (!showroom) return { title: 'Showroom Not Found' };
   
   return {
@@ -27,8 +28,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function ShowroomProfilePage({ params }: { params: { slug: string } }) {
-  const showroom = await getShowroom(params.slug);
+export default async function ShowroomProfilePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const showroom = await getShowroom(slug);
   
   if (!showroom) {
     notFound();
@@ -158,7 +160,7 @@ export default async function ShowroomProfilePage({ params }: { params: { slug: 
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {creators.map((c: any) => (
+              {creators.map((c: { id: string, user: { username: string, displayName: string | null, avatar: string | null } }) => (
                 <Link key={c.id} href={`/u/@${c.user.username}`} className="group p-6 bg-[#050505] border border-[rgba(255,255,255,0.02)] hover:border-[rgba(255,255,255,0.15)] transition-colors">
                   <div className="flex flex-col items-center text-center">
                     <div className="w-20 h-20 rounded-full bg-[#111] overflow-hidden relative mb-4">
@@ -199,7 +201,7 @@ export default async function ShowroomProfilePage({ params }: { params: { slug: 
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {products.map((p: any) => (
+              {products.map((p: { id: string, product: { name: string, price: number, images: string[] } }) => (
                 <div key={p.id} className="group relative bg-[#050505] border border-[rgba(255,255,255,0.02)]">
                   <div className="relative aspect-[3/4] overflow-hidden bg-[#0A0A0A]">
                     {p.product.images?.[0] && (

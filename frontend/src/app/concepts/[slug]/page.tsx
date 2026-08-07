@@ -17,8 +17,9 @@ async function getConcept(slug: string) {
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const concept = await getConcept(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const concept = await getConcept(slug);
   if (!concept) return { title: 'Concept Not Found' };
   
   return {
@@ -27,8 +28,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function ConceptDetailsPage({ params }: { params: { slug: string } }) {
-  const concept = await getConcept(params.slug);
+export default async function ConceptDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const concept = await getConcept(slug);
   
   if (!concept) {
     notFound();
