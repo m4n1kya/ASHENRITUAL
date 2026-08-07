@@ -88,16 +88,19 @@ export default function AccountPage() {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-background pt-16 relative">
+      <main className={cn("min-h-screen pt-16 relative transition-colors duration-500", theme === 'light' ? 'bg-[#0A0A0A]' : 'bg-background')}>
         
         {/* ── Background Lantern & Particles ── */}
         {mounted && (
-          <div className="pointer-events-none fixed left-[-25vw] top-0 h-screen w-[70vw] min-w-[700px] z-0 opacity-40">
+          <div className={cn(
+            "pointer-events-none fixed top-0 h-screen w-[70vw] min-w-[700px] z-0 opacity-40 transition-all duration-1000",
+            theme === 'light' ? "right-[-25vw]" : "left-[-25vw]"
+          )}>
             <Image
               src="/images/lantern.png"
               alt=""
               fill
-              className="object-cover object-left opacity-50"
+              className={cn("object-cover opacity-50", theme === 'light' ? 'object-right' : 'object-left')}
               unoptimized
             />
             
