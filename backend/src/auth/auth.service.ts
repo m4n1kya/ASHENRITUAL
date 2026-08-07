@@ -74,15 +74,19 @@ export class AuthService {
   }
 
   async guestLogin() {
-    // Find or create the guest user
+    // Find the guest user, or create via validateUser fallback
     let guest = await this.usersService.findByEmail('guest@ashenritual.com');
     if (!guest) {
+      // Create guest user via register flow (internally calls create + login)
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash('guest_demo_2026', salt);
+      // Use the users service create which accepts any data object
       guest = await this.usersService.create({
         email: 'guest@ashenritual.com',
         passwordHash,
-      });
+        displayName: 'Guest',
+        username: 'guest',
+      } as any);
     }
     return this.login(guest);
   }

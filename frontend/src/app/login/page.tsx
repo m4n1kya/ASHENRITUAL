@@ -79,6 +79,50 @@ function LoginForm() {
         </p>
       </div>
 
+      {/* Guest Demo (Moved to top) */}
+      <button
+        type="button"
+        disabled={loading || guestLoading}
+        onClick={async () => {
+          setGuestLoading(true);
+          try {
+            const res = await api.post<{ accessToken: string; user: User }>(
+              '/auth/guest',
+            );
+            setUser(res.user, res.accessToken);
+            toast.success('Welcome, Guest. Explore freely.');
+            const redirectTo = searchParams.get('redirect') || searchParams.get('callbackUrl') || '/';
+            router.push(redirectTo);
+          } catch {
+            toast.error('Guest login failed.');
+          } finally {
+            setGuestLoading(false);
+          }
+        }}
+        className="group mb-6 flex h-10 w-full items-center justify-center gap-4 border border-[#E8E8E8] bg-[#E8E8E8] text-[10px] font-medium uppercase tracking-[0.3em] text-[#0A0A0A] transition-all duration-500 hover:bg-transparent hover:text-[#E8E8E8] disabled:opacity-40"
+      >
+        {guestLoading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <>
+            <UserIcon className="h-3.5 w-3.5" />
+            Continue as Guest
+          </>
+        )}
+      </button>
+
+      {/* Divider */}
+      <div className="relative mb-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-[#202020]"></div>
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-background px-4 font-heading text-[9px] uppercase tracking-[0.3em] text-[#8D8D8D]">
+            Or Sign In
+          </span>
+        </div>
+      </div>
+
       {/* Form (Primary) */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {[
@@ -165,49 +209,6 @@ function LoginForm() {
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="currentColor" />
         </svg>
         Google
-      </button>
-
-      {/* Guest Demo */}
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-[#202020]"></div>
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-background px-4 font-heading text-[9px] uppercase tracking-[0.3em] text-[#8D8D8D]">
-            Demo
-          </span>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        disabled={loading || guestLoading}
-        onClick={async () => {
-          setGuestLoading(true);
-          try {
-            const res = await api.post<{ accessToken: string; user: User }>(
-              '/auth/guest',
-            );
-            setUser(res.user, res.accessToken);
-            toast.success('Welcome, Guest. Explore freely.');
-            const redirectTo = searchParams.get('redirect') || searchParams.get('callbackUrl') || '/';
-            router.push(redirectTo);
-          } catch {
-            toast.error('Guest login failed.');
-          } finally {
-            setGuestLoading(false);
-          }
-        }}
-        className="group flex h-10 w-full items-center justify-center gap-4 border border-[#202020] bg-transparent text-[10px] font-medium uppercase tracking-[0.3em] text-[#8D8D8D] transition-all duration-500 hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8] disabled:opacity-40"
-      >
-        {guestLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <>
-            <UserIcon className="h-3.5 w-3.5" />
-            Continue as Guest
-          </>
-        )}
       </button>
 
       {/* Footer */}

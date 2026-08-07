@@ -107,6 +107,8 @@ let AuthService = class AuthService {
             guest = await this.usersService.create({
                 email: 'guest@ashenritual.com',
                 passwordHash,
+                displayName: 'Guest',
+                username: 'guest',
             });
         }
         return this.login(guest);
