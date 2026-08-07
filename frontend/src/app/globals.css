@@ -360,10 +360,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #4A6A9A; 
 }
 
 /* Product cards — semi-transparent in Lapis mode so bg gradient shows through */
-[data-theme="light"] main .bg-card,
-[data-theme="light"] main .bg-background {
-  background-color: rgba(30, 42, 62, 0.55);
-}
+/* Removed as per user request to eliminate the bluish glass overlay */
 
 /* Selection */
 [data-theme="light"] ::selection {
