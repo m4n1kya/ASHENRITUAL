@@ -61,8 +61,8 @@ export declare class AdminController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        total: import("@prisma/client/runtime/library").Decimal;
         userId: string;
+        total: import("@prisma/client/runtime/library").Decimal;
         status: import(".prisma/client").$Enums.OrderStatus;
     })[]>;
 }
