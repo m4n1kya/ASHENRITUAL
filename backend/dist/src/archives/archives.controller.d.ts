@@ -22,6 +22,7 @@ export declare class ArchivesController {
                 images: string[];
                 stock: number;
                 categoryId: string;
+                showroomId: string | null;
             };
         } & {
             id: string;

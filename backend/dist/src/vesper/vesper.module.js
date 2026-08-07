@@ -27,7 +27,7 @@ exports.VesperModule = VesperModule = __decorate([
             gemini_provider_1.GeminiProvider,
             context_manager_1.ContextManager,
             recommendation_engine_1.RecommendationEngine,
-            vesper_size_service_1.VesperSizeService
+            vesper_size_service_1.VesperSizeService,
         ],
         exports: [vesper_orchestrator_1.VesperOrchestrator],
     })

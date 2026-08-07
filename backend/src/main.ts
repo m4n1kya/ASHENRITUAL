@@ -13,8 +13,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableShutdownHooks();
 
-  const allowedOrigins = process.env.FRONTEND_URL 
-    ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+  const allowedOrigins = process.env.FRONTEND_URL
+    ? process.env.FRONTEND_URL.split(',').map((url) => url.trim())
     : ['http://localhost:3000'];
 
   app.enableCors({
@@ -43,11 +43,13 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('ASHENRITUAL API')
-    .setDescription('The enterprise backend for ASHENRITUAL e-commerce platform.')
+    .setDescription(
+      'The enterprise backend for ASHENRITUAL e-commerce platform.',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();
-    
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 

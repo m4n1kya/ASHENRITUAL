@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AIProvider, ChatMessage, VesperStructuredResponse } from './ai.provider.interface';
+import {
+  AIProvider,
+  ChatMessage,
+  VesperStructuredResponse,
+} from './ai.provider.interface';
 
 @Injectable()
 export class GeminiProvider implements AIProvider {
@@ -9,12 +13,16 @@ export class GeminiProvider implements AIProvider {
   async *generateStream(
     messages: ChatMessage[],
     systemPrompt: string,
-    contextData: string
-  ): AsyncGenerator<{ text?: string; json?: VesperStructuredResponse }, void, unknown> {
+    contextData: string,
+  ): AsyncGenerator<
+    { text?: string; json?: VesperStructuredResponse },
+    void,
+    unknown
+  > {
     try {
-      const contents = messages.map(m => ({
+      const contents = messages.map((m) => ({
         role: m.role,
-        parts: [{ text: m.content }]
+        parts: [{ text: m.content }],
       }));
 
       const fullSystemPrompt = `
@@ -38,14 +46,20 @@ Do not include markdown \`\`\`json around the JSON block, just the exact markers
 If there are no actions or recommendations, output an empty JSON object {} inside the markers.
 `;
 
-      if (contents.length > 0 && contents[contents.length - 1].role === 'user') {
-        contents[contents.length - 1].parts[0].text += '\n\n' + fullSystemPrompt;
+      if (
+        contents.length > 0 &&
+        contents[contents.length - 1].role === 'user'
+      ) {
+        contents[contents.length - 1].parts[0].text +=
+          '\n\n' + fullSystemPrompt;
       } else {
-         contents.push({ role: 'user', parts: [{ text: fullSystemPrompt }] });
+        contents.push({ role: 'user', parts: [{ text: fullSystemPrompt }] });
       }
 
       // Use ?key= query param for authentication
-      const url = new URL('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:streamGenerateContent');
+      const url = new URL(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:streamGenerateContent',
+      );
       url.searchParams.append('alt', 'sse');
       url.searchParams.append('key', this.apiKey);
 
@@ -54,8 +68,8 @@ If there are no actions or recommendations, output an empty JSON object {} insid
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents,
-          generationConfig: { temperature: 0.3 }
-        })
+          generationConfig: { temperature: 0.3 },
+        }),
       });
 
       if (!response.ok) {
@@ -67,7 +81,7 @@ If there are no actions or recommendations, output an empty JSON object {} insid
       if (!reader) throw new Error('No readable stream from Gemini API');
 
       const decoder = new TextDecoder();
-      
+
       // ── Level 1: Buffer raw bytes into complete SSE events ──
       let sseBuffer = '';
       // ── Level 2: Accumulate all extracted text for reliable marker parsing ──
@@ -95,17 +109,24 @@ If there are no actions or recommendations, output an empty JSON object {} insid
             const trimmed = line.trim();
             // Handle both "data: {...}" and "data:{...}"
             if (!trimmed.startsWith('data:')) continue;
-            const dataStr = trimmed.startsWith('data: ') ? trimmed.slice(6) : trimmed.slice(5);
+            const dataStr = trimmed.startsWith('data: ')
+              ? trimmed.slice(6)
+              : trimmed.slice(5);
             if (!dataStr || dataStr === '[DONE]') continue;
 
             try {
               const parsed = JSON.parse(dataStr);
-              const textContent = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
+              const textContent =
+                parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
               if (!textContent) continue;
               fullText += textContent;
-              this.logger.debug(`Gemini chunk: "${textContent.slice(0, 50)}..." (total: ${fullText.length})`);
+              this.logger.debug(
+                `Gemini chunk: "${textContent.slice(0, 50)}..." (total: ${fullText.length})`,
+              );
             } catch (e) {
-              this.logger.warn(`Failed to parse Gemini SSE data: ${dataStr.slice(0, 100)}`);
+              this.logger.warn(
+                `Failed to parse Gemini SSE data: ${dataStr.slice(0, 100)}`,
+              );
             }
           }
         }
@@ -123,7 +144,7 @@ If there are no actions or recommendations, output an empty JSON object {} insid
           // We only need to hold back if the end of the text contains a '-' that could start the marker
           const lastDash = fullText.lastIndexOf('-');
           let safePoint = fullText.length;
-          
+
           if (lastDash !== -1 && fullText.length - lastDash <= 16) {
             // There's a dash within the last 16 chars (length of ---JSON_START---)
             // Hold back from the dash onwards just in case
@@ -136,8 +157,10 @@ If there are no actions or recommendations, output an empty JSON object {} insid
           }
         }
       }
-      
-      this.logger.log(`Gemini stream done. Full text length: ${fullText.length}`);
+
+      this.logger.log(
+        `Gemini stream done. Full text length: ${fullText.length}`,
+      );
 
       // ── Final processing: parse out JSON markers from the complete response ──
       const jsonStartIdx = fullText.indexOf('---JSON_START---');
@@ -150,12 +173,17 @@ If there are no actions or recommendations, output an empty JSON object {} insid
         }
 
         if (jsonEndIdx !== -1 && jsonEndIdx > jsonStartIdx) {
-          const jsonStr = fullText.slice(jsonStartIdx + '---JSON_START---'.length, jsonEndIdx).trim();
+          const jsonStr = fullText
+            .slice(jsonStartIdx + '---JSON_START---'.length, jsonEndIdx)
+            .trim();
           try {
             const parsedJson = JSON.parse(jsonStr) as VesperStructuredResponse;
             yield { json: parsedJson };
           } catch (e) {
-            this.logger.error('Failed to parse structured JSON from Gemini response', e);
+            this.logger.error(
+              'Failed to parse structured JSON from Gemini response',
+              e,
+            );
             this.logger.debug('Raw JSON string:', jsonStr.slice(0, 500));
           }
         }
@@ -165,7 +193,6 @@ If there are no actions or recommendations, output an empty JSON object {} insid
           yield { text: fullText.slice(yieldedUpTo) };
         }
       }
-
     } catch (error) {
       this.logger.error('AI Generation Failed', error);
       throw error;

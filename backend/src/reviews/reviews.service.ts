@@ -16,7 +16,9 @@ export class ReviewsService {
    */
   async create(userId: string, dto: CreateReviewDto) {
     // Validate product exists
-    const product = await this.prisma.product.findUnique({ where: { id: dto.productId } });
+    const product = await this.prisma.product.findUnique({
+      where: { id: dto.productId },
+    });
     if (!product) {
       throw new NotFoundException(`Product ${dto.productId} not found.`);
     }
@@ -44,7 +46,9 @@ export class ReviewsService {
 
   /** Returns all reviews for a product, newest first. */
   async findByProduct(productId: string) {
-    const product = await this.prisma.product.findUnique({ where: { id: productId } });
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
     if (!product) {
       throw new NotFoundException(`Product ${productId} not found.`);
     }

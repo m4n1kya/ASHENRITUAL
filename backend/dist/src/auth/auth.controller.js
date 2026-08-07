@@ -33,7 +33,7 @@ let AuthController = class AuthController {
         if (!user) {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
-        const { accessToken, refreshToken, user: userData } = await this.authService.login(user);
+        const { accessToken, refreshToken, user: userData, } = await this.authService.login(user);
         this.setRefreshTokenCookie(res, refreshToken);
         return { accessToken, user: userData };
     }
@@ -61,9 +61,12 @@ let AuthController = class AuthController {
         if (!base64Url)
             throw new common_1.UnauthorizedException('Invalid token format');
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        const jsonPayload = decodeURIComponent(atob(base64)
+            .split('')
+            .map(function (c) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
+        })
+            .join(''));
         const payload = JSON.parse(jsonPayload);
         const userId = payload.sub;
         const tokens = await this.authService.refreshTokens(userId, refreshToken);

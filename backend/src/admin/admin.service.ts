@@ -21,12 +21,13 @@ export class AdminService {
    * Runs four queries in parallel for efficiency.
    */
   async getDashboardStats(): Promise<DashboardStats> {
-    const [revenueResult, totalOrders, totalUsers, totalProducts] = await Promise.all([
-      this.prisma.archive.aggregate({ _sum: { total: true } }),
-      this.prisma.archive.count(),
-      this.prisma.user.count(),
-      this.prisma.product.count(),
-    ]);
+    const [revenueResult, totalOrders, totalUsers, totalProducts] =
+      await Promise.all([
+        this.prisma.archive.aggregate({ _sum: { total: true } }),
+        this.prisma.archive.count(),
+        this.prisma.user.count(),
+        this.prisma.product.count(),
+      ]);
 
     return {
       totalRevenue: Number(revenueResult._sum.total ?? 0),

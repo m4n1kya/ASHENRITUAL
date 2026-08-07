@@ -32,15 +32,22 @@ Only recommend productIds that are provided to you in the Product Catalog contex
 `;
     constructor(prisma) {
         this.prisma = prisma;
-        this.ai = new genai_1.GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'dummy_key_for_build' });
+        this.ai = new genai_1.GoogleGenAI({
+            apiKey: process.env.GEMINI_API_KEY || 'dummy_key_for_build',
+        });
     }
     async consult(params) {
         try {
             const products = await this.prisma.product.findMany({
-                select: { id: true, name: true, description: true, category: { select: { name: true } } },
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    category: { select: { name: true } },
+                },
             });
             const catalogContext = products
-                .map(p => `ID: ${p.id} | Name: ${p.name} | Category: ${p.category.name} | Desc: ${p.description}`)
+                .map((p) => `ID: ${p.id} | Name: ${p.name} | Category: ${p.category.name} | Desc: ${p.description}`)
                 .join('\n');
             const userContext = `
 Context Parameters:
@@ -56,7 +63,10 @@ ${catalogContext}
             const response = await this.ai.models.generateContent({
                 model: 'gemini-2.5-pro',
                 contents: [
-                    { role: 'user', parts: [{ text: this.systemPrompt + '\n\n' + userContext }] },
+                    {
+                        role: 'user',
+                        parts: [{ text: this.systemPrompt + '\n\n' + userContext }],
+                    },
                 ],
                 config: {
                     responseMimeType: 'application/json',
@@ -69,14 +79,14 @@ ${catalogContext}
             const parsed = JSON.parse(jsonStr);
             const recommendedProducts = await this.prisma.product.findMany({
                 where: { id: { in: parsed.productIds } },
-                include: { category: true }
+                include: { category: true },
             });
             return {
                 id: 'vesper-' + Date.now(),
                 title: parsed.title,
                 description: parsed.description,
                 stylingNotes: parsed.stylingNotes,
-                products: recommendedProducts
+                products: recommendedProducts,
             };
         }
         catch (err) {
@@ -85,7 +95,13 @@ ${catalogContext}
         }
     }
     async generateOutfit(userId) {
-        return this.consult({ occasion: 'Everyday Minimal', weather: 'Transitional Autumn', dressCode: 'Smart Casual', palette: 'Earth & Stone', silhouette: 'Tailored & Sharp' });
+        return this.consult({
+            occasion: 'Everyday Minimal',
+            weather: 'Transitional Autumn',
+            dressCode: 'Smart Casual',
+            palette: 'Earth & Stone',
+            silhouette: 'Tailored & Sharp',
+        });
     }
 };
 exports.VesperService = VesperService;

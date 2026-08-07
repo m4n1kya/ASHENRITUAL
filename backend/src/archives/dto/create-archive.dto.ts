@@ -30,7 +30,10 @@ export class CreateArchiveDto {
   @Type(() => ArchiveItemDto)
   items: ArchiveItemDto[];
 
-  @ApiProperty({ description: 'Shipping address UUID', example: 'a1b2c3d4-...' })
+  @ApiProperty({
+    description: 'Shipping address UUID',
+    example: 'a1b2c3d4-...',
+  })
   @IsString()
   @IsNotEmpty()
   addressId: string;

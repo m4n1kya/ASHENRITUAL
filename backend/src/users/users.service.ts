@@ -13,7 +13,9 @@ export class UsersService {
 
     if (existingUser) {
       if (existingUser.provider !== 'LOCAL') {
-        throw new ConflictException(`User registered via ${existingUser.provider}. Please sign in with ${existingUser.provider}.`);
+        throw new ConflictException(
+          `User registered via ${existingUser.provider}. Please sign in with ${existingUser.provider}.`,
+        );
       }
       throw new ConflictException('User with this email already exists');
     }

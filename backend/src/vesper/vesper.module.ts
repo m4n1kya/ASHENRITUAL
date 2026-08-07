@@ -15,7 +15,7 @@ import { VesperSizeService } from './vesper-size.service';
     GeminiProvider,
     ContextManager,
     RecommendationEngine,
-    VesperSizeService
+    VesperSizeService,
   ],
   exports: [VesperOrchestrator],
 })

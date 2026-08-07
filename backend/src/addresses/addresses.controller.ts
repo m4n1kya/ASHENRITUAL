@@ -11,7 +11,13 @@ import {
 import { AddressesService } from './addresses.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+} from '@nestjs/swagger';
 
 interface JwtUser {
   userId: string;
@@ -29,16 +35,13 @@ export class AddressesController {
   @Post()
   @ApiOperation({ summary: 'Add a new shipping address' })
   @ApiResponse({ status: 201, description: 'Address created.' })
-  create(
-    @Body() dto: CreateAddressDto,
-    @Request() req: { user: JwtUser },
-  ) {
+  create(@Body() dto: CreateAddressDto, @Request() req: { user: JwtUser }) {
     return this.addressesService.create(req.user.userId, dto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all addresses for the current user' })
-  @ApiResponse({ status: 200, description: 'Returns user\'s addresses.' })
+  @ApiResponse({ status: 200, description: "Returns user's addresses." })
   findAll(@Request() req: { user: JwtUser }) {
     return this.addressesService.findAll(req.user.userId);
   }
@@ -49,10 +52,7 @@ export class AddressesController {
   @ApiResponse({ status: 200, description: 'Address removed.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'Address not found.' })
-  remove(
-    @Param('id') id: string,
-    @Request() req: { user: JwtUser },
-  ) {
+  remove(@Param('id') id: string, @Request() req: { user: JwtUser }) {
     return this.addressesService.remove(id, req.user.userId);
   }
 }

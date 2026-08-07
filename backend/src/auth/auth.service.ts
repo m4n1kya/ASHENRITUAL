@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -12,7 +16,7 @@ export class AuthService {
 
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {
     if (process.env.RESEND_API_KEY) {
       this.resend = new Resend(process.env.RESEND_API_KEY);
@@ -22,9 +26,11 @@ export class AuthService {
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
     if (!user) return null;
-    
+
     if (user.provider !== 'LOCAL' || !user.passwordHash) {
-      throw new UnauthorizedException(`This email is associated with a ${user.provider} account. Please sign in with ${user.provider}.`);
+      throw new UnauthorizedException(
+        `This email is associated with a ${user.provider} account. Please sign in with ${user.provider}.`,
+      );
     }
 
     if (await bcrypt.compare(pass, user.passwordHash)) {
@@ -47,12 +53,14 @@ export class AuthService {
 
   async login(user: any) {
     const { accessToken, refreshToken } = await this.generateTokens(user);
-    
+
     // Hash refresh token before saving
     const salt = await bcrypt.genSalt(10);
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
-    
-    await this.usersService.update(user.id, { refreshToken: hashedRefreshToken });
+
+    await this.usersService.update(user.id, {
+      refreshToken: hashedRefreshToken,
+    });
 
     return {
       accessToken,
@@ -61,16 +69,16 @@ export class AuthService {
         id: user.id,
         email: user.email,
         role: user.role,
-      }
+      },
     };
   }
 
   async register(createUserDto: CreateUserDto) {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(createUserDto.password, salt);
-    
+
     const verificationToken = randomBytes(32).toString('hex');
-    
+
     const user = await this.usersService.create({
       email: createUserDto.email,
       passwordHash,
@@ -84,13 +92,15 @@ export class AuthService {
           from: 'ASHENRITUAL <no-reply@ashenritual.com>', // Update with your verified domain
           to: user.email,
           subject: 'Verify your email for ASHENRITUAL',
-          html: `<p>Your verification token is: ${verificationToken}</p>`
+          html: `<p>Your verification token is: ${verificationToken}</p>`,
         });
       } catch (error) {
         console.error('Failed to send verification email:', error);
       }
     } else {
-      console.warn('RESEND_API_KEY not configured. Verification email skipped.');
+      console.warn(
+        'RESEND_API_KEY not configured. Verification email skipped.',
+      );
     }
 
     return this.login(user);
@@ -102,7 +112,10 @@ export class AuthService {
       throw new UnauthorizedException('Access denied');
     }
 
-    const refreshTokenMatches = await bcrypt.compare(refreshToken, user.refreshToken);
+    const refreshTokenMatches = await bcrypt.compare(
+      refreshToken,
+      user.refreshToken,
+    );
     if (!refreshTokenMatches) {
       throw new UnauthorizedException('Access denied');
     }
@@ -110,9 +123,11 @@ export class AuthService {
     const tokens = await this.generateTokens(user);
     const salt = await bcrypt.genSalt(10);
     const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, salt);
-    
-    await this.usersService.update(user.id, { refreshToken: hashedRefreshToken });
-    
+
+    await this.usersService.update(user.id, {
+      refreshToken: hashedRefreshToken,
+    });
+
     return tokens;
   }
 

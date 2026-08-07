@@ -34,7 +34,10 @@ class ValidateCartDto {
 }
 exports.ValidateCartDto = ValidateCartDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: [CartItemDto], description: 'Array of cart line items to validate' }),
+    (0, swagger_1.ApiProperty)({
+        type: [CartItemDto],
+        description: 'Array of cart line items to validate',
+    }),
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => CartItemDto),

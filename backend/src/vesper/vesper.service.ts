@@ -22,18 +22,34 @@ Only recommend productIds that are provided to you in the Product Catalog contex
 `;
 
   constructor(private prisma: PrismaService) {
-    this.ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'dummy_key_for_build' });
+    this.ai = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY || 'dummy_key_for_build',
+    });
   }
 
-  async consult(params: { occasion: string, weather: string, dressCode: string, palette: string, silhouette: string }) {
+  async consult(params: {
+    occasion: string;
+    weather: string;
+    dressCode: string;
+    palette: string;
+    silhouette: string;
+  }) {
     try {
       // Fetch catalog to give Gemini options
       const products = await this.prisma.product.findMany({
-        select: { id: true, name: true, description: true, category: { select: { name: true } } },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          category: { select: { name: true } },
+        },
       });
 
       const catalogContext = products
-        .map(p => `ID: ${p.id} | Name: ${p.name} | Category: ${p.category.name} | Desc: ${p.description}`)
+        .map(
+          (p) =>
+            `ID: ${p.id} | Name: ${p.name} | Category: ${p.category.name} | Desc: ${p.description}`,
+        )
         .join('\n');
 
       const userContext = `
@@ -51,7 +67,10 @@ ${catalogContext}
       const response = await this.ai.models.generateContent({
         model: 'gemini-2.5-pro',
         contents: [
-          { role: 'user', parts: [{ text: this.systemPrompt + '\n\n' + userContext }] },
+          {
+            role: 'user',
+            parts: [{ text: this.systemPrompt + '\n\n' + userContext }],
+          },
         ],
         config: {
           responseMimeType: 'application/json',
@@ -61,13 +80,13 @@ ${catalogContext}
 
       const jsonStr = response.text;
       if (!jsonStr) throw new Error('No response from Vesper');
-      
+
       const parsed = JSON.parse(jsonStr);
 
       // Map IDs to actual full products
       const recommendedProducts = await this.prisma.product.findMany({
         where: { id: { in: parsed.productIds } },
-        include: { category: true }
+        include: { category: true },
       });
 
       return {
@@ -75,17 +94,24 @@ ${catalogContext}
         title: parsed.title,
         description: parsed.description,
         stylingNotes: parsed.stylingNotes,
-        products: recommendedProducts
+        products: recommendedProducts,
       };
-
     } catch (err) {
       console.error(err);
-      throw new InternalServerErrorException('Vesper Intelligence is currently unavailable.');
+      throw new InternalServerErrorException(
+        'Vesper Intelligence is currently unavailable.',
+      );
     }
   }
 
   // Fallback for older frontend routes if any
   async generateOutfit(userId: string) {
-    return this.consult({ occasion: 'Everyday Minimal', weather: 'Transitional Autumn', dressCode: 'Smart Casual', palette: 'Earth & Stone', silhouette: 'Tailored & Sharp' });
+    return this.consult({
+      occasion: 'Everyday Minimal',
+      weather: 'Transitional Autumn',
+      dressCode: 'Smart Casual',
+      palette: 'Earth & Stone',
+      silhouette: 'Tailored & Sharp',
+    });
   }
 }

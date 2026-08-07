@@ -43,7 +43,9 @@ export class AddressesService {
     }
 
     if (address.userId !== userId) {
-      throw new ForbiddenException('You do not have permission to delete this address.');
+      throw new ForbiddenException(
+        'You do not have permission to delete this address.',
+      );
     }
 
     await this.prisma.address.delete({ where: { id } });

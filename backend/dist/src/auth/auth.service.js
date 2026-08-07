@@ -86,7 +86,9 @@ let AuthService = class AuthService {
         const { accessToken, refreshToken } = await this.generateTokens(user);
         const salt = await bcrypt.genSalt(10);
         const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
-        await this.usersService.update(user.id, { refreshToken: hashedRefreshToken });
+        await this.usersService.update(user.id, {
+            refreshToken: hashedRefreshToken,
+        });
         return {
             accessToken,
             refreshToken,
@@ -94,7 +96,7 @@ let AuthService = class AuthService {
                 id: user.id,
                 email: user.email,
                 role: user.role,
-            }
+            },
         };
     }
     async register(createUserDto) {
@@ -112,7 +114,7 @@ let AuthService = class AuthService {
                     from: 'ASHENRITUAL <no-reply@ashenritual.com>',
                     to: user.email,
                     subject: 'Verify your email for ASHENRITUAL',
-                    html: `<p>Your verification token is: ${verificationToken}</p>`
+                    html: `<p>Your verification token is: ${verificationToken}</p>`,
                 });
             }
             catch (error) {
@@ -136,7 +138,9 @@ let AuthService = class AuthService {
         const tokens = await this.generateTokens(user);
         const salt = await bcrypt.genSalt(10);
         const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, salt);
-        await this.usersService.update(user.id, { refreshToken: hashedRefreshToken });
+        await this.usersService.update(user.id, {
+            refreshToken: hashedRefreshToken,
+        });
         return tokens;
     }
     async logout(userId) {

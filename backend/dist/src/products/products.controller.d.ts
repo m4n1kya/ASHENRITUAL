@@ -21,6 +21,7 @@ export declare class ProductsController {
             images: string[];
             stock: number;
             categoryId: string;
+            showroomId: string | null;
         })[];
         total: number;
         page: number;
@@ -45,6 +46,7 @@ export declare class ProductsController {
         images: string[];
         stock: number;
         categoryId: string;
+        showroomId: string | null;
     })[]>;
     findNewArrivals(): Promise<({
         category: {
@@ -64,6 +66,7 @@ export declare class ProductsController {
         images: string[];
         stock: number;
         categoryId: string;
+        showroomId: string | null;
     })[]>;
     findBestSellers(): Promise<({
         category: {
@@ -83,6 +86,7 @@ export declare class ProductsController {
         images: string[];
         stock: number;
         categoryId: string;
+        showroomId: string | null;
     })[]>;
     findByCategory(slug: string, page?: string, limit?: string): Promise<{
         data: ({
@@ -103,6 +107,7 @@ export declare class ProductsController {
             images: string[];
             stock: number;
             categoryId: string;
+            showroomId: string | null;
         })[];
         total: number;
         page: number;
@@ -141,5 +146,6 @@ export declare class ProductsController {
         images: string[];
         stock: number;
         categoryId: string;
+        showroomId: string | null;
     }>;
 }

@@ -17,7 +17,10 @@ export class CreateProductDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ description: 'Product description', example: 'A structured coat in 100% merino wool.' })
+  @ApiProperty({
+    description: 'Product description',
+    example: 'A structured coat in 100% merino wool.',
+  })
   @IsString()
   @IsNotEmpty()
   description: string;
@@ -31,7 +34,10 @@ export class CreateProductDto {
   @IsUUID()
   categoryId: string;
 
-  @ApiProperty({ description: 'Array of image URLs', example: ['https://cdn.ashen.com/coat.jpg'] })
+  @ApiProperty({
+    description: 'Array of image URLs',
+    example: ['https://cdn.ashen.com/coat.jpg'],
+  })
   @IsArray()
   @IsString({ each: true })
   images: string[];

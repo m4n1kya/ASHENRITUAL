@@ -17,7 +17,10 @@ export class CategoriesController {
   @Get(':slug')
   @ApiOperation({ summary: 'Get a category and its products by slug' })
   @ApiParam({ name: 'slug', description: 'Category slug (e.g. shirts)' })
-  @ApiResponse({ status: 200, description: 'Returns the category with products.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the category with products.',
+  })
   @ApiResponse({ status: 404, description: 'Category not found.' })
   findBySlug(@Param('slug') slug: string) {
     return this.categoriesService.findBySlug(slug);

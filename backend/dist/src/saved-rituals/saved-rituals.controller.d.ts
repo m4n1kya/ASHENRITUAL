@@ -35,6 +35,7 @@ export declare class SavedRitualsController {
             images: string[];
             stock: number;
             categoryId: string;
+            showroomId: string | null;
         };
     } & {
         id: string;

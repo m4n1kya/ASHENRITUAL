@@ -42,7 +42,10 @@ __decorate([
     __metadata("design:type", Array)
 ], CreateArchiveDto.prototype, "items", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'Shipping address UUID', example: 'a1b2c3d4-...' }),
+    (0, swagger_1.ApiProperty)({
+        description: 'Shipping address UUID',
+        example: 'a1b2c3d4-...',
+    }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)

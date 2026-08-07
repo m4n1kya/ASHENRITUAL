@@ -33,6 +33,7 @@ export declare class VesperService {
             images: string[];
             stock: number;
             categoryId: string;
+            showroomId: string | null;
         })[];
     }>;
     generateOutfit(userId: string): Promise<{
@@ -58,6 +59,7 @@ export declare class VesperService {
             images: string[];
             stock: number;
             categoryId: string;
+            showroomId: string | null;
         })[];
     }>;
 }

@@ -19,12 +19,14 @@ let ProductsService = class ProductsService {
     }
     async findAll(query, page = 1, limit = 24) {
         const skip = (page - 1) * limit;
-        const whereCondition = query ? {
-            OR: [
-                { name: { contains: query, mode: 'insensitive' } },
-                { description: { contains: query, mode: 'insensitive' } },
-            ],
-        } : {};
+        const whereCondition = query
+            ? {
+                OR: [
+                    { name: { contains: query, mode: 'insensitive' } },
+                    { description: { contains: query, mode: 'insensitive' } },
+                ],
+            }
+            : {};
         const [data, total] = await Promise.all([
             this.prisma.product.findMany({
                 where: whereCondition,
@@ -33,20 +35,23 @@ let ProductsService = class ProductsService {
                 skip,
                 take: limit,
             }),
-            this.prisma.product.count({ where: whereCondition })
+            this.prisma.product.count({ where: whereCondition }),
         ]);
         return {
             data,
             total,
             page,
             limit,
-            totalPages: Math.ceil(total / limit)
+            totalPages: Math.ceil(total / limit),
         };
     }
     async findOne(id) {
         const product = await this.prisma.product.findUnique({
             where: { id },
-            include: { category: true, reviews: { include: { user: { select: { id: true, email: true } } } } },
+            include: {
+                category: true,
+                reviews: { include: { user: { select: { id: true, email: true } } } },
+            },
         });
         if (!product) {
             throw new common_1.NotFoundException(`Product with ID ${id} not found`);
@@ -67,14 +72,14 @@ let ProductsService = class ProductsService {
                 skip,
                 take: limit,
             }),
-            this.prisma.product.count({ where: { categoryId: category.id } })
+            this.prisma.product.count({ where: { categoryId: category.id } }),
         ]);
         return {
             data,
             total,
             page,
             limit,
-            totalPages: Math.ceil(total / limit)
+            totalPages: Math.ceil(total / limit),
         };
     }
     async findFeatured() {

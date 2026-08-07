@@ -68,7 +68,9 @@ let ArchivesService = class ArchivesService {
             include: {
                 items: {
                     include: {
-                        product: { select: { id: true, name: true, images: true, price: true } },
+                        product: {
+                            select: { id: true, name: true, images: true, price: true },
+                        },
                     },
                 },
             },
@@ -81,7 +83,9 @@ let ArchivesService = class ArchivesService {
             include: {
                 items: {
                     include: {
-                        product: { select: { id: true, name: true, images: true, price: true } },
+                        product: {
+                            select: { id: true, name: true, images: true, price: true },
+                        },
                     },
                 },
             },

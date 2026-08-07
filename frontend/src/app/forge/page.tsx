@@ -1,13 +1,13 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { AtelierClient } from './AtelierClient';
+import { ForgeClient } from './ForgeClient';
 
 export const metadata: Metadata = {
-  title: 'Atelier — ASHENRITUAL',
-  description: 'The creative studio and philosophy of ASHENRITUAL. Where silence becomes form.',
+  title: 'FORGE — ASHENRITUAL',
+  description: 'Explore the Forge, where every ASHENRITUAL collection begins through thoughtful material selection, architectural design, and timeless craftsmanship.',
 };
 
-export default function AtelierPage() {
+export default function ForgePage() {
   return (
     <main className="min-h-screen bg-background texture-grain">
       <Suspense
@@ -17,7 +17,7 @@ export default function AtelierPage() {
           </div>
         }
       >
-        <AtelierClient />
+        <ForgeClient />
       </Suspense>
     </main>
   );

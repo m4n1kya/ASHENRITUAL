@@ -16,7 +16,7 @@ async function bootstrap() {
     app.setGlobalPrefix('api');
     app.enableShutdownHooks();
     const allowedOrigins = process.env.FRONTEND_URL
-        ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+        ? process.env.FRONTEND_URL.split(',').map((url) => url.trim())
         : ['http://localhost:3000'];
     app.enableCors({
         origin: allowedOrigins,

@@ -33,8 +33,13 @@ let SavedRitualsController = class SavedRitualsController {
 exports.SavedRitualsController = SavedRitualsController;
 __decorate([
     (0, common_1.Post)('toggle'),
-    (0, swagger_1.ApiOperation)({ summary: 'Toggle a product in Saved Rituals (add if absent, remove if present)' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: '{ action: "saved" | "removed", productId }' }),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Toggle a product in Saved Rituals (add if absent, remove if present)',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: '{ action: "saved" | "removed", productId }',
+    }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -44,7 +49,7 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({ summary: 'Get all Saved Rituals for the current user' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the user\'s wishlist.' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Returns the user's wishlist." }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

@@ -14,9 +14,9 @@ let GeminiProvider = GeminiProvider_1 = class GeminiProvider {
     apiKey = process.env.GEMINI_API_KEY || '';
     async *generateStream(messages, systemPrompt, contextData) {
         try {
-            const contents = messages.map(m => ({
+            const contents = messages.map((m) => ({
                 role: m.role,
-                parts: [{ text: m.content }]
+                parts: [{ text: m.content }],
             }));
             const fullSystemPrompt = `
 ${systemPrompt}
@@ -38,8 +38,10 @@ THEN, you MUST output a JSON block wrapped EXACTLY in these markers:
 Do not include markdown \`\`\`json around the JSON block, just the exact markers above.
 If there are no actions or recommendations, output an empty JSON object {} inside the markers.
 `;
-            if (contents.length > 0 && contents[contents.length - 1].role === 'user') {
-                contents[contents.length - 1].parts[0].text += '\n\n' + fullSystemPrompt;
+            if (contents.length > 0 &&
+                contents[contents.length - 1].role === 'user') {
+                contents[contents.length - 1].parts[0].text +=
+                    '\n\n' + fullSystemPrompt;
             }
             else {
                 contents.push({ role: 'user', parts: [{ text: fullSystemPrompt }] });
@@ -52,8 +54,8 @@ If there are no actions or recommendations, output an empty JSON object {} insid
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents,
-                    generationConfig: { temperature: 0.3 }
-                })
+                    generationConfig: { temperature: 0.3 },
+                }),
             });
             if (!response.ok) {
                 const errorText = await response.text();
@@ -81,7 +83,9 @@ If there are no actions or recommendations, output an empty JSON object {} insid
                         const trimmed = line.trim();
                         if (!trimmed.startsWith('data:'))
                             continue;
-                        const dataStr = trimmed.startsWith('data: ') ? trimmed.slice(6) : trimmed.slice(5);
+                        const dataStr = trimmed.startsWith('data: ')
+                            ? trimmed.slice(6)
+                            : trimmed.slice(5);
                         if (!dataStr || dataStr === '[DONE]')
                             continue;
                         try {
@@ -124,7 +128,9 @@ If there are no actions or recommendations, output an empty JSON object {} insid
                     yield { text: fullText.slice(yieldedUpTo, jsonStartIdx) };
                 }
                 if (jsonEndIdx !== -1 && jsonEndIdx > jsonStartIdx) {
-                    const jsonStr = fullText.slice(jsonStartIdx + '---JSON_START---'.length, jsonEndIdx).trim();
+                    const jsonStr = fullText
+                        .slice(jsonStartIdx + '---JSON_START---'.length, jsonEndIdx)
+                        .trim();
                     try {
                         const parsedJson = JSON.parse(jsonStr);
                         yield { json: parsedJson };

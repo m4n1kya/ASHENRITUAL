@@ -28,7 +28,10 @@ __decorate([
     __metadata("design:type", String)
 ], CreateProductDto.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'Product description', example: 'A structured coat in 100% merino wool.' }),
+    (0, swagger_1.ApiProperty)({
+        description: 'Product description',
+        example: 'A structured coat in 100% merino wool.',
+    }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
@@ -45,7 +48,10 @@ __decorate([
     __metadata("design:type", String)
 ], CreateProductDto.prototype, "categoryId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'Array of image URLs', example: ['https://cdn.ashen.com/coat.jpg'] }),
+    (0, swagger_1.ApiProperty)({
+        description: 'Array of image URLs',
+        example: ['https://cdn.ashen.com/coat.jpg'],
+    }),
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.IsString)({ each: true }),
     __metadata("design:type", Array)

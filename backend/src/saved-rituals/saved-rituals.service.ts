@@ -13,7 +13,9 @@ export class SavedRitualsService {
    */
   async toggle(userId: string, productId: string) {
     // Verify the product exists
-    const product = await this.prisma.product.findUnique({ where: { id: productId } });
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
     if (!product) {
       throw new NotFoundException(`Product ${productId} not found.`);
     }

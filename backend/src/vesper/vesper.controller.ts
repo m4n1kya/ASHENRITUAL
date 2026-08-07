@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Req, Res, UseGuards, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Req,
+  Res,
+  UseGuards,
+  HttpCode,
+} from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { VesperOrchestrator } from './vesper.orchestrator';
 import { VesperSizeService } from './vesper-size.service';
@@ -16,7 +24,7 @@ interface ChatDto {
 export class VesperController {
   constructor(
     private readonly orchestrator: VesperOrchestrator,
-    private readonly sizeService: VesperSizeService
+    private readonly sizeService: VesperSizeService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -32,7 +40,7 @@ export class VesperController {
   async chatStream(
     @Body() dto: ChatDto,
     @Req() req: Request,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
     const user = req.user as any;
 
@@ -44,7 +52,11 @@ export class VesperController {
 
     let eventId = 0;
     try {
-      const stream = this.orchestrator.chatStream(dto.messages, dto.context, user?.userId);
+      const stream = this.orchestrator.chatStream(
+        dto.messages,
+        dto.context,
+        user?.userId,
+      );
 
       for await (const chunk of stream) {
         eventId++;
@@ -56,7 +68,8 @@ export class VesperController {
       eventId++;
       const errorChunk = JSON.stringify({
         type: 'text',
-        content: 'Our intelligence network experienced an interruption. Please try again.',
+        content:
+          'Our intelligence network experienced an interruption. Please try again.',
       });
       res.write(`id: ${eventId}\ndata: ${errorChunk}\n\n`);
     }

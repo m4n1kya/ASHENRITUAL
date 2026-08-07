@@ -17,7 +17,10 @@ class ToggleSavedRitualDto {
 }
 exports.ToggleSavedRitualDto = ToggleSavedRitualDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'Product UUID to toggle in Saved Rituals', example: 'a1b2c3d4-...' }),
+    (0, swagger_1.ApiProperty)({
+        description: 'Product UUID to toggle in Saved Rituals',
+        example: 'a1b2c3d4-...',
+    }),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
 ], ToggleSavedRitualDto.prototype, "productId", void 0);

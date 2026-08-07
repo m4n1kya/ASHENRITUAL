@@ -36,6 +36,7 @@ export declare class ChaptersService {
             images: string[];
             stock: number;
             categoryId: string;
+            showroomId: string | null;
         })[];
     } & {
         id: string;

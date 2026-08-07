@@ -18,7 +18,9 @@ let SavedRitualsService = class SavedRitualsService {
         this.prisma = prisma;
     }
     async toggle(userId, productId) {
-        const product = await this.prisma.product.findUnique({ where: { id: productId } });
+        const product = await this.prisma.product.findUnique({
+            where: { id: productId },
+        });
         if (!product) {
             throw new common_1.NotFoundException(`Product ${productId} not found.`);
         }

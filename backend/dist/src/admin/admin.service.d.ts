@@ -30,6 +30,7 @@ export declare class AdminService {
         images: string[];
         stock: number;
         categoryId: string;
+        showroomId: string | null;
     }>;
     updateProduct(id: string, dto: UpdateProductDto): Promise<{
         category: {
@@ -49,6 +50,7 @@ export declare class AdminService {
         images: string[];
         stock: number;
         categoryId: string;
+        showroomId: string | null;
     }>;
     deleteProduct(id: string): Promise<{
         message: string;

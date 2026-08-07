@@ -11,7 +11,7 @@
 <br />
 
 <div align="center">
-  <img src=".github/assets/atelier.png" alt="Atelier Layout" width="49%" />
+  <img src=".github/assets/forge.png" alt="Forge Layout" width="49%" />
   <img src=".github/assets/beyond.png" alt="Editorial Beyond Section" width="49%" />
 </div>
 

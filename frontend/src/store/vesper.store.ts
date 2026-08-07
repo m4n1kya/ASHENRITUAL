@@ -12,7 +12,7 @@ export interface VesperMessage {
 
 export interface VesperAction {
   label: string;
-  type: 'route' | 'product' | 'chapter' | 'collection' | 'atelier' | 'beyond' | 'shop' | 'cart';
+  type: 'route' | 'product' | 'chapter' | 'collection' | 'forge' | 'showrooms' | 'sanctum' | 'beyond' | 'shop' | 'cart';
   target: string;
 }
 

@@ -13,11 +13,13 @@ import { cn } from '@/lib/utils';
 import type { Product } from '@/types';
 
 const NAV = [
-  { label: 'Shop',     href: '/shop' },
-  { label: 'Chapters', href: '/chapters' },
-  { label: 'Vesper',   href: '/vesper' },
-  { label: 'Atelier',  href: '/atelier' },
-  { label: 'Beyond',   href: '/beyond' },
+  { label: 'Shop',      href: '/shop' },
+  { label: 'Showrooms', href: '/showrooms' },
+  { label: 'Chapters',  href: '/chapters' },
+  { label: 'Vesper',    href: '/vesper' },
+  { label: 'Forge',     href: '/forge' },
+  { label: 'Sanctum',   href: '/sanctum' },
+  { label: 'Beyond',    href: '/beyond' },
 ] as const;
 
 const MOBILE_SECONDARY = [

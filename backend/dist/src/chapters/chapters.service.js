@@ -22,9 +22,9 @@ let ChaptersService = class ChaptersService {
             orderBy: { createdAt: 'asc' },
             include: {
                 _count: {
-                    select: { products: true }
-                }
-            }
+                    select: { products: true },
+                },
+            },
         });
     }
     async findBySlug(slug) {
@@ -34,7 +34,7 @@ let ChaptersService = class ChaptersService {
                 products: {
                     include: {
                         category: true,
-                    }
+                    },
                 },
             },
         });

@@ -1,6 +1,12 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+  ApiParam,
+} from '@nestjs/swagger';
 
 @ApiTags('Products')
 @Controller('products')
@@ -9,9 +15,23 @@ export class ProductsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all products, optionally search by query' })
-  @ApiQuery({ name: 'q', required: false, description: 'Search query (name/description)' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
+  @ApiQuery({
+    name: 'q',
+    required: false,
+    description: 'Search query (name/description)',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Items per page',
+  })
   @ApiResponse({ status: 200, description: 'Returns paginated products.' })
   findAll(
     @Query('q') query?: string,
@@ -48,10 +68,26 @@ export class ProductsController {
 
   @Get('category/:slug')
   @ApiOperation({ summary: 'Get all products in a category by its slug' })
-  @ApiParam({ name: 'slug', description: 'Category slug (e.g. shirts, trousers)' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
-  @ApiResponse({ status: 200, description: 'Returns paginated products in the category.' })
+  @ApiParam({
+    name: 'slug',
+    description: 'Category slug (e.g. shirts, trousers)',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Items per page',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns paginated products in the category.',
+  })
   @ApiResponse({ status: 404, description: 'Category not found.' })
   findByCategory(
     @Param('slug') slug: string,

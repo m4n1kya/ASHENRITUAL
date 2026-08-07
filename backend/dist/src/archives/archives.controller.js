@@ -38,7 +38,10 @@ __decorate([
     (0, common_1.Post)(),
     (0, swagger_1.ApiOperation)({ summary: 'Create a new Archive (place an order)' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Archive created successfully.' }),
-    (0, swagger_1.ApiResponse)({ status: 400, description: 'Invalid items or insufficient stock.' }),
+    (0, swagger_1.ApiResponse)({
+        status: 400,
+        description: 'Invalid items or insufficient stock.',
+    }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -48,7 +51,7 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({ summary: 'Get all Archives (orders) for the current user' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns user\'s order history.' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Returns user's order history." }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -56,7 +59,9 @@ __decorate([
 ], ArchivesController.prototype, "findMyArchives", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get a single Archive by ID (must belong to current user)' }),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Get a single Archive by ID (must belong to current user)',
+    }),
     (0, swagger_1.ApiParam)({ name: 'id', description: 'Archive UUID' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the archive detail.' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Archive not found.' }),

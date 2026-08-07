@@ -36,6 +36,7 @@ export declare class ChaptersController {
             images: string[];
             stock: number;
             categoryId: string;
+            showroomId: string | null;
         })[];
     } & {
         id: string;

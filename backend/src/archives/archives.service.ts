@@ -91,7 +91,9 @@ export class ArchivesService {
       include: {
         items: {
           include: {
-            product: { select: { id: true, name: true, images: true, price: true } },
+            product: {
+              select: { id: true, name: true, images: true, price: true },
+            },
           },
         },
       },
@@ -106,7 +108,9 @@ export class ArchivesService {
       include: {
         items: {
           include: {
-            product: { select: { id: true, name: true, images: true, price: true } },
+            product: {
+              select: { id: true, name: true, images: true, price: true },
+            },
           },
         },
       },

@@ -19,19 +19,30 @@ class CreateReviewDto {
 }
 exports.CreateReviewDto = CreateReviewDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'Product UUID to review', example: 'a1b2c3d4-...' }),
+    (0, swagger_1.ApiProperty)({
+        description: 'Product UUID to review',
+        example: 'a1b2c3d4-...',
+    }),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
 ], CreateReviewDto.prototype, "productId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'Rating from 1 to 5', example: 5, minimum: 1, maximum: 5 }),
+    (0, swagger_1.ApiProperty)({
+        description: 'Rating from 1 to 5',
+        example: 5,
+        minimum: 1,
+        maximum: 5,
+    }),
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.Min)(1),
     (0, class_validator_1.Max)(5),
     __metadata("design:type", Number)
 ], CreateReviewDto.prototype, "rating", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ description: 'Optional review comment', example: 'Exceptional quality.' }),
+    (0, swagger_1.ApiPropertyOptional)({
+        description: 'Optional review comment',
+        example: 'Exceptional quality.',
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

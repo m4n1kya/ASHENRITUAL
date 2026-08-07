@@ -8,13 +8,15 @@ export class ProductsService {
   /** Fetch all products, optionally filtered by a search query, with pagination. */
   async findAll(query?: string, page: number = 1, limit: number = 24) {
     const skip = (page - 1) * limit;
-    
-    const whereCondition = query ? {
-      OR: [
-        { name: { contains: query, mode: 'insensitive' as const } },
-        { description: { contains: query, mode: 'insensitive' as const } },
-      ],
-    } : {};
+
+    const whereCondition = query
+      ? {
+          OR: [
+            { name: { contains: query, mode: 'insensitive' as const } },
+            { description: { contains: query, mode: 'insensitive' as const } },
+          ],
+        }
+      : {};
 
     const [data, total] = await Promise.all([
       this.prisma.product.findMany({
@@ -24,7 +26,7 @@ export class ProductsService {
         skip,
         take: limit,
       }),
-      this.prisma.product.count({ where: whereCondition })
+      this.prisma.product.count({ where: whereCondition }),
     ]);
 
     return {
@@ -32,7 +34,7 @@ export class ProductsService {
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit)
+      totalPages: Math.ceil(total / limit),
     };
   }
 
@@ -40,7 +42,10 @@ export class ProductsService {
   async findOne(id: string) {
     const product = await this.prisma.product.findUnique({
       where: { id },
-      include: { category: true, reviews: { include: { user: { select: { id: true, email: true } } } } },
+      include: {
+        category: true,
+        reviews: { include: { user: { select: { id: true, email: true } } } },
+      },
     });
 
     if (!product) {
@@ -70,7 +75,7 @@ export class ProductsService {
         skip,
         take: limit,
       }),
-      this.prisma.product.count({ where: { categoryId: category.id } })
+      this.prisma.product.count({ where: { categoryId: category.id } }),
     ]);
 
     return {
@@ -78,7 +83,7 @@ export class ProductsService {
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit)
+      totalPages: Math.ceil(total / limit),
     };
   }
 

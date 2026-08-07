@@ -18,7 +18,9 @@ let ReviewsService = class ReviewsService {
         this.prisma = prisma;
     }
     async create(userId, dto) {
-        const product = await this.prisma.product.findUnique({ where: { id: dto.productId } });
+        const product = await this.prisma.product.findUnique({
+            where: { id: dto.productId },
+        });
         if (!product) {
             throw new common_1.NotFoundException(`Product ${dto.productId} not found.`);
         }
@@ -41,7 +43,9 @@ let ReviewsService = class ReviewsService {
         });
     }
     async findByProduct(productId) {
-        const product = await this.prisma.product.findUnique({ where: { id: productId } });
+        const product = await this.prisma.product.findUnique({
+            where: { id: productId },
+        });
         if (!product) {
             throw new common_1.NotFoundException(`Product ${productId} not found.`);
         }

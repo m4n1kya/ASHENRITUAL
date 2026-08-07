@@ -1,8 +1,22 @@
-import { Controller, Post, Get, Param, Body, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Param,
+  Body,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+} from '@nestjs/swagger';
 
 interface JwtUser {
   userId: string;
@@ -18,13 +32,12 @@ export class ReviewsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post()
-  @ApiOperation({ summary: 'Submit a product review (authenticated, one per product)' })
+  @ApiOperation({
+    summary: 'Submit a product review (authenticated, one per product)',
+  })
   @ApiResponse({ status: 201, description: 'Review created.' })
   @ApiResponse({ status: 409, description: 'Already reviewed this product.' })
-  create(
-    @Body() dto: CreateReviewDto,
-    @Request() req: { user: JwtUser },
-  ) {
+  create(@Body() dto: CreateReviewDto, @Request() req: { user: JwtUser }) {
     return this.reviewsService.create(req.user.userId, dto);
   }
 

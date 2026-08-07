@@ -47,7 +47,7 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({ summary: 'Get all addresses for the current user' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns user\'s addresses.' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Returns user's addresses." }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

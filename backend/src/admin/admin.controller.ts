@@ -36,7 +36,8 @@ export class AdminController {
   @ApiOperation({ summary: 'Get dashboard statistics (ADMIN only)' })
   @ApiResponse({
     status: 200,
-    description: 'Returns totalRevenue, totalOrders, totalUsers, totalProducts.',
+    description:
+      'Returns totalRevenue, totalOrders, totalUsers, totalProducts.',
   })
   getDashboardStats() {
     return this.adminService.getDashboardStats();
@@ -55,10 +56,7 @@ export class AdminController {
   @ApiOperation({ summary: 'Update a product by ID (ADMIN only)' })
   @ApiParam({ name: 'id', description: 'Product UUID' })
   @ApiResponse({ status: 200, description: 'Product updated.' })
-  updateProduct(
-    @Param('id') id: string,
-    @Body() dto: UpdateProductDto,
-  ) {
+  updateProduct(@Param('id') id: string, @Body() dto: UpdateProductDto) {
     return this.adminService.updateProduct(id, dto);
   }
 

@@ -1,4 +1,11 @@
-import { IsString, IsInt, Min, IsArray, ValidateNested, IsUUID } from 'class-validator';
+import {
+  IsString,
+  IsInt,
+  Min,
+  IsArray,
+  ValidateNested,
+  IsUUID,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -16,7 +23,10 @@ export class CartItemDto {
 
 /** Request body for POST /cart/validate */
 export class ValidateCartDto {
-  @ApiProperty({ type: [CartItemDto], description: 'Array of cart line items to validate' })
+  @ApiProperty({
+    type: [CartItemDto],
+    description: 'Array of cart line items to validate',
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CartItemDto)

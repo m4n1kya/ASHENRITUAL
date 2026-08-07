@@ -16,8 +16,9 @@ const COLS = [
     links: [
       { label: 'All Products', href: '/shop' },
       { label: 'New Orders',   href: '/shop?sort=newest' },
+      { label: 'Showrooms',   href: '/showrooms' },
       { label: 'Chapters',     href: '/chapters' },
-      { label: 'Atelier',     href: '/atelier' },
+      { label: 'Forge',       href: '/forge' },
       { label: 'Accessories',  href: '/shop?category=accessories' },
     ],
   },
@@ -28,7 +29,8 @@ const COLS = [
       { label: 'About',       href: '/about' },
       { label: 'Beyond',      href: '/beyond' },
       { label: 'Vesper',      href: '/vesper' },
-      { label: 'Atelier',    href: '/atelier' },
+      { label: 'Sanctum',     href: '/sanctum' },
+      { label: 'Forge',      href: '/forge' },
     ],
   },
   {

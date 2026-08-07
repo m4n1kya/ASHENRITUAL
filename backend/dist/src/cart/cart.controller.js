@@ -34,7 +34,10 @@ __decorate([
         summary: 'Validate cart items before checkout',
         description: 'Takes an array of {productId, quantity} from the Zustand frontend store and returns live price/stock data, flagging any issues.',
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Cart validation result with per-item details.' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Cart validation result with per-item details.',
+    }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Invalid request body.' }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Request)()),

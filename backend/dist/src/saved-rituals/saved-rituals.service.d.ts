@@ -25,6 +25,7 @@ export declare class SavedRitualsService {
             images: string[];
             stock: number;
             categoryId: string;
+            showroomId: string | null;
         };
     } & {
         id: string;

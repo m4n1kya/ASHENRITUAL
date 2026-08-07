@@ -41,10 +41,14 @@ EXPECTED JSON STRUCTURE:
 `;
 
   constructor() {
-    this.ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'dummy_key_for_build' });
+    this.ai = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY || 'dummy_key_for_build',
+    });
   }
 
-  async analyzeProportions(dto: SizeAnalysisRequest): Promise<SizeAnalysisResponse> {
+  async analyzeProportions(
+    dto: SizeAnalysisRequest,
+  ): Promise<SizeAnalysisResponse> {
     const userContext = `
 USER MEASUREMENTS:
 - Height: ${dto.heightCm} cm
@@ -62,23 +66,26 @@ USER MEASUREMENTS:
       const response = await this.ai.models.generateContent({
         model: 'gemini-2.5-pro',
         contents: [
-          { role: 'user', parts: [{ text: this.SYSTEM_PROMPT + '\n\n' + userContext }] },
+          {
+            role: 'user',
+            parts: [{ text: this.SYSTEM_PROMPT + '\n\n' + userContext }],
+          },
         ],
         config: {
           responseMimeType: 'application/json',
-          temperature: 0.1, 
+          temperature: 0.1,
         },
       });
 
       const jsonStr = response.text;
       if (!jsonStr) throw new Error('No response from Size Intelligence');
-      
+
       const parsed = JSON.parse(jsonStr);
-      
+
       return {
         bodyType: parsed.bodyType || 'Average',
         confidenceScore: parsed.confidenceScore || 90,
-        report: parsed.report || 'Proportions analyzed successfully.'
+        report: parsed.report || 'Proportions analyzed successfully.',
       };
     } catch (error) {
       this.logger.error('Failed to analyze proportions', error);
@@ -86,7 +93,8 @@ USER MEASUREMENTS:
       return {
         bodyType: 'Unknown',
         confidenceScore: 85,
-        report: 'We have registered your measurements into the architectural profile. Your selections will now be guided by this foundation.'
+        report:
+          'We have registered your measurements into the architectural profile. Your selections will now be guided by this foundation.',
       };
     }
   }

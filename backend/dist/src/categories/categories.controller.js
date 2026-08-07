@@ -41,7 +41,10 @@ __decorate([
     (0, common_1.Get)(':slug'),
     (0, swagger_1.ApiOperation)({ summary: 'Get a category and its products by slug' }),
     (0, swagger_1.ApiParam)({ name: 'slug', description: 'Category slug (e.g. shirts)' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Returns the category with products.' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Returns the category with products.',
+    }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Category not found.' }),
     __param(0, (0, common_1.Param)('slug')),
     __metadata("design:type", Function),

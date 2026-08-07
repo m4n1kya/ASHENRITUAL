@@ -10,9 +10,9 @@ export class ChaptersService {
       orderBy: { createdAt: 'asc' },
       include: {
         _count: {
-          select: { products: true }
-        }
-      }
+          select: { products: true },
+        },
+      },
     });
   }
 
@@ -29,7 +29,7 @@ export class ChaptersService {
         products: {
           include: {
             category: true,
-          }
+          },
         },
       },
     });

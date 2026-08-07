@@ -5,10 +5,10 @@ import Image from 'next/image';
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 
 /* ══════════════════════════════════════════════════════════════════════════
-   ATELIER — THE CREATIVE STUDIO
+   FORGE — THE CREATIVE STUDIO
    ══════════════════════════════════════════════════════════════════════════ */
 
-export function AtelierClient() {
+export function ForgeClient() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
 
@@ -37,7 +37,7 @@ function HeroSection({ scrollYProgress }: { scrollYProgress: MotionValue<number>
       <motion.div style={{ y, opacity }} className="absolute inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"
-          alt="Atelier Studio"
+          alt="Forge Studio"
           fill
           className="object-cover object-center opacity-40 grayscale"
           priority
@@ -61,7 +61,7 @@ function HeroSection({ scrollYProgress }: { scrollYProgress: MotionValue<number>
           transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="font-heading text-6xl md:text-8xl lg:text-[140px] font-bold uppercase tracking-tight text-[#FDFCFB] drop-shadow-2xl"
         >
-          Atelier
+          Forge
         </motion.h1>
         <motion.div
           initial={{ opacity: 0 }}
@@ -419,10 +419,10 @@ function Craftsmanship() {
 /* ── 9. Studio Gallery ───────────────────────────────────────────────────── */
 function StudioGallery() {
   const images = [
-    "/images/atelier/Brushed Italian Wool.jpg",
-    "/images/atelier/Japanese Selvedge Denim.jpg",
-    "/images/atelier/Vegetable-Tanned Calfskin.jpg",
-    "/images/atelier/cotton-plants-still-life.jpg",
+    "/images/forge/Brushed Italian Wool.jpg",
+    "/images/forge/Japanese Selvedge Denim.jpg",
+    "/images/forge/Vegetable-Tanned Calfskin.jpg",
+    "/images/forge/cotton-plants-still-life.jpg",
   ];
 
   return (
