@@ -37,6 +37,11 @@ let AuthController = class AuthController {
         this.setRefreshTokenCookie(res, refreshToken);
         return { accessToken, user: userData };
     }
+    async guestLogin(res) {
+        const { accessToken, refreshToken, user } = await this.authService.guestLogin();
+        this.setRefreshTokenCookie(res, refreshToken);
+        return { accessToken, user };
+    }
     async googleAuth() {
     }
     async googleAuthRedirect(req, res) {
@@ -125,6 +130,16 @@ __decorate([
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('guest'),
+    (0, swagger_1.ApiOperation)({ summary: 'Login as a demo guest user' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Guest user logged in' }),
+    __param(0, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "guestLogin", null);
 __decorate([
     (0, common_1.Get)('google'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),

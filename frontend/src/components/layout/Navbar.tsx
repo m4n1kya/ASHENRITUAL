@@ -108,6 +108,15 @@ function UserDropdown({ isAuthed, iconCls }: { isAuthed: boolean; iconCls: strin
           >
             {isAuthed ? (
               <>
+                {/* Guest / User badge */}
+                <div className="px-4 py-3 border-b border-[rgba(255,255,255,0.06)]">
+                  <p className="font-heading text-[10px] uppercase tracking-[0.2em] text-[#FDFCFB]">
+                    {useAuthStore.getState().user?.email === 'guest@ashenritual.com' ? 'Guest' : (useAuthStore.getState().user?.displayName || useAuthStore.getState().user?.email?.split('@')[0])}
+                  </p>
+                  {useAuthStore.getState().user?.email === 'guest@ashenritual.com' && (
+                    <p className="mt-1 text-[9px] text-[#8D8D8D] font-mono tracking-wider">Demo Mode</p>
+                  )}
+                </div>
                 {/* Authenticated links */}
                 <div className="py-2">
                   {authedLinks.map(({ label, href, icon: Icon }) => (

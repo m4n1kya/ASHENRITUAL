@@ -20,6 +20,14 @@ export declare class AuthController {
             role: any;
         };
     }>;
+    guestLogin(res: Response): Promise<{
+        accessToken: string;
+        user: {
+            id: any;
+            email: any;
+            role: any;
+        };
+    }>;
     googleAuth(): Promise<void>;
     googleAuthRedirect(req: any, res: Response): Promise<void>;
     refresh(req: Request, res: Response): Promise<{

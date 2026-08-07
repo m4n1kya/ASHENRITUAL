@@ -60,6 +60,17 @@ export class AuthController {
     return { accessToken, user: userData };
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Post('guest')
+  @ApiOperation({ summary: 'Login as a demo guest user' })
+  @ApiResponse({ status: 200, description: 'Guest user logged in' })
+  async guestLogin(@Res({ passthrough: true }) res: Response) {
+    const { accessToken, refreshToken, user } =
+      await this.authService.guestLogin();
+    this.setRefreshTokenCookie(res, refreshToken);
+    return { accessToken, user };
+  }
+
   @Get('google')
   @UseGuards(AuthGuard('google'))
   @ApiOperation({ summary: 'Initiate Google OAuth login' })

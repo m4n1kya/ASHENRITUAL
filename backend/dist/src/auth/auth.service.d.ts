@@ -21,6 +21,15 @@ export declare class AuthService {
             role: any;
         };
     }>;
+    guestLogin(): Promise<{
+        accessToken: string;
+        refreshToken: string;
+        user: {
+            id: any;
+            email: any;
+            role: any;
+        };
+    }>;
     register(createUserDto: CreateUserDto): Promise<{
         accessToken: string;
         refreshToken: string;

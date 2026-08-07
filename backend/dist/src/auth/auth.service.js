@@ -99,6 +99,18 @@ let AuthService = class AuthService {
             },
         };
     }
+    async guestLogin() {
+        let guest = await this.usersService.findByEmail('guest@ashenritual.com');
+        if (!guest) {
+            const salt = await bcrypt.genSalt(10);
+            const passwordHash = await bcrypt.hash('guest_demo_2026', salt);
+            guest = await this.usersService.create({
+                email: 'guest@ashenritual.com',
+                passwordHash,
+            });
+        }
+        return this.login(guest);
+    }
     async register(createUserDto) {
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(createUserDto.password, salt);
