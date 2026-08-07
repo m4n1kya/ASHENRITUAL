@@ -41,6 +41,8 @@ const FORGED = [
   { id: '4', name: 'Carbon Derby',           price: '₹  9,499',  img: '/images/clothes/Shoes/bmm40163_black_xl.webp'      },
   { id: '5', name: 'Obsidian Biker Jacket',  price: '₹ 14,300',  img: '/images/clothes/Jackets/cmm19047_black_xl.webp'    },
   { id: '6', name: 'Graphite Overshirt',     price: '₹  4,999',  img: '/images/clothes/Shirts/cmm24428_black_xl.webp'     },
+  { id: '7', name: 'Ash Grey Trousers',      price: '₹  6,499',  img: '/images/clothes/Trousers/cmm17128_grey_xl.webp'    },
+  { id: '8', name: 'Midnight Trench Coat',   price: '₹ 21,990',  img: '/images/clothes/Coat/cmm14610_black_xl.webp'       },
 ];
 
 /* ══════════════════════════════════════════════════════════════════════════
