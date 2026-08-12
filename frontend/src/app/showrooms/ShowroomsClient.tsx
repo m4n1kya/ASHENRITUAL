@@ -261,7 +261,8 @@ function ShowroomGrid({ city, showrooms }: { city: string, showrooms: Showroom[]
           <Link key={store.id} href={`/showrooms/${store.slug}`}>
             <motion.div
               initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: i * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="group cursor-pointer relative"
             >
@@ -272,7 +273,7 @@ function ShowroomGrid({ city, showrooms }: { city: string, showrooms: Showroom[]
                     src={store.image}
                     alt={store.name}
                     fill
-                    className="object-cover grayscale opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-[0.22,1,0.36,1]"
+                    className="object-cover grayscale opacity-70 group-hover:opacity-100 group-hover:scale-[1.03] transition-all duration-[2000ms] ease-[0.22,1,0.36,1]"
                     unoptimized
                   />
                 ) : (

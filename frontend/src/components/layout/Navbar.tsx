@@ -449,25 +449,41 @@ export function Navbar() {
 
         {/* Tier 2: Navigation Links — transparent */}
         <div className="hidden md:flex mx-auto h-[32px] max-w-screen-xl items-start pt-2 justify-center px-6 lg:px-10">
-          <nav aria-label="Primary navigation" className="flex items-center gap-10">
+          <motion.nav 
+            aria-label="Primary navigation" 
+            className="flex items-center gap-10"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+            }}
+          >
             {NAV.map(({ label, href }) => {
               const active = pathname === href || pathname.startsWith(href + '/');
               return (
-                <Link
+                <motion.div
                   key={href}
-                  href={href}
-                  className={cn(
-                    'font-heading text-[9px] font-bold uppercase tracking-[0.25em] transition-colors duration-300',
-                    label === 'Vesper' && 'font-display italic normal-case tracking-[0.15em] text-[12px]',
-                    label !== 'Vesper' && (active ? activeCls : navTextCls),
-                    label === 'Vesper' && (active ? 'text-[#FDFCFB]' : 'text-[#8D8D8D] hover:text-[#FDFCFB]'),
-                  )}
+                  variants={{
+                    hidden: { opacity: 0, y: -5 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
+                  }}
                 >
-                  {label}
-                </Link>
+                  <Link
+                    href={href}
+                    className={cn(
+                      'font-heading text-[9px] font-bold uppercase tracking-[0.25em] transition-colors duration-300',
+                      label === 'Vesper' && 'font-display italic normal-case tracking-[0.15em] text-[12px]',
+                      label !== 'Vesper' && (active ? activeCls : navTextCls),
+                      label === 'Vesper' && (active ? 'text-[#FDFCFB]' : 'text-[#8D8D8D] hover:text-[#FDFCFB]'),
+                    )}
+                  >
+                    {label}
+                  </Link>
+                </motion.div>
               );
             })}
-          </nav>
+          </motion.nav>
         </div>
 
       </header>

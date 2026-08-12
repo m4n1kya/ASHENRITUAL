@@ -57,11 +57,11 @@ export function ProductCard({ product, priority = false, className }: ProductCar
             fill
             priority={priority}
             sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 25vw"
-            className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.05]"
+            className="object-cover transition-transform duration-[2000ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.03]"
             onError={() => setImgErr(true)}
           />
           {/* Subtle hover dark veil */}
-          <div className="absolute inset-0 bg-black/0 transition-[background-color] duration-700 group-hover:bg-black/10" />
+          <div className="absolute inset-0 bg-black/0 transition-[background-color] duration-1000 group-hover:bg-black/10" />
 
           {/* Out of stock overlay */}
           {product.stock === 0 && (
