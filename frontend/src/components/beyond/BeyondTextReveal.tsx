@@ -11,17 +11,6 @@ export function BeyondTextReveal() {
   useEffect(() => {
     if (!textRef.current || !containerRef.current) return;
     
-    const words = textRef.current.innerText.split(' ');
-    textRef.current.innerHTML = '';
-    
-    words.forEach(word => {
-      const span = document.createElement('span');
-      span.innerText = word + ' ';
-      span.style.opacity = '0.1';
-      span.style.transition = 'opacity 0.1s';
-      textRef.current?.appendChild(span);
-    });
-
     const spans = textRef.current.querySelectorAll('span');
 
     gsap.to(spans, {
@@ -49,7 +38,11 @@ export function BeyondTextReveal() {
           ref={textRef}
           className="font-display italic text-3xl md:text-5xl lg:text-6xl leading-[1.2] md:leading-[1.1] text-[#FDFCFB]"
         >
-          Beyond is where the brand becomes culture. Discover campaigns, creators, editorials, films, architecture, craftsmanship, reviews, and moments that shape the identity of ASHENRITUAL beyond fashion.
+          {"Beyond is where the brand becomes culture. Discover campaigns, creators, editorials, films, architecture, craftsmanship, reviews, and moments that shape the identity of ASHENRITUAL beyond fashion.".split(' ').map((word, i) => (
+            <span key={i} className="opacity-10 transition-opacity duration-100 mr-2 md:mr-3 inline-block">
+              {word}
+            </span>
+          ))}
         </p>
       </div>
     </section>
