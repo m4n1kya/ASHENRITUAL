@@ -147,7 +147,7 @@ export default function VesperChatPage() {
 
       {/* Message area */}
       <div className="relative z-10 flex-1 overflow-y-auto px-8 py-4 hide-scrollbar">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-2xl mx-auto">
           <AnimatePresence mode="wait">
             {!hasMessages ? (
               /* ── Welcome screen ── */
@@ -225,7 +225,7 @@ export default function VesperChatPage() {
 
       {/* Input — floats at bottom, no box outline, subtle background */}
       <div className="relative z-20 shrink-0 px-8 pb-8 pt-2">
-        <div className="max-w-2xl">
+        <div className="max-w-2xl mx-auto">
           <motion.form
             onSubmit={handleSubmit}
             className="relative flex items-end gap-3 rounded-3xl bg-[#0E0E0E] px-5 py-3.5"
