@@ -338,41 +338,37 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Principles + dark image — 4 cells */}
-          <div className="grid grid-cols-1 gap-px bg-[#202020] sm:grid-cols-2 lg:grid-cols-4">
+          {/* Principles + images — 3 cells */}
+          <div className="grid grid-cols-1 gap-px bg-[#202020] sm:grid-cols-1 lg:grid-cols-3">
             {[
-              { n: '01', t: 'Intentional', d: 'We design with purpose. Nothing is accidental.' },
-              { n: '02', t: 'Precise',     d: 'Every detail serves a function.' },
-              { n: '03', t: 'Timeless',    d: 'Built to outlast trends. Made to endure.' },
-            ].map(({ n, t, d }, i) => (
+              { n: '01', t: 'Intentional', d: 'We design with purpose. Nothing is accidental.', img: '/images/INTENTIONAL.jpg' },
+              { n: '02', t: 'Precise',     d: 'Every detail serves a function.',                img: '/images/PRECISE.jpg' },
+              { n: '03', t: 'Timeless',    d: 'Built to outlast trends. Made to endure.',       img: '/images/TIMELESS.jpg' },
+            ].map(({ n, t, d, img }, i) => (
               <motion.div
                 key={n}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ ...MEDIUM, delay: i * 0.1 }}
-                className="bg-background p-8"
+                className="relative flex flex-col justify-end aspect-[4/5] bg-card overflow-hidden group"
               >
-                <span className="font-display text-4xl font-light italic text-[#1A1A1A] select-none">{n}</span>
-                <h3 className="mt-4 font-heading text-[10px] font-semibold uppercase tracking-[0.3em] text-[#FDFCFB]">{t}</h3>
-                <p className="mt-3 text-[12px] leading-relaxed text-[#8D8D8D]">{d}</p>
+                <Image 
+                  src={img} 
+                  alt={t} 
+                  fill 
+                  sizes="(max-width: 1024px) 100vw, 33vw" 
+                  className="object-cover opacity-40 transition-all duration-[2000ms] group-hover:scale-105 group-hover:opacity-60" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent" />
+                
+                <div className="relative z-10 p-10">
+                  <span className="font-display text-5xl font-light italic text-[#FDFCFB]/20 select-none transition-colors duration-700 group-hover:text-[#FDFCFB]/40">{n}</span>
+                  <h3 className="mt-4 font-heading text-[12px] font-semibold uppercase tracking-[0.3em] text-[#FDFCFB]">{t}</h3>
+                  <p className="mt-3 text-[13px] leading-relaxed text-[#8D8D8D] max-w-[280px]">{d}</p>
+                </div>
               </motion.div>
             ))}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ ...MEDIUM, delay: 0.3 }}
-              className="relative aspect-[4/3] overflow-hidden bg-card lg:aspect-auto"
-            >
-              <Image src="/images/texture.png" alt="Material texture" fill sizes="25vw" className="object-cover opacity-40" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/80 to-transparent" />
-              <div className="absolute bottom-5 left-5">
-                <p className="font-heading text-[7px] uppercase tracking-[0.4em] text-[#8D8D8D]/60">
-                  Finest ground concrete — 77°S CAE
-                </p>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
