@@ -43,6 +43,8 @@ export function ShopPageClient() {
   const searchQuery = searchParams.get('q') || '';
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
+  const filterKey = `${selectedCategory}|${selectedSort}|${searchQuery}`;
+  const filterKeyRef = useRef(filterKey);
 
   const updateParams = useCallback(
     (updates: Record<string, string>) => {
@@ -56,38 +58,39 @@ export function ShopPageClient() {
     [searchParams, router, pathname],
   );
 
-  // Reset page when filters change
+  // Reset to page 1 when filters change
   useEffect(() => {
-    setPage(1);
-  }, [selectedCategory, selectedSort, searchQuery]);
+    if (filterKey !== filterKeyRef.current) {
+      filterKeyRef.current = filterKey;
+      setPage(1);
+    }
+  }, [filterKey]);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
       if (page === 1) setLoading(true);
       else setLoadingMore(true);
-      
+
       try {
         let url = `/products?page=${page}&limit=12`;
         if (selectedCategory) url = `/products/category/${selectedCategory}?page=${page}&limit=12`;
         if (searchQuery) url = `/products?q=${encodeURIComponent(searchQuery)}&page=${page}&limit=12`;
-        
+
         const res = await api.get<{ data: Product[], total: number, totalPages: number }>(url);
-        
+
         if (!cancelled) {
           const sorted = [...res.data];
           if (selectedSort === 'price_asc') sorted.sort((a, b) => a.price - b.price);
           if (selectedSort === 'price_desc') sorted.sort((a, b) => b.price - a.price);
-          
           setProducts(prev => page === 1 ? sorted : [...prev, ...sorted]);
           setTotalPages(res.totalPages || 1);
           setTotalItems(res.total || 0);
         }
       } catch {
         if (!cancelled) {
-          if (page === 1) setProducts([]);
+          if (page === 1) { setProducts([]); setTotalItems(0); }
           setTotalPages(1);
-          if (page === 1) setTotalItems(0);
         }
       } finally {
         if (!cancelled) {
