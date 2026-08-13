@@ -390,7 +390,7 @@ function Craftsmanship() {
       <div className="grid grid-cols-1 lg:grid-cols-2">
         <div className="relative h-[60vh] lg:h-auto w-full">
           <Image
-            src="https://images.unsplash.com/photo-1556909211-36987daf7b4d?q=80&w=2070&auto=format&fit=crop"
+            src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=2000&auto=format&fit=crop"
             alt="Tailoring"
             fill
             className="object-cover grayscale opacity-60"
