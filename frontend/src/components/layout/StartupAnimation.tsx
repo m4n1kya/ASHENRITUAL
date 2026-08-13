@@ -5,17 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
 export function StartupAnimation() {
-  const [show, setShow] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
-    
     // Check if the user has already seen the animation this session
     const hasSeen = sessionStorage.getItem('ashenritual-startup');
     
-    if (!hasSeen) {
-      setShow(true);
+    if (hasSeen) {
+      setShow(false);
+    } else {
       sessionStorage.setItem('ashenritual-startup', 'true');
       
       // Auto-hide the overlay exactly when the animation finishes
@@ -24,9 +22,6 @@ export function StartupAnimation() {
       }, 3200);
     }
   }, []);
-
-  // Prevent hydration mismatch by not rendering anything until client mounts
-  if (!mounted) return null;
 
   return (
     <AnimatePresence>

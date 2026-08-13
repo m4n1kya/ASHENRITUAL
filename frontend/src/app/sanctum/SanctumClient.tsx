@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -250,7 +251,7 @@ function SanctumTransition({ onComplete }: { onComplete: () => void }) {
     return () => clearTimeout(t);
   }, [onComplete]);
 
-  return (
+  const content = (
     <motion.div
       key="transition"
       className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#050505]"
@@ -347,4 +348,7 @@ function SanctumTransition({ onComplete }: { onComplete: () => void }) {
       </motion.div>
     </motion.div>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(content, document.body);
 }

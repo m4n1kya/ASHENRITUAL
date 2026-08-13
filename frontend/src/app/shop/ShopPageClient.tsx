@@ -114,7 +114,7 @@ export function ShopPageClient() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50 z-10" />
           </div>
 
-          <div className="relative z-20 flex flex-col items-center text-center px-6">
+          <div className="relative z-20 flex w-full max-w-screen-2xl flex-col items-start text-left px-6 lg:px-12">
             <h1 className="font-sans text-5xl font-bold leading-[1.1] tracking-tight text-[#FDFCFB] sm:text-6xl lg:text-[6rem] drop-shadow-2xl">
               Fashion changes,<br />but style endures.
             </h1>

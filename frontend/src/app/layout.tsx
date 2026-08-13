@@ -106,6 +106,10 @@ export default function RootLayout({
           }}
         />
         <link rel="preload" href="/images/lantern-logo.png" as="image" />
+        <link rel="preload" href="/images/shop-hero-new.jpg" as="image" />
+        <link rel="preload" href="/images/forge-hero.jpg" as="image" />
+        <link rel="preload" href="/images/showrooms/showroom-hero.jpg" as="image" />
+        <link rel="preload" href="/images/vesper-lantern.png" as="image" />
       </head>
       <body
         className={cn(
