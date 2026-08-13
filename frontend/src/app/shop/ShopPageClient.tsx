@@ -41,7 +41,8 @@ export function ShopPageClient() {
   const selectedCategory = searchParams.get('category') || '';
   const selectedSort = searchParams.get('sort') || 'newest';
   const searchQuery = searchParams.get('q') || '';
-  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const [page, setPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const updateParams = useCallback(
     (updates: Record<string, string>) => {
@@ -55,14 +56,21 @@ export function ShopPageClient() {
     [searchParams, router, pathname],
   );
 
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCategory, selectedSort, searchQuery]);
+
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      setLoading(true);
+      if (page === 1) setLoading(true);
+      else setLoadingMore(true);
+      
       try {
-        let url = `/products?page=${currentPage}&limit=12`;
-        if (selectedCategory) url = `/products/category/${selectedCategory}?page=${currentPage}&limit=12`;
-        if (searchQuery) url = `/products?q=${encodeURIComponent(searchQuery)}&page=${currentPage}&limit=12`;
+        let url = `/products?page=${page}&limit=12`;
+        if (selectedCategory) url = `/products/category/${selectedCategory}?page=${page}&limit=12`;
+        if (searchQuery) url = `/products?q=${encodeURIComponent(searchQuery)}&page=${page}&limit=12`;
         
         const res = await api.get<{ data: Product[], total: number, totalPages: number }>(url);
         
@@ -70,23 +78,27 @@ export function ShopPageClient() {
           const sorted = [...res.data];
           if (selectedSort === 'price_asc') sorted.sort((a, b) => a.price - b.price);
           if (selectedSort === 'price_desc') sorted.sort((a, b) => b.price - a.price);
-          setProducts(sorted);
+          
+          setProducts(prev => page === 1 ? sorted : [...prev, ...sorted]);
           setTotalPages(res.totalPages || 1);
           setTotalItems(res.total || 0);
         }
       } catch {
         if (!cancelled) {
-          setProducts([]);
+          if (page === 1) setProducts([]);
           setTotalPages(1);
-          setTotalItems(0);
+          if (page === 1) setTotalItems(0);
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+          setLoadingMore(false);
+        }
       }
     }
     load();
     return () => { cancelled = true; };
-  }, [selectedCategory, selectedSort, searchQuery, currentPage]);
+  }, [selectedCategory, selectedSort, searchQuery, page]);
 
   useEffect(() => {
     api.get<Category[]>('/categories').then(setCategories).catch(() => {});
@@ -223,31 +235,15 @@ export function ShopPageClient() {
             ))}
           </motion.div>
           
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="mt-16 flex items-center justify-center gap-4">
+          {/* Load More Button */}
+          {page < totalPages && (
+            <div className="mt-16 flex justify-center">
               <button
-                onClick={() => {
-                  updateParams({ page: Math.max(1, currentPage - 1).toString() });
-                  scrollToGrid();
-                }}
-                disabled={currentPage === 1}
-                className="flex h-10 items-center justify-center border border-[#202020] px-6 text-[10px] font-medium uppercase tracking-[0.2em] text-[#8D8D8D] hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8] disabled:opacity-30 disabled:hover:border-[#202020] disabled:hover:text-[#8D8D8D] transition-all"
+                onClick={() => setPage(p => p + 1)}
+                disabled={loadingMore}
+                className="flex h-12 w-48 items-center justify-center border border-[#202020] px-6 text-[11px] font-medium uppercase tracking-[0.2em] text-[#E8E8E8] hover:bg-[#FDFCFB] hover:text-[#0A0A0A] disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-[#E8E8E8] transition-all duration-500"
               >
-                Previous
-              </button>
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#8D8D8D]">
-                {currentPage} / {totalPages}
-              </span>
-              <button
-                onClick={() => {
-                  updateParams({ page: Math.min(totalPages, currentPage + 1).toString() });
-                  scrollToGrid();
-                }}
-                disabled={currentPage === totalPages}
-                className="flex h-10 items-center justify-center border border-[#202020] px-6 text-[10px] font-medium uppercase tracking-[0.2em] text-[#8D8D8D] hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8] disabled:opacity-30 disabled:hover:border-[#202020] disabled:hover:text-[#8D8D8D] transition-all"
-              >
-                Next
+                {loadingMore ? 'Loading...' : 'Load More'}
               </button>
             </div>
           )}
