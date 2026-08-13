@@ -485,6 +485,7 @@ export default function HomePage() {
                   fill 
                   sizes="(max-width: 1024px) 80vw, 50vw" 
                   className="object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]" 
+                  unoptimized
                 />
               </motion.div>
             </motion.div>
