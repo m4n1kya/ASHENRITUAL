@@ -87,7 +87,7 @@ export function StartupAnimation() {
 
             {/* DENSE GLOWING ASH PARTICLES */}
             <div className="absolute inset-0 z-[10] mt-16 flex items-center justify-center pointer-events-none">
-              {[...Array(70)].map((_, i) => {
+              {[...Array(45)].map((_, i) => {
                 const size = Math.random() * 5 + 1.5; // 1.5px to 6.5px
                 const startX = (Math.random() - 0.5) * 220;
                 const startY = (Math.random() - 0.5) * 140 + 80; // Start near the bottom/center
