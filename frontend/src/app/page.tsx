@@ -313,7 +313,7 @@ export default function HomePage() {
           
           {/* High Contrast Quote */}
           <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-start justify-center p-8 px-12 md:px-24 text-left">
-            <h2 className="max-w-3xl font-sans text-2xl font-medium leading-tight tracking-wide text-[#A8A8A8] sm:text-4xl md:text-5xl lg:text-5xl drop-shadow-md">
+            <h2 className="max-w-3xl font-sans text-2xl font-medium leading-tight tracking-wide text-white sm:text-4xl md:text-5xl lg:text-5xl drop-shadow-md">
               &ldquo;Elegance is elimination.&rdquo;
             </h2>
             <p className="mt-6 font-sans text-[10px] font-semibold uppercase tracking-[0.4em] text-[#8D8D8D]">
