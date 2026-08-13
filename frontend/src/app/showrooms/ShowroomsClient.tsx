@@ -17,7 +17,7 @@ export function ShowroomsClient({ initialShowrooms }: { initialShowrooms: Showro
   const { scrollYProgress } = useScroll({ target: containerRef });
   
   const [selection, setSelection] = useState({
-    country: 'India',
+    country: '',
     state: '',
     city: '',
   });
@@ -43,23 +43,33 @@ export function ShowroomsClient({ initialShowrooms }: { initialShowrooms: Showro
   }, [initialShowrooms]);
 
   useEffect(() => {
+    let validLocationFound = false;
     const saved = localStorage.getItem('ashen_showroom_location');
+    
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (locations.countries.includes(parsed.country)) {
-          setSelection(parsed);
+        // Do case-insensitive check just in case
+        const matchedCountry = locations.countries.find(c => c.toLowerCase() === parsed.country?.toLowerCase());
+        
+        if (matchedCountry) {
+          const matchedState = locations.statesByCountry[matchedCountry]?.find(s => s.toLowerCase() === parsed.state?.toLowerCase()) || '';
+          const matchedCity = matchedState ? (locations.citiesByState[matchedState]?.find(c => c.toLowerCase() === parsed.city?.toLowerCase()) || '') : '';
+          
+          setSelection({ country: matchedCountry, state: matchedState, city: matchedCity });
+          validLocationFound = true;
         }
       } catch {}
-    } else {
-      // Default to first available country and state if nothing saved
-      if (locations.countries.length > 0) {
-        const country = locations.countries[0];
-        const state = locations.statesByCountry[country]?.[0] || '';
-        const city = locations.citiesByState[state]?.[0] || '';
-        setSelection({ country, state, city });
-      }
     }
+    
+    if (!validLocationFound && locations.countries.length > 0) {
+      // Default to first available country and state
+      const country = locations.countries[0];
+      const state = locations.statesByCountry[country]?.[0] || '';
+      const city = locations.citiesByState[state]?.[0] || '';
+      setSelection({ country, state, city });
+    }
+    
     setIsLoaded(true);
   }, [locations]);
 
