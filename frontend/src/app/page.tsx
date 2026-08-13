@@ -439,24 +439,24 @@ export default function HomePage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ ...SLOW, delay: 0.2 }}
-              className="relative flex items-center justify-center aspect-[4/5] overflow-hidden group border border-[#202020] bg-[#050505]"
+              className="relative flex items-center justify-center min-h-[400px] lg:min-h-[500px] group"
             >
               <Link href="/vesper" className="absolute inset-0 z-30" aria-label="Consult Vesper" />
               
               {/* Subtle ambient glow behind lantern */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                 <div className="w-[60%] h-[60%] bg-[#FDFCFB]/5 blur-[80px] rounded-full transition-opacity duration-1000 group-hover:bg-[#FDFCFB]/15" />
+                 <div className="w-[80%] h-[80%] bg-[#FDFCFB]/5 blur-[80px] rounded-full transition-opacity duration-1000 group-hover:bg-[#FDFCFB]/15" />
               </div>
 
               {/* Floating White Particles */}
               {[...Array(15)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-1 h-1 bg-[#FDFCFB] rounded-full z-10 blur-[1px]"
+                  className="absolute w-1.5 h-1.5 bg-[#FDFCFB] rounded-full z-10 blur-[1px]"
                   animate={{
-                    y: [0, -100 - (i % 5) * 20],
-                    x: [0, (i % 3 === 0 ? 1 : -1) * (10 + (i % 5) * 10)],
-                    opacity: [0, 0.6, 0],
+                    y: [0, -150 - (i % 5) * 30],
+                    x: [0, (i % 3 === 0 ? 1 : -1) * (20 + (i % 5) * 15)],
+                    opacity: [0, 0.7, 0],
                     scale: [0, 1 + (i % 3) * 0.5, 0]
                   }}
                   transition={{
@@ -466,24 +466,24 @@ export default function HomePage() {
                     ease: "easeInOut"
                   }}
                   style={{
-                    left: `${25 + (i % 7) * 8}%`,
-                    top: `${50 + (i % 5) * 10}%`
+                    left: `${20 + (i % 7) * 10}%`,
+                    top: `${40 + (i % 5) * 12}%`
                   }}
                 />
               ))}
 
               {/* Floating Lantern Image */}
               <motion.div
-                animate={{ y: [-15, 15, -15] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-20 w-[65%] h-[65%] transition-transform duration-[1500ms] ease-out group-hover:scale-110"
+                animate={{ y: [-20, 20, -20] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                className="relative z-20 w-[95%] h-[95%] lg:w-[110%] lg:h-[110%] transition-transform duration-[1500ms] ease-out group-hover:scale-[1.08]"
               >
                 <Image 
                   src="/images/vesper-lantern.png" 
                   alt="Vesper — The Silent Curator" 
                   fill 
-                  sizes="(max-width: 1024px) 50vw, 33vw" 
-                  className="object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]" 
+                  sizes="(max-width: 1024px) 80vw, 50vw" 
+                  className="object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]" 
                 />
               </motion.div>
             </motion.div>
