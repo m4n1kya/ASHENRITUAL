@@ -36,10 +36,10 @@ function HeroSection({ scrollYProgress }: { scrollYProgress: MotionValue<number>
     <section className="relative flex h-screen w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.05)] bg-[#050505]">
       <motion.div style={{ y, opacity }} className="absolute inset-0 z-0 bg-[#050505]">
         <Image
-          src="/images/forge/forge-hero.jpg"
+          src="/images/forge-hero.jpg"
           alt="Forge Studio"
           fill
-          className="object-cover object-center opacity-40 mix-blend-luminosity grayscale"
+          className="object-cover object-center opacity-80"
           priority
           unoptimized
         />
