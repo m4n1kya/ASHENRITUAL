@@ -3,36 +3,46 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence, useAnimationFrame } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, PenTool, Image as ImageIcon, MapPin, CheckCircle, ArrowLeft, LogIn, Loader2, X } from 'lucide-react';
 import { useUIStore } from '@/store/ui.store';
 import { useAuthStore } from '@/store/auth.store';
 import { api } from '@/lib/api';
-import { cn } from '@/lib/utils';
 import type { Concept, User } from '@/types';
 
 /* ── Exhibition prototype data ───────────────────────────────────────────── */
 const PROTO_IMAGES = [
-  { id: 'e1', src: '/images/exhibition_01.png', creator: '@void.ritual', handle: 'ASHEN-2041', title: 'Fractured Silhouette' },
-  { id: 'e2', src: '/images/exhibition_02.png', creator: '@mute.form', handle: 'ASHEN-1879', title: 'Textile Study III' },
-  { id: 'e3', src: '/images/exhibition_03.png', creator: '@liminal.cut', handle: 'ASHEN-3302', title: 'Brutalist Drape' },
-  { id: 'e4', src: '/images/exhibition_04.png', creator: '@ash.theory', handle: 'ASHEN-0091', title: 'Ink Draft No. 7' },
-  { id: 'e5', src: '/images/exhibition_05.png', creator: '@null.cloth', handle: 'ASHEN-4410', title: 'Collage Fragment' },
-  { id: 'e6', src: '/images/exhibition_06.png', creator: '@still.object', handle: 'ASHEN-2253', title: 'Geometry of Utility' },
-  { id: 'e7', src: '/images/exhibition_07.png', creator: '@dusk.atelier', handle: 'ASHEN-1102', title: 'Night Architecture' },
-  { id: 'e8', src: '/images/exhibition_08.png', creator: '@grey.index', handle: 'ASHEN-3871', title: 'Moodboard 88' },
-  { id: 'e9', src: '/images/forge-hero.jpg', creator: '@iron.stitch', handle: 'ASHEN-5519', title: 'The Forge Series' },
-  { id: 'e10', src: '/images/natural-texture.jpg', creator: '@earth.form', handle: 'ASHEN-6634', title: 'Raw Material I' },
-  { id: 'e11', src: '/images/droplets.jpg', creator: '@wet.ink', handle: 'ASHEN-7701', title: 'Surface Tension' },
-  { id: 'e12', src: '/images/new-texture-hero.jpg', creator: '@texture.lab', handle: 'ASHEN-8823', title: 'Woven Horizon' },
+  { id: 'e1',  src: '/images/exhibition_01.png',  creator: '@void.ritual',  handle: 'ASHEN-2041', title: 'Fractured Silhouette' },
+  { id: 'e2',  src: '/images/exhibition_02.png',  creator: '@mute.form',    handle: 'ASHEN-1879', title: 'Textile Study III' },
+  { id: 'e3',  src: '/images/exhibition_03.png',  creator: '@liminal.cut',  handle: 'ASHEN-3302', title: 'Brutalist Drape' },
+  { id: 'e4',  src: '/images/exhibition_04.png',  creator: '@ash.theory',   handle: 'ASHEN-0091', title: 'Ink Draft No. 7' },
+  { id: 'e5',  src: '/images/exhibition_05.png',  creator: '@null.cloth',   handle: 'ASHEN-4410', title: 'Collage Fragment' },
+  { id: 'e6',  src: '/images/exhibition_06.png',  creator: '@still.object', handle: 'ASHEN-2253', title: 'Geometry of Utility' },
+  { id: 'e7',  src: '/images/exhibition_07.png',  creator: '@dusk.atelier', handle: 'ASHEN-1102', title: 'Night Architecture' },
+  { id: 'e8',  src: '/images/exhibition_08.png',  creator: '@grey.index',   handle: 'ASHEN-3871', title: 'Moodboard 88' },
+  { id: 'e9',  src: '/images/forge-hero.jpg',     creator: '@iron.stitch',  handle: 'ASHEN-5519', title: 'The Forge Series' },
+  { id: 'e10', src: '/images/natural-texture.jpg',creator: '@earth.form',   handle: 'ASHEN-6634', title: 'Raw Material I' },
+  { id: 'e11', src: '/images/droplets.jpg',       creator: '@wet.ink',      handle: 'ASHEN-7701', title: 'Surface Tension' },
+  { id: 'e12', src: '/images/new-texture-hero.jpg',creator: '@texture.lab', handle: 'ASHEN-8823', title: 'Woven Horizon' },
+  // Beyond images
+  { id: 'e13', src: '/images/beyond/beautiful-belarus-person-city.jpg',           creator: '@urban.phantom', handle: 'ASHEN-9201', title: 'City Veil' },
+  { id: 'e14', src: '/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.jpg', creator: '@flash.cut', handle: 'ASHEN-9302', title: 'Flash Study I' },
+  { id: 'e15', src: '/images/beyond/cowboy-silhouette-with-horse-against-warm-light.jpg', creator: '@dust.ritual', handle: 'ASHEN-9403', title: 'Western Form' },
+  { id: 'e16', src: '/images/beyond/medium-shot-young-man-posing-outdoors.jpg',   creator: '@field.edit',   handle: 'ASHEN-9504', title: 'Open Air No. 3' },
+  { id: 'e17', src: '/images/beyond/portrait-fashionable-boy-outdoors.jpg',       creator: '@street.form',  handle: 'ASHEN-9605', title: 'Outdoor Portrait' },
+  { id: 'e18', src: '/images/beyond/young-man-portrait.jpg',                      creator: '@still.face',   handle: 'ASHEN-9706', title: 'Portrait Study' },
 ];
 
-/* Build 10 rows of shuffled images */
+/* Build 10 rows — each row gets a unique speed and direction */
+const ROW_SPEEDS = [55, 70, 45, 80, 60, 90, 50, 75, 40, 65]; // seconds per loop (higher = slower)
+
 function buildRows() {
   const rows = [];
   for (let i = 0; i < 10; i++) {
+    // Each row gets a different shuffle
     const shuffled = [...PROTO_IMAGES].sort(() => Math.random() - 0.5);
-    rows.push({ items: [...shuffled, ...shuffled], rtl: i % 2 === 1 });
+    // Triple the items so the belt never shows a gap
+    rows.push({ items: [...shuffled, ...shuffled, ...shuffled], rtl: i % 2 === 1, speed: ROW_SPEEDS[i] });
   }
   return rows;
 }
@@ -41,7 +51,6 @@ function buildRows() {
 export function SanctumClient() {
   const { isAuthenticated, user, _hasHydrated } = useAuthStore();
   const [sanctumState, setSanctumState] = useState<'HUB' | 'ANIM' | 'EXHIBITION'>('HUB');
-
   const [profile, setProfile] = useState<User | null>(null);
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,9 +70,15 @@ export function SanctumClient() {
   }, [_hasHydrated, isAuthenticated]);
 
   const enterExhibition = useCallback(() => {
+    // Lock scroll on body while animation plays
+    document.body.style.overflow = 'hidden';
+    document.body.style.pointerEvents = 'none';
     setSanctumState('ANIM');
-    // After animation plays (~3s), switch to exhibition
-    setTimeout(() => setSanctumState('EXHIBITION'), 3200);
+    setTimeout(() => {
+      setSanctumState('EXHIBITION');
+      document.body.style.overflow = '';
+      document.body.style.pointerEvents = '';
+    }, 3400);
   }, []);
 
   if (!_hasHydrated || loading) {
@@ -81,8 +96,7 @@ export function SanctumClient() {
         <p className="font-sans text-sm text-[#8D8D8D] max-w-md mx-auto mb-8 leading-relaxed">
           You must be logged in to access the private Creator Studio.
         </p>
-        <Link
-          href="/login?redirect=/sanctum"
+        <Link href="/login?redirect=/sanctum"
           className="bg-[#FDFCFB] text-[#0A0A0A] px-8 py-3 font-heading text-[10px] uppercase tracking-widest font-bold hover:bg-[#E8E8E8] transition-colors flex items-center gap-3"
         >
           <LogIn className="w-4 h-4" /> Go to Login
@@ -93,15 +107,17 @@ export function SanctumClient() {
 
   return (
     <div className="w-full bg-background selection:bg-[#FDFCFB] selection:text-[#0A0A0A] min-h-screen relative overflow-hidden">
-      {/* Full-screen startup animation overlay when entering exhibition */}
+
+      {/* Full-screen startup animation — covers entire website, blocks all interaction */}
       <AnimatePresence>
         {sanctumState === 'ANIM' && (
           <motion.div
             key="entry-anim"
-            className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#050505]"
+            className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#050505] cursor-default"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: 'easeInOut' }}
+            transition={{ duration: 0.9, ease: 'easeInOut' }}
+            style={{ pointerEvents: 'all' }}
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
@@ -111,17 +127,23 @@ export function SanctumClient() {
             >
               <Image src="/images/lantern-logo.png" alt="ASHENRITUAL" width={500} height={500}
                 className="relative z-0 h-[250px] w-auto object-contain mt-16" unoptimized priority />
-              {/* Particles */}
+
+              {/* Dense particle field for entry animation */}
               <div className="absolute inset-0 z-10 mt-16 flex items-center justify-center pointer-events-none">
-                {[...Array(30)].map((_, i) => {
-                  const size = Math.random() * 4 + 1.5;
-                  const startX = (Math.random() - 0.5) * 180;
-                  const startY = (Math.random() - 0.5) * 120 + 80;
+                {[...Array(80)].map((_, i) => {
+                  const size = Math.random() * 5 + 2;
+                  const startX = (Math.random() - 0.5) * 220;
+                  const startY = (Math.random() - 0.5) * 160 + 80;
                   return (
                     <motion.div key={i} className="absolute rounded-full bg-white"
-                      style={{ width: size, height: size, boxShadow: '0 0 8px 2px rgba(200,200,200,0.6)', filter: 'blur(0.5px)' }}
-                      animate={{ opacity: [0, Math.random() * 0.7 + 0.3, 0], y: [startY, startY - (Math.random() * 150 + 100)], x: [startX, startX + (Math.random() * 50 - 25)], scale: [0, 1.5, 0.5] }}
-                      transition={{ duration: Math.random() * 1.5 + 2, repeat: Infinity, ease: 'easeOut', delay: Math.random() * 2.5 }}
+                      style={{ width: size, height: size, boxShadow: `0 0 ${size * 3}px rgba(255,255,255,0.9)`, filter: 'blur(0.3px)' }}
+                      animate={{
+                        opacity: [0, Math.random() * 0.8 + 0.5, Math.random() * 0.6 + 0.3, 0],
+                        y: [startY, startY - (Math.random() * 200 + 100)],
+                        x: [startX, startX + (Math.random() * 60 - 30)],
+                        scale: [0, 1.8, 0.8],
+                      }}
+                      transition={{ duration: Math.random() * 1.5 + 1.5, repeat: Infinity, ease: 'easeOut', delay: Math.random() * 2 }}
                     />
                   );
                 })}
@@ -143,21 +165,23 @@ export function SanctumClient() {
   );
 }
 
-/* ── Particle Field Component ─────────────────────────────────────────────── */
-function ParticleField({ centerX, centerY }: { centerX: number; centerY: number }) {
-  const particles = Array.from({ length: 80 }, (_, i) => {
+/* ── Dense Particle Field ────────────────────────────────────────────────── */
+function ParticleField() {
+  // More particles, higher opacity, larger glows — dense near center, sparse at edges
+  const particles = Array.from({ length: 150 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
-    const dist = Math.random() * 320 + 20;
+    // Bias towards center using sqrt to create higher density near center
+    const dist = Math.pow(Math.random(), 0.6) * 280 + 10;
     const x = Math.cos(angle) * dist;
     const y = Math.sin(angle) * dist;
-    const density = 1 - dist / 340;
-    const opacity = density * (Math.random() * 0.6 + 0.2);
-    const size = density * (Math.random() * 2.5 + 0.5) + 0.5;
-    return { id: i, x, y, opacity, size, delay: Math.random() * 4 };
+    const density = Math.max(0, 1 - dist / 290);
+    const opacity = density * (Math.random() * 0.7 + 0.4);
+    const size = density * (Math.random() * 4 + 1) + 0.5;
+    return { id: i, x, y, opacity: Math.max(opacity, 0.1), size, delay: Math.random() * 5 };
   });
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 1 }}>
+    <div className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 1 }}>
       {particles.map(p => (
         <motion.div
           key={p.id}
@@ -167,11 +191,11 @@ function ParticleField({ centerX, centerY }: { centerX: number; centerY: number 
             top: `calc(50% + ${p.y}px)`,
             width: p.size,
             height: p.size,
-            boxShadow: `0 0 ${p.size * 3}px rgba(255,255,255,0.4)`,
+            boxShadow: `0 0 ${p.size * 4}px ${p.size}px rgba(255,255,255,0.6)`,
           }}
           animate={{
-            opacity: [0, p.opacity, p.opacity * 0.5, p.opacity, 0],
-            scale: [0.5, 1, 0.8, 1.1, 0.5],
+            opacity: [0, p.opacity, p.opacity * 0.6, p.opacity, 0],
+            scale: [0.3, 1.2, 0.7, 1.3, 0.3],
           }}
           transition={{
             duration: Math.random() * 3 + 2,
@@ -191,9 +215,7 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
       className="w-full flex flex-col pt-24"
     >
@@ -227,19 +249,15 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
           </p>
 
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
-            <button
-              onClick={() => useUIStore.getState().openUploadWizard()}
-              className="bg-[#FDFCFB] text-[#0A0A0A] px-6 py-2.5 font-heading text-[10px] uppercase tracking-widest font-bold hover:bg-[#E8E8E8] transition-colors flex items-center gap-2"
-            >
+            <button onClick={() => useUIStore.getState().openUploadWizard()}
+              className="bg-[#FDFCFB] text-[#0A0A0A] px-6 py-2.5 font-heading text-[10px] uppercase tracking-widest font-bold hover:bg-[#E8E8E8] transition-colors flex items-center gap-2">
               <PenTool className="w-3 h-3" /> Upload Concept
             </button>
             <button className="border border-[rgba(255,255,255,0.1)] text-[#FDFCFB] px-6 py-2.5 font-heading text-[10px] uppercase tracking-widest hover:bg-[rgba(255,255,255,0.05)] transition-colors flex items-center gap-2">
               <ImageIcon className="w-3 h-3" /> Manage Portfolio
             </button>
-            <button
-              onClick={() => useUIStore.getState().openSettings()}
-              className="border border-[rgba(255,255,255,0.05)] text-[#8D8D8D] w-10 h-10 flex items-center justify-center hover:bg-[rgba(255,255,255,0.02)] transition-colors shrink-0"
-            >
+            <button onClick={() => useUIStore.getState().openSettings()}
+              className="border border-[rgba(255,255,255,0.05)] text-[#8D8D8D] w-10 h-10 flex items-center justify-center hover:bg-[rgba(255,255,255,0.02)] transition-colors shrink-0">
               <Settings className="w-4 h-4" />
             </button>
           </div>
@@ -250,29 +268,24 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
           </div>
         </div>
 
-        {/* Floating Lantern with particles */}
+        {/* Floating Lantern + dense particle halo */}
         <div
           className="w-full max-w-sm hidden md:flex items-center justify-center group cursor-pointer relative"
           onClick={onEnterExhibition}
-          style={{ minHeight: 420 }}
+          style={{ minHeight: 460 }}
         >
-          <ParticleField centerX={0} centerY={0} />
+          <ParticleField />
           <motion.div
             animate={{ y: [-15, 15, -15] }}
             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
             className="relative z-20 w-full transition-transform duration-[1500ms] ease-out group-hover:scale-[1.05]"
             style={{ height: '380px' }}
           >
-            <Image
-              src="/images/lantern.png"
-              alt="Enter Exhibition"
-              fill
-              sizes="380px"
-              className="object-contain drop-shadow-[0_0_35px_rgba(255,255,255,0.2)] opacity-80 group-hover:opacity-100 transition-opacity duration-700"
-              unoptimized
-            />
+            <Image src="/images/lantern.png" alt="Enter Exhibition" fill sizes="380px"
+              className="object-contain drop-shadow-[0_0_40px_rgba(255,255,255,0.25)] opacity-85 group-hover:opacity-100 transition-opacity duration-700"
+              unoptimized />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
-              <div className="w-[60%] h-[60%] bg-[#FDFCFB]/5 blur-[80px] rounded-full transition-all duration-1000 group-hover:bg-[#FDFCFB]/15 group-hover:blur-[120px]" />
+              <div className="w-[70%] h-[70%] bg-[#FDFCFB]/8 blur-[100px] rounded-full transition-all duration-1000 group-hover:bg-[#FDFCFB]/20 group-hover:blur-[140px]" />
             </div>
             <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 font-heading text-[10px] uppercase tracking-[0.3em] text-[#FDFCFB] whitespace-nowrap">
               Enter Exhibition
@@ -285,50 +298,51 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
   );
 }
 
-/* ── Horizontal Scrolling Row ────────────────────────────────────────────── */
+/* ── Infinite CSS-driven Scrolling Belt ──────────────────────────────────── */
 type ProtoItem = { id: string; src: string; creator: string; handle: string; title: string };
 
-function ScrollingRow({ items, rtl, onSelect }: { items: ProtoItem[]; rtl: boolean; onSelect: (item: ProtoItem) => void }) {
-  const rowRef = useRef<HTMLDivElement>(null);
-  const posRef = useRef(rtl ? -items.length * 200 / 2 : 0);
-  const speed = 0.35;
+function ScrollingRow({ items, rtl, speed, onSelect }: { items: ProtoItem[]; rtl: boolean; speed: number; onSelect: (item: ProtoItem) => void }) {
+  const CARD_W = 188; // width + gap
+  const singleLen = items.length / 3; // we tripled items
+  const totalPx = singleLen * CARD_W;
 
-  useAnimationFrame(() => {
-    const el = rowRef.current;
-    if (!el) return;
-    posRef.current += rtl ? -speed : speed;
-    const totalWidth = (items.length / 2) * 200; // half because items is doubled
-    if (!rtl && posRef.current >= totalWidth) posRef.current -= totalWidth;
-    if (rtl && posRef.current <= -totalWidth) posRef.current += totalWidth;
-    el.style.transform = `translateX(${posRef.current}px)`;
-  });
+  // Inline keyframes so the animation is truly seamless
+  const animName = `scroll-${rtl ? 'rtl' : 'ltr'}-${speed}`;
+  const keyframes = rtl
+    ? `@keyframes ${animName} { from { transform: translateX(0); } to { transform: translateX(${totalPx}px); } }`
+    : `@keyframes ${animName} { from { transform: translateX(0); } to { transform: translateX(-${totalPx}px); } }`;
 
   return (
-    <div className="overflow-hidden w-full">
-      <div ref={rowRef} className="flex gap-3 will-change-transform" style={{ width: 'max-content' }}>
-        {items.map((item, i) => (
-          <button
-            key={`${item.id}-${i}`}
-            onClick={() => onSelect(item)}
-            className="relative shrink-0 overflow-hidden group focus:outline-none"
-            style={{ width: 180, height: 240 }}
-          >
-            <Image
-              src={item.src}
-              alt={item.title}
-              fill
-              className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-              unoptimized
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <p className="font-heading text-[9px] uppercase tracking-widest text-[#FDFCFB] leading-tight truncate">{item.title}</p>
-              <p className="font-mono text-[8px] text-[#8D8D8D] truncate">{item.creator}</p>
-            </div>
-          </button>
-        ))}
+    <>
+      <style>{keyframes}</style>
+      <div className="overflow-hidden w-full select-none">
+        <div
+          className="flex gap-3 will-change-transform"
+          style={{
+            animation: `${animName} ${speed}s linear infinite`,
+            width: 'max-content',
+          }}
+        >
+          {items.map((item, i) => (
+            <button
+              key={`${item.id}-${i}`}
+              onClick={() => onSelect(item)}
+              className="relative shrink-0 overflow-hidden group focus:outline-none"
+              style={{ width: 180, height: 240 }}
+            >
+              <Image src={item.src} alt={item.title} fill
+                className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                unoptimized />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <p className="font-heading text-[9px] uppercase tracking-widest text-[#FDFCFB] leading-tight truncate">{item.title}</p>
+                <p className="font-mono text-[8px] text-[#8D8D8D] truncate">{item.creator}</p>
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -338,10 +352,8 @@ function PopupCard({ item, onClose }: { item: ProtoItem; onClose: () => void }) 
     <AnimatePresence>
       <motion.div
         key="popup-overlay"
-        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         onClick={onClose}
       >
         <motion.div
@@ -353,7 +365,7 @@ function PopupCard({ item, onClose }: { item: ProtoItem; onClose: () => void }) 
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           onClick={e => e.stopPropagation()}
         >
-          <div className="relative w-full" style={{ height: 360 }}>
+          <div className="relative w-full" style={{ height: 340 }}>
             <Image src={item.src} alt={item.title} fill className="object-cover" unoptimized />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
           </div>
@@ -366,10 +378,8 @@ function PopupCard({ item, onClose }: { item: ProtoItem; onClose: () => void }) 
               <p className="font-sans text-sm text-[#E8E8E8]">{item.title}</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-black/50 backdrop-blur-sm border border-[rgba(255,255,255,0.1)] rounded-full hover:bg-black/80 transition-colors"
-          >
+          <button onClick={onClose}
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-black/50 backdrop-blur-sm border border-[rgba(255,255,255,0.1)] rounded-full hover:bg-black/80 transition-colors">
             <X className="w-3.5 h-3.5 text-[#8D8D8D]" />
           </button>
         </motion.div>
@@ -379,15 +389,13 @@ function PopupCard({ item, onClose }: { item: ProtoItem; onClose: () => void }) 
 }
 
 /* ── 2. Exhibition Wall ──────────────────────────────────────────────────── */
-function ExhibitionWall({ profile, concepts, onBack }: { profile: User; concepts: Concept[]; onBack: () => void }) {
+function ExhibitionWall({ onBack }: { profile: User; concepts: Concept[]; onBack: () => void }) {
   const [rows] = useState(buildRows);
   const [selected, setSelected] = useState<ProtoItem | null>(null);
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
       className="w-full min-h-screen bg-[#050505] pt-28 pb-16 overflow-hidden"
     >
@@ -400,23 +408,20 @@ function ExhibitionWall({ profile, concepts, onBack }: { profile: User; concepts
         </p>
       </div>
 
-      {/* Floating rows */}
+      {/* 10 floating belts */}
       <div className="flex flex-col gap-3">
         {rows.map((row, i) => (
-          <ScrollingRow key={i} items={row.items} rtl={row.rtl} onSelect={setSelected} />
+          <ScrollingRow key={i} items={row.items} rtl={row.rtl} speed={row.speed} onSelect={setSelected} />
         ))}
       </div>
 
       {/* Back button */}
-      <button
-        onClick={onBack}
-        className="fixed bottom-8 left-6 lg:bottom-12 lg:left-12 z-50 flex items-center gap-3 bg-[#050505]/90 backdrop-blur-md border border-[rgba(255,255,255,0.1)] px-7 py-3.5 rounded-full shadow-2xl hover:bg-[#111] hover:border-[rgba(255,255,255,0.2)] hover:scale-105 transition-all duration-300 group"
-      >
+      <button onClick={onBack}
+        className="fixed bottom-8 left-6 lg:bottom-12 lg:left-12 z-50 flex items-center gap-3 bg-[#050505]/90 backdrop-blur-md border border-[rgba(255,255,255,0.1)] px-7 py-3.5 rounded-full shadow-2xl hover:bg-[#111] hover:border-[rgba(255,255,255,0.2)] hover:scale-105 transition-all duration-300 group">
         <ArrowLeft className="w-5 h-5 text-[#8D8D8D] group-hover:text-[#FDFCFB] group-hover:-translate-x-1 transition-all duration-300" />
         <span className="font-heading uppercase text-[11px] tracking-[0.2em] font-semibold text-[#8D8D8D] group-hover:text-[#FDFCFB] transition-colors">Return to Studio</span>
       </button>
 
-      {/* Popup */}
       {selected && <PopupCard item={selected} onClose={() => setSelected(null)} />}
     </motion.div>
   );

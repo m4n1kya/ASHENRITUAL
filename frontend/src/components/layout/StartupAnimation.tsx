@@ -85,12 +85,12 @@ export function StartupAnimation() {
               priority
             />
 
-            {/* COOL GLOWING ASH PARTICLES */}
+            {/* DENSE GLOWING ASH PARTICLES */}
             <div className="absolute inset-0 z-[10] mt-16 flex items-center justify-center pointer-events-none">
-              {[...Array(25)].map((_, i) => {
-                const size = Math.random() * 4 + 1.5; // Tiny particles (1.5px to 5.5px)
-                const startX = (Math.random() - 0.5) * 180;
-                const startY = (Math.random() - 0.5) * 120 + 80; // Start near the bottom/center
+              {[...Array(70)].map((_, i) => {
+                const size = Math.random() * 5 + 1.5; // 1.5px to 6.5px
+                const startX = (Math.random() - 0.5) * 220;
+                const startY = (Math.random() - 0.5) * 140 + 80; // Start near the bottom/center
                 
                 return (
                   <motion.div
@@ -99,20 +99,20 @@ export function StartupAnimation() {
                     style={{
                       width: size, 
                       height: size,
-                      boxShadow: '0 0 8px 2px rgba(200, 200, 200, 0.6)', // Glowing ember effect
-                      filter: 'blur(0.5px)',
+                      boxShadow: `0 0 ${size * 4}px ${size}px rgba(255,255,255,0.9)`, // Bright glow
+                      filter: 'blur(0.3px)',
                     }}
                     animate={{
-                      opacity: [0, Math.random() * 0.7 + 0.3, 0], // Flash brightly then fade
-                      y: [startY, startY - (Math.random() * 150 + 100)], // Float upwards like heat
-                      x: [startX, startX + (Math.random() * 50 - 25)], // Drift slightly left/right
-                      scale: [0, 1.5, 0.5], // Pop in, then shrink
+                      opacity: [0, Math.random() * 0.6 + 0.6, 0], // Strong flash
+                      y: [startY, startY - (Math.random() * 200 + 100)],
+                      x: [startX, startX + (Math.random() * 60 - 30)],
+                      scale: [0, 1.8, 0.6],
                     }}
                     transition={{
-                      duration: Math.random() * 1.5 + 2, // 2 to 3.5 seconds
+                      duration: Math.random() * 1.5 + 1.5,
                       repeat: Infinity,
                       ease: "easeOut",
-                      delay: Math.random() * 2.5
+                      delay: Math.random() * 2
                     }}
                   />
                 );
