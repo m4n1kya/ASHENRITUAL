@@ -66,7 +66,7 @@ export function ShopPageClient() {
     }
   }, [filterKey]);
 
-  useEffect(() => {
+    useEffect(() => {
     let cancelled = false;
     async function load() {
       if (page === 1) setLoading(true);
@@ -80,14 +80,22 @@ export function ShopPageClient() {
         const res = await api.get<{ data: Product[], total: number, totalPages: number }>(url);
 
         if (!cancelled) {
-          const sorted = [...res.data];
+          const sorted = Array.isArray(res.data) ? [...res.data] : [];
           if (selectedSort === 'price_asc') sorted.sort((a, b) => a.price - b.price);
           if (selectedSort === 'price_desc') sorted.sort((a, b) => b.price - a.price);
-          setProducts(prev => page === 1 ? sorted : [...prev, ...sorted]);
+          
+          setProducts(prev => {
+            if (page === 1) return sorted;
+            // Prevent duplicates in Strict Mode double-invocations
+            const existingIds = new Set(prev.map(p => p.id));
+            const newProducts = sorted.filter(p => !existingIds.has(p.id));
+            return [...prev, ...newProducts];
+          });
           setTotalPages(res.totalPages || 1);
           setTotalItems(res.total || 0);
         }
-      } catch {
+      } catch (err) {
+        console.error("Error loading products:", err);
         if (!cancelled) {
           if (page === 1) { setProducts([]); setTotalItems(0); }
           setTotalPages(1);
