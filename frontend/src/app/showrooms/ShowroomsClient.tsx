@@ -209,9 +209,9 @@ function HeroSection({ scrollYProgress }: { scrollYProgress: MotionValue<number>
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
-    <section className="relative flex h-[70vh] lg:h-[85vh] w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.03)]">
+    <section className="relative flex h-screen w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.03)]">
       <motion.div style={{ y, opacity }} className="absolute inset-0 z-0 bg-[#050505]">
-        <Image src="/images/showrooms/showroom-hero.jpg" alt="Showrooms Hero" fill className="object-cover opacity-80" unoptimized priority />
+        <Image src="/images/showrooms/showroom-hero-dark.jpg" alt="Showrooms Hero" fill className="object-cover opacity-80" unoptimized priority />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/40 to-background z-10" />
       </motion.div>
 
