@@ -8,8 +8,7 @@ import { LayoutDashboard, MessageSquare, Scan, Ruler, Eye, History, ChevronDown 
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { name: 'Dashboard', href: '/vesper', icon: LayoutDashboard },
-  { name: 'AI Concierge', href: '/vesper/chat', icon: MessageSquare },
+  { name: 'AI Concierge', href: '/vesper', icon: MessageSquare },
   { name: 'Size Intelligence', href: '/vesper/size', icon: Scan },
   { name: 'Fit Preview', href: '/vesper/preview', icon: Eye },
   { name: 'Measurements', href: '/vesper/measurements', icon: Ruler },
