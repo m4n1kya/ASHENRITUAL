@@ -37,8 +37,8 @@ export declare class ArchivesController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         total: import("@prisma/client/runtime/library").Decimal;
+        userId: string;
         status: import(".prisma/client").$Enums.OrderStatus;
     }>;
     findMyArchives(req: {
@@ -62,8 +62,8 @@ export declare class ArchivesController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         total: import("@prisma/client/runtime/library").Decimal;
+        userId: string;
         status: import(".prisma/client").$Enums.OrderStatus;
     })[]>;
     findOne(id: string, req: {
@@ -87,8 +87,8 @@ export declare class ArchivesController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         total: import("@prisma/client/runtime/library").Decimal;
+        userId: string;
         status: import(".prisma/client").$Enums.OrderStatus;
     }>;
 }

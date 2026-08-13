@@ -101,97 +101,28 @@ export function ShopPageClient() {
 
       {/* ── HERO CURATION SECTION ────────────────────────────────────────────── */}
       {!searchQuery && (
-        <div className="keep-light-text relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.08)] bg-transparent pb-20 pt-4">
-        
-        <div className="relative z-10 mx-auto flex w-full max-w-screen-2xl flex-col items-stretch justify-between gap-12 px-6 lg:flex-row lg:gap-8 lg:px-12">
-          
-          {/* Left Column - Typography (Overlapping Center) */}
-          <div className="relative z-20 flex max-w-md flex-1 flex-col justify-center lg:-mr-32 xl:-mr-48">
-            <h1 className="font-sans text-4xl font-semibold leading-[1.1] tracking-tight text-[#F2F2F2] sm:text-5xl lg:text-[4rem] drop-shadow-md">
+        <div className="relative flex h-screen w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.03)] bg-[#050505]">
+          <div className="absolute inset-0 z-0 bg-[#050505]">
+            <Image 
+              src="/images/shop-hero-new.jpg" 
+              alt="Shop Hero" 
+              fill 
+              className="object-cover opacity-80" 
+              priority 
+              unoptimized 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50 z-10" />
+          </div>
+
+          <div className="relative z-20 flex flex-col items-center text-center px-6">
+            <h1 className="font-sans text-5xl font-bold leading-[1.1] tracking-tight text-[#FDFCFB] sm:text-6xl lg:text-[6rem] drop-shadow-2xl">
               Fashion changes,<br />but style endures.
             </h1>
-            <p className="mt-6 font-sans text-lg font-light tracking-wide text-[#A8A8A8] lg:text-xl drop-shadow-md">
+            <p className="mt-8 font-display italic text-2xl text-[#E8E8E8] md:text-3xl">
               A commitment to timeless pieces.
             </p>
           </div>
-
-          {/* Center Column - Featured Piece */}
-          <div className="relative z-10 flex flex-1 items-center justify-center">
-            <div className="relative aspect-[3/4] w-full max-w-[400px] border border-[#202020] bg-background/40 p-4 backdrop-blur-sm lg:p-6">
-              <div className="relative h-full w-full bg-card">
-                <Image
-                  src="/images/shop-hero-retro.jpg"
-                  alt="Curated Piece"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 800px"
-                  className="object-cover opacity-90 transition-opacity duration-700 hover:opacity-100"
-                  priority
-                  quality={100}
-                  unoptimized
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column - Collections & Curation */}
-          <div className="flex max-w-sm flex-1 flex-col justify-center space-y-8 lg:ml-auto">
-            {/* Collection Links */}
-            <div className="space-y-4">
-              {[
-                { title: 'THE ESSENTIALS', icon: <Shirt strokeWidth={1} className="h-5 w-5" />, cat: 'shirts' },
-                { title: 'ARCHITECTURAL FORM', icon: <Box strokeWidth={1} className="h-5 w-5" />, cat: 'outerwear' },
-                { title: 'CURATED TEXTURES', icon: <SlidersHorizontal strokeWidth={1} className="h-5 w-5" />, cat: 'trousers' },
-              ].map((block) => (
-                <button
-                  key={block.title}
-                  onClick={() => {
-                    updateParams({ category: block.cat });
-                    scrollToGrid();
-                  }}
-                  className="group flex w-full flex-col justify-between border border-[rgba(255,255,255,0.08)] bg-card p-5 text-left transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] hover:border-[rgba(255,255,255,0.2)] hover:bg-[#141414]"
-                >
-                  <div className="flex w-full items-center justify-between">
-                    <span className="font-sans text-[13px] font-medium tracking-wide text-[#F2F2F2]">
-                      {block.title}
-                    </span>
-                    <span className="text-[#A8A8A8] transition-colors duration-[400ms] group-hover:text-[#F2F2F2]">
-                      {block.icon}
-                    </span>
-                  </div>
-                  <div className="mt-8 flex items-center gap-2 font-sans text-[9px] font-medium uppercase tracking-[0.2em] text-[#A8A8A8] transition-colors duration-[400ms] group-hover:text-[#F2F2F2]">
-                    View Collection 
-                    <ArrowRight className="h-3 w-3 transition-transform duration-[400ms] group-hover:translate-x-[6px]" />
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={scrollToGrid}
-              className="w-full border border-[rgba(255,255,255,0.08)] bg-transparent py-4 font-sans text-[10px] font-semibold uppercase tracking-[0.25em] text-[#F2F2F2] transition-all duration-200 hover:border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.05)]"
-            >
-              Explore the Manifesto
-            </button>
-
-            <div className="pt-8">
-              <h3 className="mb-5 font-sans text-[11px] font-medium uppercase tracking-widest text-[#F2F2F2]">
-                The Curation Process
-              </h3>
-              <ul className="space-y-3 font-sans text-[11px] font-medium uppercase tracking-[0.15em] text-[#A8A8A8]">
-                <li className="flex items-center gap-4">
-                  <div className="h-1 w-1 rounded-full bg-[#8D8D8D]" /> MATERIALITY
-                </li>
-                <li className="flex items-center gap-4">
-                  <div className="h-1 w-1 rounded-full bg-[#8D8D8D]" /> CONSTRUCTION
-                </li>
-                <li className="flex items-center gap-4">
-                  <div className="h-1 w-1 rounded-full bg-[#8D8D8D]" /> SILHOUETTE
-                </li>
-              </ul>
-            </div>
-          </div>
         </div>
-      </div>
       )}
 
       {/* ── DYNAMIC GRID ────────────────────────────────────────────────────── */}

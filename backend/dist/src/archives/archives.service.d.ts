@@ -31,8 +31,8 @@ export declare class ArchivesService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         total: Decimal;
+        userId: string;
         status: import(".prisma/client").$Enums.OrderStatus;
     }>;
     findUserArchives(userId: string): Promise<({
@@ -54,8 +54,8 @@ export declare class ArchivesService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         total: Decimal;
+        userId: string;
         status: import(".prisma/client").$Enums.OrderStatus;
     })[]>;
     findOne(id: string, userId: string): Promise<{
@@ -77,8 +77,8 @@ export declare class ArchivesService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         total: Decimal;
+        userId: string;
         status: import(".prisma/client").$Enums.OrderStatus;
     }>;
 }
