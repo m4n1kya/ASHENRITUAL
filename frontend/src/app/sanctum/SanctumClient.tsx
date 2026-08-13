@@ -127,22 +127,43 @@ function CreatorHub({ profile }: { profile: User }) {
             </button>
             <button 
               onClick={() => useUIStore.getState().openSettings()}
-              className="border border-[rgba(255,255,255,0.05)] text-[#8D8D8D] w-10 h-10 flex items-center justify-center hover:bg-[rgba(255,255,255,0.02)] transition-colors"
+              className="border border-[rgba(255,255,255,0.05)] text-[#8D8D8D] w-10 h-10 flex items-center justify-center hover:bg-[rgba(255,255,255,0.02)] transition-colors shrink-0"
             >
               <Settings className="w-4 h-4" />
             </button>
           </div>
+          <div className="mt-4 flex w-full justify-center lg:justify-start">
+            <button className="w-full max-w-[340px] border border-[rgba(255,255,255,0.1)] py-2.5 font-heading text-[10px] uppercase tracking-widest text-[#FDFCFB] hover:bg-[rgba(255,255,255,0.05)] transition-colors">
+              Apply to Showroom
+            </button>
+          </div>
         </div>
 
-        {/* Info Box */}
-        <div className="w-full max-w-sm border border-[rgba(255,255,255,0.05)] bg-[#050505] p-8 hidden md:block">
-          <h3 className="font-heading text-[10px] uppercase tracking-[0.3em] text-[#8D8D8D] mb-6 border-b border-[rgba(255,255,255,0.05)] pb-4">Showroom Affiliations</h3>
-          <p className="font-sans text-xs text-[#A8A8A8] mb-6 leading-relaxed">
-            Your concepts are currently unaffiliated. Apply to a verified showroom to have your collections physically carried.
-          </p>
-          <button className="w-full border border-[rgba(255,255,255,0.1)] py-3 font-heading text-[10px] uppercase tracking-widest text-[#FDFCFB] hover:bg-[#111] transition-colors">
-            Apply to Showroom
-          </button>
+        {/* Floating Lantern (Enter Exhibition) */}
+        <div className="w-full max-w-sm hidden md:flex items-center justify-center group cursor-pointer" onClick={() => setSanctumState('EXHIBITION')}>
+          <motion.div
+            animate={{ y: [-15, 15, -15] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="relative z-20 w-full transition-transform duration-[1500ms] ease-out group-hover:scale-[1.05]"
+            style={{ height: '380px' }}
+          >
+            <Image 
+              src="/images/lantern.png" 
+              alt="Enter Exhibition" 
+              fill 
+              sizes="380px" 
+              className="object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.15)] opacity-80 group-hover:opacity-100 transition-opacity duration-700" 
+              unoptimized
+            />
+            {/* Ambient glow */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
+               <div className="w-[60%] h-[60%] bg-[#FDFCFB]/5 blur-[60px] rounded-full transition-opacity duration-1000 group-hover:bg-[#FDFCFB]/15" />
+            </div>
+            {/* Hover text indicator */}
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 font-heading text-[10px] uppercase tracking-[0.3em] text-[#FDFCFB] whitespace-nowrap">
+              Enter Exhibition
+            </div>
+          </motion.div>
         </div>
 
       </div>
