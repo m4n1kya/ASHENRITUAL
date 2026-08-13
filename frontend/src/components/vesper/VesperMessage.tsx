@@ -22,7 +22,7 @@ export function VesperMessageComponent({ message }: { message: VesperMessageType
 
         {/* Text Content */}
         {message.content && (
-          <div className={`prose prose-invert max-w-none text-sm md:text-base font-sans leading-relaxed ${isUser ? 'text-[#E8E8E8]' : 'text-[#A8A8A8]'} ${message.isStreaming ? 'animate-pulse' : ''}`}>
+          <div className={`prose prose-invert max-w-none text-[12px] md:text-[13px] font-sans leading-relaxed ${isUser ? 'text-[#E8E8E8]' : 'text-[#A8A8A8]'} ${message.isStreaming ? 'animate-pulse' : ''}`}>
             {isUser ? (
               <p>{message.content}</p>
             ) : (
