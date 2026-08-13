@@ -16,41 +16,50 @@ const FALLBACK_SHOWROOMS: Showroom[] = [
   {
     id: '1',
     name: 'AshenRitual Flagship',
+    slug: 'ashenritual-flagship-mumbai',
     country: 'India',
     state: 'Maharashtra',
     city: 'Mumbai',
-    address: '1st Floor, The Palladium, Lower Parel',
-    email: 'mumbai@ashenritual.com',
-    phone: '+91 98765 43210',
-    isActive: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    description: 'Our primary flagship location in the heart of Mumbai.',
+    history: null,
+    specialization: 'Bespoke tailoring',
+    knownFor: 'Flagship experience',
+    image: null,
+    logo: null,
+    verification: 'verified',
+    hours: '10 AM - 8 PM'
   },
   {
     id: '2',
     name: 'AshenRitual Studio',
+    slug: 'ashenritual-studio-delhi',
     country: 'India',
     state: 'Delhi',
     city: 'New Delhi',
-    address: 'The Chanakya, Chanakyapuri',
-    email: 'delhi@ashenritual.com',
-    phone: '+91 98765 43211',
-    isActive: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    description: 'Exclusive studio for private consultations.',
+    history: null,
+    specialization: 'Private fittings',
+    knownFor: 'Exclusive service',
+    image: null,
+    logo: null,
+    verification: 'verified',
+    hours: '11 AM - 7 PM'
   },
   {
     id: '3',
     name: 'AshenRitual Gallery',
+    slug: 'ashenritual-gallery-london',
     country: 'United Kingdom',
     state: 'England',
     city: 'London',
-    address: '15 Savile Row, Mayfair',
-    email: 'london@ashenritual.com',
-    phone: '+44 20 7123 4567',
-    isActive: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    description: 'Our international gallery on Savile Row.',
+    history: null,
+    specialization: 'Sartorial elegance',
+    knownFor: 'International flagship',
+    image: null,
+    logo: null,
+    verification: 'verified',
+    hours: '9 AM - 6 PM'
   }
 ];
 
