@@ -16,9 +16,17 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden flex-col" style={{ paddingTop: '100px' }}>
-      {/* Slim top nav */}
-      <nav className="flex-none flex items-center gap-1 px-4 py-2 border-b border-white/[0.05] bg-[#080808] shrink-0">
+    <div
+      className="flex h-screen bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden"
+      style={{ paddingTop: '100px' }}
+    >
+      {/* Left: Chat content — takes most of the width */}
+      <div className="flex-1 overflow-hidden min-w-0">
+        {children}
+      </div>
+
+      {/* Right: Vertical nav — no box, pure floating links */}
+      <nav className="flex-none flex flex-col items-end gap-1 px-6 pt-8 shrink-0" aria-label="Vesper navigation">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -27,23 +35,18 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
               key={item.name}
               href={item.href}
               className={cn(
-                'flex items-center gap-2 px-5 py-2.5 rounded-full text-[11px] uppercase tracking-wider transition-all duration-200',
+                'flex items-center gap-2.5 px-4 py-2.5 text-[11px] uppercase tracking-[0.2em] transition-all duration-300 rounded-full',
                 isActive
-                  ? 'bg-white/10 text-[#FDFCFB]'
-                  : 'text-[#4A4A4A] hover:text-[#8D8D8D] hover:bg-white/[0.04]'
+                  ? 'text-[#FDFCFB]'
+                  : 'text-[#333] hover:text-[#8D8D8D]'
               )}
             >
               <Icon className="h-3.5 w-3.5" />
-              {item.name}
+              <span>{item.name}</span>
             </Link>
           );
         })}
       </nav>
-
-      {/* Main content */}
-      <div className="flex-1 overflow-hidden">
-        {children}
-      </div>
     </div>
   );
 }

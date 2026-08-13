@@ -476,7 +476,8 @@ export default function HomePage() {
               <motion.div
                 animate={{ y: [-20, 20, -20] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-20 w-[95%] h-[95%] lg:w-[110%] lg:h-[110%] transition-transform duration-[1500ms] ease-out group-hover:scale-[1.08]"
+                className="relative z-20 w-full transition-transform duration-[1500ms] ease-out group-hover:scale-[1.08]"
+                style={{ height: '460px' }}
               >
                 <Image 
                   src="/images/vesper-lantern.png" 

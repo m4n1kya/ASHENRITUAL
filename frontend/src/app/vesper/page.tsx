@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUp, Loader2, Sparkles, RotateCcw } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 import { useVesperStore } from '@/store/vesper.store';
@@ -27,28 +27,12 @@ export default function VesperChatPage() {
   const [focused, setFocused] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => setMounted(true), []);
 
-  // Lock Vesper to dark mode for atmosphere
+  // Auto-scroll to bottom on new messages
   useEffect(() => {
-    const html = document.documentElement;
-    const prev = html.getAttribute('data-theme') ?? 'dark';
-    const prevClass = html.className;
-    html.setAttribute('data-theme', 'dark');
-    html.classList.add('dark');
-    return () => {
-      html.setAttribute('data-theme', prev);
-      html.className = prevClass;
-    };
-  }, []);
-
-  // Auto-scroll to bottom
-  useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   // Auto-resize textarea
@@ -63,15 +47,14 @@ export default function VesperChatPage() {
     e.preventDefault();
     const text = overrideInput ?? input;
     if (!text.trim() || isLoading) return;
-    
+
     if (!token) {
-      toast.error('Sign in required', { description: 'Please sign in to talk to Vesper.' });
+      toast.error('Sign in to talk to Vesper.');
       return;
     }
 
     const userMsgId = 'user-' + Date.now();
     addMessage({ id: userMsgId, role: 'user', content: text });
-    
     setInput('');
     setIsLoading(true);
 
@@ -90,8 +73,8 @@ export default function VesperChatPage() {
           messages: history,
           context: {
             currentPage: pathname,
-            localTime: new Date().toLocaleTimeString()
-          }
+            localTime: new Date().toLocaleTimeString(),
+          },
         },
         token,
         (textChunk) => {
@@ -104,123 +87,121 @@ export default function VesperChatPage() {
           updateMessage(botMsgId, {
             actions: jsonData.actions,
             recommendations: jsonData.recommendations,
-            isStreaming: false
+            isStreaming: false,
           });
         }
       );
 
-      if (!hasReceivedData) {
-        updateMessage(botMsgId, { 
-          content: 'The intelligence layer did not respond. Please try again.',
-          isStreaming: false 
-        });
-      } else {
-        updateMessage(botMsgId, { isStreaming: false });
-      }
-
+      updateMessage(botMsgId, {
+        content: hasReceivedData ? streamText : 'Something went quiet. Please try again.',
+        isStreaming: false,
+      });
     } catch (err) {
-      console.error('Vesper Chat Error:', err);
-      updateMessage(botMsgId, { 
-        content: 'I am temporarily unable to access my intelligence network. Please try again later.',
-        isStreaming: false 
+      console.error('Vesper error:', err);
+      updateMessage(botMsgId, {
+        content: 'I am temporarily unreachable. Please try again shortly.',
+        isStreaming: false,
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const greeting = mounted ? (() => {
-    const hour = new Date().getHours();
-    return hour < 12 ? 'Good morning.' : hour < 18 ? 'Good afternoon.' : 'Good evening.';
-  })() : '';
+  const greeting = mounted
+    ? (() => {
+        const h = new Date().getHours();
+        return h < 12 ? 'Good morning.' : h < 18 ? 'Good afternoon.' : 'Good evening.';
+      })()
+    : '';
 
   const hasMessages = messages.length > 0;
 
   return (
-    <main ref={containerRef} className="flex h-full flex-col bg-[#050505] relative overflow-hidden">
-      {/* Ambient background */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#FDFCFB]/[0.02] rounded-full blur-[120px]" />
+    <main className="flex h-full flex-col bg-[#050505] relative overflow-hidden">
+      {/* Soft ambient glow */}
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <div className="absolute left-1/3 top-1/4 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.015] blur-[140px]" />
       </div>
 
-      {/* Top bar */}
-      <div className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-white/[0.04] shrink-0">
-        <div className="flex items-center gap-2">
+      {/* Top identity bar — no border, no box */}
+      <div className="relative z-10 flex items-center justify-between px-8 pt-6 pb-2 shrink-0">
+        <div className="flex items-center gap-2.5">
           <Sparkles className="h-3.5 w-3.5 text-[#8D8D8D]" />
-          <span className="font-heading text-[11px] uppercase tracking-[0.3em] text-[#8D8D8D]">Vesper</span>
+          <span className="font-heading text-[11px] uppercase tracking-[0.35em] text-[#8D8D8D]">Vesper</span>
         </div>
-        {hasMessages && (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            onClick={clearMessages}
-            className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#4A4A4A] hover:text-[#FDFCFB] transition-colors"
-          >
-            <RotateCcw className="h-3 w-3" />
-            New Chat
-          </motion.button>
-        )}
+        <AnimatePresence>
+          {hasMessages && (
+            <motion.button
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 8 }}
+              onClick={clearMessages}
+              className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#333] hover:text-[#8D8D8D] transition-colors"
+            >
+              <RotateCcw className="h-3 w-3" />
+              New Chat
+            </motion.button>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Chat area */}
-      <div className="relative z-10 flex-1 overflow-y-auto px-4 py-6 md:px-8 hide-scrollbar">
-        <div className="mx-auto max-w-2xl w-full">
+      {/* Message area */}
+      <div className="relative z-10 flex-1 overflow-y-auto px-8 py-4 hide-scrollbar">
+        <div className="w-full max-w-2xl">
           <AnimatePresence mode="wait">
             {!hasMessages ? (
+              /* ── Welcome screen ── */
               <motion.div
                 key="welcome"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="flex flex-col items-center justify-center pt-20 md:pt-32 text-center"
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                className="flex flex-col items-start justify-center pt-16 md:pt-24"
               >
-                {/* Animated orb */}
-                <div className="relative mb-10">
+                {/* Pulsing orb */}
+                <div className="relative mb-8 ml-1">
                   <motion.div
-                    animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                    className="w-16 h-16 rounded-full bg-gradient-to-br from-white/10 to-white/5 blur-md absolute inset-0"
+                    animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.5, 0.2] }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute inset-0 h-12 w-12 rounded-full bg-white/10 blur-lg"
                   />
-                  <motion.div
-                    animate={{ scale: [1, 1.12, 1], opacity: [0.15, 0.35, 0.15] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                    className="w-16 h-16 rounded-full bg-white/5 blur-xl absolute inset-0"
-                  />
-                  <div className="relative w-16 h-16 rounded-full border border-white/10 flex items-center justify-center">
-                    <Sparkles className="h-5 w-5 text-[#8D8D8D]" />
+                  <div className="relative flex h-12 w-12 items-center justify-center rounded-full border border-white/[0.08]">
+                    <Sparkles className="h-4 w-4 text-[#555]" />
                   </div>
                 </div>
 
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="font-display italic text-3xl md:text-4xl text-[#FDFCFB] mb-3"
+                  transition={{ delay: 0.25 }}
+                  className="font-display italic text-[2.5rem] leading-tight text-[#FDFCFB] mb-2"
                 >
                   {greeting}
                 </motion.p>
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="font-sans text-sm text-[#4A4A4A] mb-12"
+                  transition={{ delay: 0.4 }}
+                  className="font-sans text-sm text-[#444] mb-10"
                 >
                   How can I help you today?
                 </motion.p>
 
-                {/* Quick prompts */}
+                {/* Quick prompts — ghost pills, no heavy border */}
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 }}
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-md"
+                  transition={{ delay: 0.6 }}
+                  className="flex flex-wrap gap-2"
                 >
                   {QUICK_PROMPTS.map((prompt, i) => (
                     <button
                       key={i}
-                      onClick={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent, prompt)}
-                      className="text-left px-5 py-3.5 rounded-3xl border border-white/[0.06] bg-white/[0.02] text-[11px] text-[#8D8D8D] hover:text-[#FDFCFB] hover:border-white/[0.15] hover:bg-white/[0.05] transition-all duration-300 leading-relaxed"
+                      onClick={() =>
+                        handleSubmit({ preventDefault: () => {} } as React.FormEvent, prompt)
+                      }
+                      className="px-4 py-2 rounded-full border border-white/[0.07] text-[11px] text-[#555] hover:text-[#FDFCFB] hover:border-white/20 transition-all duration-300"
                     >
                       {prompt}
                     </button>
@@ -228,35 +209,32 @@ export default function VesperChatPage() {
                 </motion.div>
               </motion.div>
             ) : (
-              <motion.div
-                key="messages"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
+              /* ── Message list ── */
+              <motion.div key="messages" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <AnimatePresence>
-                  {messages.map(msg => (
+                  {messages.map((msg) => (
                     <VesperMessageComponent key={msg.id} message={msg} />
                   ))}
                 </AnimatePresence>
               </motion.div>
             )}
           </AnimatePresence>
-          <div ref={bottomRef} className="h-6" />
+          <div ref={bottomRef} className="h-4" />
         </div>
       </div>
 
-      {/* Input area */}
-      <div className="relative z-20 shrink-0 px-4 pb-6 pt-3 md:px-8">
-        <div className="mx-auto max-w-2xl">
+      {/* Input — floats at bottom, no box outline, subtle background */}
+      <div className="relative z-20 shrink-0 px-8 pb-8 pt-2">
+        <div className="max-w-2xl">
           <motion.form
             onSubmit={handleSubmit}
-            animate={{
+            className="relative flex items-end gap-3 rounded-3xl bg-[#0E0E0E] px-5 py-3.5"
+            style={{
               boxShadow: focused
-                ? '0 0 0 1px rgba(255,255,255,0.1), 0 20px 60px rgba(0,0,0,0.5)'
-                : '0 0 0 1px rgba(255,255,255,0.05), 0 8px 30px rgba(0,0,0,0.3)',
+                ? '0 0 0 1px rgba(255,255,255,0.08), 0 16px 50px rgba(0,0,0,0.6)'
+                : '0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.4)',
+              transition: 'box-shadow 0.3s ease',
             }}
-            transition={{ duration: 0.3 }}
-            className="relative flex items-end gap-3 bg-[#111]/90 backdrop-blur-xl rounded-[2rem] p-3 px-4"
           >
             <textarea
               ref={textareaRef}
@@ -265,7 +243,7 @@ export default function VesperChatPage() {
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               placeholder="Ask Vesper anything..."
-              className="flex-1 bg-transparent px-3 py-2 text-sm text-[#FDFCFB] placeholder:text-[#444] outline-none resize-none hide-scrollbar leading-relaxed"
+              className="flex-1 bg-transparent text-sm text-[#FDFCFB] placeholder:text-[#333] outline-none resize-none hide-scrollbar leading-relaxed"
               rows={1}
               style={{ maxHeight: '120px' }}
               onKeyDown={(e) => {
@@ -280,26 +258,27 @@ export default function VesperChatPage() {
               disabled={!input.trim() || isLoading}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FDFCFB] text-[#0A0A0A] disabled:opacity-30 disabled:bg-white/10 disabled:text-[#666] transition-all duration-300"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FDFCFB] text-[#0A0A0A] transition-all duration-300 disabled:opacity-20"
             >
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowUp className="h-4 w-4" />}
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ArrowUp className="h-4 w-4" />
+              )}
             </motion.button>
           </motion.form>
 
-          <AnimatePresence mode="wait">
+          {/* Thinking indicator */}
+          <AnimatePresence>
             {isLoading && (
               <motion.p
-                key="loading"
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="text-center text-[9px] uppercase tracking-widest text-[#4A4A4A] mt-3"
+                className="mt-3 text-center text-[9px] uppercase tracking-widest text-[#333]"
               >
-                <motion.span
-                  animate={{ opacity: [0.4, 1, 0.4] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  Vesper is thinking...
+                <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity }}>
+                  Vesper is thinking…
                 </motion.span>
               </motion.p>
             )}
