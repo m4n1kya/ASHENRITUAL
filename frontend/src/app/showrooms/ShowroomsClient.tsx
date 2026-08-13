@@ -78,25 +78,53 @@ export function ShowroomsClient({ initialShowrooms }: { initialShowrooms: Showro
         {/* Dropdown Discovery Layer */}
         <div className="mb-24 border-b border-[rgba(255,255,255,0.05)] pb-12 relative z-50">
           <h2 className="font-heading text-[10px] uppercase tracking-[0.4em] text-[#4A4A4A] mb-8">Set Location</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-16 w-full">
-            <PremiumDropdown 
-              value={selection.country}
-              options={locations.countries}
-              onChange={v => setSelection({ country: v, state: '', city: '' })}
-              placeholder="Select Country"
-            />
-            <PremiumDropdown 
-              value={selection.state}
-              options={selection.country ? locations.statesByCountry[selection.country] || [] : []}
-              onChange={v => setSelection({ ...selection, state: v, city: '' })}
-              placeholder="Select State"
-            />
-            <PremiumDropdown 
-              value={selection.city}
-              options={selection.state ? locations.citiesByState[selection.state] || [] : []}
-              onChange={v => setSelection({ ...selection, city: v })}
-              placeholder="Select City"
-            />
+          <div className="flex flex-col md:flex-row gap-8 lg:gap-16 w-full">
+            <div className="w-full md:flex-1">
+              <PremiumDropdown 
+                value={selection.country}
+                options={locations.countries}
+                onChange={v => setSelection({ country: v, state: '', city: '' })}
+                placeholder="Select Country"
+              />
+            </div>
+            
+            <AnimatePresence>
+              {selection.country && (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  className="w-full md:flex-1"
+                >
+                  <PremiumDropdown 
+                    value={selection.state}
+                    options={locations.statesByCountry[selection.country] || []}
+                    onChange={v => setSelection({ ...selection, state: v, city: '' })}
+                    placeholder="Select State"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {selection.state && (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  className="w-full md:flex-1"
+                >
+                  <PremiumDropdown 
+                    value={selection.city}
+                    options={locations.citiesByState[selection.state] || []}
+                    onChange={v => setSelection({ ...selection, city: v })}
+                    placeholder="Select City"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
         
@@ -130,8 +158,8 @@ function HeroSection({ scrollYProgress }: { scrollYProgress: MotionValue<number>
   return (
     <section className="relative flex h-[70vh] lg:h-[85vh] w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.03)]">
       <motion.div style={{ y, opacity }} className="absolute inset-0 z-0 bg-[#050505]">
-        <Image src="/images/showrooms/showroom-hero.jpg" alt="Showrooms Hero" fill className="object-cover opacity-50 mix-blend-luminosity grayscale" unoptimized priority />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-[#050505]/80 to-background z-10" />
+        <Image src="/images/showrooms/showroom-hero.jpg" alt="Showrooms Hero" fill className="object-cover opacity-80" unoptimized priority />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/40 to-background z-10" />
       </motion.div>
 
       <div className="relative z-10 flex flex-col items-center text-center px-6 pointer-events-none">
