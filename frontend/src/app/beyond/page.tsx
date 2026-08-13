@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import { BeyondHero } from '@/components/beyond/BeyondHero';
 import { BeyondTextReveal } from '@/components/beyond/BeyondTextReveal';
-import { BeyondEditorials } from '@/components/beyond/BeyondEditorials';
+
 import { BeyondCreators } from '@/components/beyond/BeyondCreators';
 import { BeyondCommunity } from '@/components/beyond/BeyondCommunity';
 import { BeyondReviews } from '@/components/beyond/BeyondReviews';
@@ -21,7 +21,7 @@ export default function BeyondPage() {
     <main ref={container} className="relative w-full bg-[#0E0E0E] text-[#FDFCFB] overflow-x-hidden pt-20">
       <BeyondHero />
       <BeyondTextReveal />
-      <BeyondEditorials />
+
       <BeyondImageBelt />
       <BeyondCreators />
       <BeyondCommunity />

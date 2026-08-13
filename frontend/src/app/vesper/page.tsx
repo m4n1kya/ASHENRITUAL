@@ -83,6 +83,7 @@ export default function VesperChatPage() {
       history.push({ role: 'user', content: text });
 
       let streamText = '';
+      let hasReceivedData = false;
 
       await vesperApi.chatStream(
         {
@@ -94,10 +95,12 @@ export default function VesperChatPage() {
         },
         token,
         (textChunk) => {
+          hasReceivedData = true;
           streamText += textChunk;
           updateMessage(botMsgId, { content: streamText });
         },
         (jsonData) => {
+          hasReceivedData = true;
           updateMessage(botMsgId, {
             actions: jsonData.actions,
             recommendations: jsonData.recommendations,
@@ -106,7 +109,7 @@ export default function VesperChatPage() {
         }
       );
 
-      if (!streamText) {
+      if (!hasReceivedData) {
         updateMessage(botMsgId, { 
           content: 'The intelligence layer did not respond. Please try again.',
           isStreaming: false 
