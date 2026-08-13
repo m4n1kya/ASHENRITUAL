@@ -12,6 +12,7 @@ import { BeyondEvents } from '@/components/beyond/BeyondEvents';
 import { BeyondFilms } from '@/components/beyond/BeyondFilms';
 import { BeyondFootprint } from '@/components/beyond/BeyondFootprint';
 import { BeyondJoin } from '@/components/beyond/BeyondJoin';
+import { BeyondImageBelt } from '@/components/beyond/BeyondImageBelt';
 
 export default function BeyondPage() {
   const container = useRef<HTMLDivElement>(null);
@@ -21,6 +22,7 @@ export default function BeyondPage() {
       <BeyondHero />
       <BeyondTextReveal />
       <BeyondEditorials />
+      <BeyondImageBelt />
       <BeyondCreators />
       <BeyondCommunity />
       <BeyondReviews />

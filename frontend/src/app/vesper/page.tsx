@@ -1,16 +1,21 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUp, Loader2, RefreshCw } from 'lucide-react';
-import { BorderBeam } from '@/components/ui/border-beam';
-import { CalculatingBurst } from '@/components/ui/calculating-burst';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { ArrowUp, Loader2, Sparkles, RotateCcw } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
-import { useVesperStore, VesperMessage } from '@/store/vesper.store';
+import { useVesperStore } from '@/store/vesper.store';
 import { vesperApi } from '@/services/vesper.service';
 import { VesperMessageComponent } from '@/components/vesper/VesperMessage';
 import { toast } from 'sonner';
 import { usePathname } from 'next/navigation';
+
+const QUICK_PROMPTS = [
+  'What should I wear tonight?',
+  'Suggest a minimalist outfit',
+  'Style me for a business meeting',
+  'What pieces work for all seasons?',
+];
 
 export default function VesperChatPage() {
   const { token } = useAuthStore();
@@ -19,7 +24,10 @@ export default function VesperChatPage() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [focused, setFocused] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => setMounted(true), []);
 
@@ -43,19 +51,27 @@ export default function VesperChatPage() {
     }
   }, [messages]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px';
+    }
+  }, [input]);
+
+  const handleSubmit = async (e: React.FormEvent | React.KeyboardEvent, overrideInput?: string) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    const text = overrideInput ?? input;
+    if (!text.trim() || isLoading) return;
     
     if (!token) {
-      toast.error('Authentication Required', { description: 'Sign in to access Vesper Intelligence.' });
+      toast.error('Sign in required', { description: 'Please sign in to talk to Vesper.' });
       return;
     }
 
     const userMsgId = 'user-' + Date.now();
-    addMessage({ id: userMsgId, role: 'user', content: input });
+    addMessage({ id: userMsgId, role: 'user', content: text });
     
-    const currentInput = input;
     setInput('');
     setIsLoading(true);
 
@@ -63,9 +79,8 @@ export default function VesperChatPage() {
     addMessage({ id: botMsgId, role: 'model', content: '', isStreaming: true });
 
     try {
-      // Build conversation history for API
       const history = messages.map(m => ({ role: m.role, content: m.content }));
-      history.push({ role: 'user', content: currentInput });
+      history.push({ role: 'user', content: text });
 
       let streamText = '';
 
@@ -78,12 +93,10 @@ export default function VesperChatPage() {
           }
         },
         token,
-        // onChunk (Text streaming)
         (textChunk) => {
           streamText += textChunk;
           updateMessage(botMsgId, { content: streamText });
         },
-        // onJson (Structured data)
         (jsonData) => {
           updateMessage(botMsgId, {
             actions: jsonData.actions,
@@ -93,7 +106,6 @@ export default function VesperChatPage() {
         }
       );
 
-      // Finalize streaming if no JSON arrived
       if (!streamText) {
         updateMessage(botMsgId, { 
           content: 'The intelligence layer did not respond. Please try again.',
@@ -114,65 +126,145 @@ export default function VesperChatPage() {
     }
   };
 
+  const greeting = mounted ? (() => {
+    const hour = new Date().getHours();
+    return hour < 12 ? 'Good morning.' : hour < 18 ? 'Good afternoon.' : 'Good evening.';
+  })() : '';
+
+  const hasMessages = messages.length > 0;
+
   return (
-    <main className="flex h-screen flex-col bg-background pt-16 texture-grain relative">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/40 to-background pointer-events-none z-0" />
+    <main ref={containerRef} className="flex h-full flex-col bg-[#050505] relative overflow-hidden">
+      {/* Ambient background */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#FDFCFB]/[0.02] rounded-full blur-[120px]" />
+      </div>
 
-      {/* Header */}
-      <header className="relative z-10 flex flex-col items-center justify-center py-6 border-b border-[rgba(255,255,255,0.05)] bg-[#0A0A0A]/80 backdrop-blur-md shrink-0">
-        <h1 className="font-heading text-lg font-bold uppercase tracking-[0.2em] text-[#FDFCFB]">
-          Vesper
-        </h1>
-        <p className="text-[9px] uppercase tracking-widest text-[#8D8D8D] mt-1">Intelligence Layer</p>
-        
-        {messages.length > 0 && (
-          <button 
+      {/* Top bar */}
+      <div className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-white/[0.04] shrink-0">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-3.5 w-3.5 text-[#8D8D8D]" />
+          <span className="font-heading text-[11px] uppercase tracking-[0.3em] text-[#8D8D8D]">Vesper</span>
+        </div>
+        {hasMessages && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             onClick={clearMessages}
-            className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] uppercase tracking-widest text-[#4A4A4A] hover:text-[#FDFCFB] transition-colors"
+            className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#4A4A4A] hover:text-[#FDFCFB] transition-colors"
           >
-            Clear Session
-          </button>
+            <RotateCcw className="h-3 w-3" />
+            New Chat
+          </motion.button>
         )}
-      </header>
+      </div>
 
-      {/* Chat Area */}
-      <div className="relative z-10 flex-1 overflow-y-auto px-6 py-8 md:px-12 hide-scrollbar">
-        <div className="mx-auto max-w-3xl w-full">
-          {messages.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center pt-32 opacity-70">
-              <div className="w-12 h-[1px] bg-[#4A4A4A] mb-8" />
-              <p className="font-heading text-[11px] uppercase tracking-[0.3em] text-[#8D8D8D] text-center max-w-sm leading-relaxed">
-                {mounted ? (() => {
-                  const hour = new Date().getHours();
-                  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
-                  return `${greeting}. How can I help you?`;
-                })() : 'Loading...'}
-              </p>
-            </div>
-          ) : (
-            <AnimatePresence>
-              {messages.map(msg => (
-                <VesperMessageComponent key={msg.id} message={msg} />
-              ))}
-            </AnimatePresence>
-          )}
-          <div ref={bottomRef} className="h-20" />
+      {/* Chat area */}
+      <div className="relative z-10 flex-1 overflow-y-auto px-4 py-6 md:px-8 hide-scrollbar">
+        <div className="mx-auto max-w-2xl w-full">
+          <AnimatePresence mode="wait">
+            {!hasMessages ? (
+              <motion.div
+                key="welcome"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="flex flex-col items-center justify-center pt-20 md:pt-32 text-center"
+              >
+                {/* Animated orb */}
+                <div className="relative mb-10">
+                  <motion.div
+                    animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                    className="w-16 h-16 rounded-full bg-gradient-to-br from-white/10 to-white/5 blur-md absolute inset-0"
+                  />
+                  <motion.div
+                    animate={{ scale: [1, 1.12, 1], opacity: [0.15, 0.35, 0.15] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                    className="w-16 h-16 rounded-full bg-white/5 blur-xl absolute inset-0"
+                  />
+                  <div className="relative w-16 h-16 rounded-full border border-white/10 flex items-center justify-center">
+                    <Sparkles className="h-5 w-5 text-[#8D8D8D]" />
+                  </div>
+                </div>
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="font-display italic text-3xl md:text-4xl text-[#FDFCFB] mb-3"
+                >
+                  {greeting}
+                </motion.p>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="font-sans text-sm text-[#4A4A4A] mb-12"
+                >
+                  How can I help you today?
+                </motion.p>
+
+                {/* Quick prompts */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-md"
+                >
+                  {QUICK_PROMPTS.map((prompt, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent, prompt)}
+                      className="text-left px-4 py-3 rounded-xl border border-white/[0.06] bg-white/[0.02] text-[11px] text-[#8D8D8D] hover:text-[#FDFCFB] hover:border-white/[0.15] hover:bg-white/[0.05] transition-all duration-300 leading-relaxed"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </motion.div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="messages"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <AnimatePresence>
+                  {messages.map(msg => (
+                    <VesperMessageComponent key={msg.id} message={msg} />
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <div ref={bottomRef} className="h-6" />
         </div>
       </div>
 
-      {/* Input Area */}
-      <div className="relative z-20 shrink-0 border-t border-[rgba(255,255,255,0.05)] bg-[#050505]/90 backdrop-blur-md p-6">
-        <div className="mx-auto max-w-3xl relative rounded-[2rem]">
-          <form onSubmit={handleSubmit} className="relative flex items-center bg-[#111]/80 backdrop-blur-xl transition-all duration-300 rounded-[2rem] p-2 shadow-2xl outline-none" tabIndex={-1}>
-            <BorderBeam size={250} duration={12} delay={9} colorFrom="rgba(255,255,255,0.5)" colorTo="transparent" borderWidth={1.5} />
+      {/* Input area */}
+      <div className="relative z-20 shrink-0 px-4 pb-6 pt-3 md:px-8">
+        <div className="mx-auto max-w-2xl">
+          <motion.form
+            onSubmit={handleSubmit}
+            animate={{
+              boxShadow: focused
+                ? '0 0 0 1px rgba(255,255,255,0.1), 0 20px 60px rgba(0,0,0,0.5)'
+                : '0 0 0 1px rgba(255,255,255,0.05), 0 8px 30px rgba(0,0,0,0.3)',
+            }}
+            transition={{ duration: 0.3 }}
+            className="relative flex items-end gap-3 bg-[#111]/90 backdrop-blur-xl rounded-2xl p-3"
+          >
             <textarea
+              ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Consult Vesper..."
-              className="flex-1 bg-transparent px-6 py-4 text-sm text-[#FDFCFB] placeholder:text-[#666] outline-none focus:outline-none focus:ring-0 border-none focus:border-transparent resize-none hide-scrollbar my-auto relative z-10"
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              placeholder="Ask Vesper anything..."
+              className="flex-1 bg-transparent px-3 py-2 text-sm text-[#FDFCFB] placeholder:text-[#444] outline-none resize-none hide-scrollbar leading-relaxed"
               rows={1}
-              style={{ maxHeight: '120px', boxShadow: 'none' }}
+              style={{ maxHeight: '120px' }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -180,36 +272,32 @@ export default function VesperChatPage() {
                 }
               }}
             />
-            <button
+            <motion.button
               type="submit"
               disabled={!input.trim() || isLoading}
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#FDFCFB] text-[#0A0A0A] disabled:opacity-50 disabled:bg-white/10 disabled:text-[#666] hover:bg-[#E8E8E8] hover:scale-105 transition-all duration-300 ml-2 relative z-10"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FDFCFB] text-[#0A0A0A] disabled:opacity-30 disabled:bg-white/10 disabled:text-[#666] transition-all duration-300"
             >
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
-            </button>
-          </form>
-        </div>
-        <div className="mt-4 flex justify-center items-center min-h-[24px]">
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowUp className="h-4 w-4" />}
+            </motion.button>
+          </motion.form>
+
           <AnimatePresence mode="wait">
-            {isLoading ? (
-              <motion.div
+            {isLoading && (
+              <motion.p
                 key="loading"
-                initial={{ opacity: 0, y: 5 }}
+                initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                transition={{ duration: 0.3 }}
-              >
-                <CalculatingBurst />
-              </motion.div>
-            ) : (
-              <motion.p 
-                key="idle"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="text-[9px] uppercase tracking-widest text-[#4A4A4A]"
+                className="text-center text-[9px] uppercase tracking-widest text-[#4A4A4A] mt-3"
               >
-                Vesper Intelligence — Powered by Google Gemini
+                <motion.span
+                  animate={{ opacity: [0.4, 1, 0.4] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  Vesper is thinking...
+                </motion.span>
               </motion.p>
             )}
           </AnimatePresence>

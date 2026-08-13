@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,7 +13,7 @@ import type { Concept, User } from '@/types';
 
 export function SanctumClient() {
   const { isAuthenticated, user, _hasHydrated } = useAuthStore();
-  const [sanctumState, setSanctumState] = useState<'HUB' | 'TRANSITION' | 'EXHIBITION'>('HUB');
+  const [sanctumState, setSanctumState] = useState<'HUB' | 'EXHIBITION'>('HUB');
   
   const [profile, setProfile] = useState<User | null>(null);
   const [concepts, setConcepts] = useState<Concept[]>([]);
@@ -66,10 +65,7 @@ export function SanctumClient() {
     <div className="w-full bg-background selection:bg-[#FDFCFB] selection:text-[#0A0A0A] min-h-screen relative">
       <AnimatePresence>
         {sanctumState === 'HUB' && (
-          <CreatorHub key="hub" profile={profile || user!} onEnter={() => setSanctumState('TRANSITION')} />
-        )}
-        {sanctumState === 'TRANSITION' && (
-          <SanctumTransition key="transition" onComplete={() => setSanctumState('EXHIBITION')} />
+          <CreatorHub key="hub" profile={profile || user!} />
         )}
         {sanctumState === 'EXHIBITION' && (
           <CreatorLibrary key="library" profile={profile || user!} concepts={concepts} onBack={() => setSanctumState('HUB')} />
@@ -79,15 +75,15 @@ export function SanctumClient() {
   );
 }
 
-/* ── 1. Creator Hub & The Door ───────────────────────────────────────────── */
-function CreatorHub({ profile, onEnter }: { profile: User, onEnter: () => void }) {
+/* ── 1. Creator Hub ──────────────────────────────────────────────────────── */
+function CreatorHub({ profile }: { profile: User }) {
   const isVerified = profile.creatorProfile?.verified || false;
 
   return (
     <motion.div
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="w-full min-h-screen flex flex-col pt-24"
+      className="w-full flex flex-col pt-24"
     >
       {/* Profile Section */}
       <div className="mx-auto max-w-screen-xl px-6 w-full flex-1 flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-24 relative z-10 py-12">
@@ -151,21 +147,6 @@ function CreatorHub({ profile, onEnter }: { profile: User, onEnter: () => void }
 
       </div>
 
-      {/* The Door */}
-      <div className="w-full flex-1 flex flex-col items-center justify-end relative pb-0 mt-20">
-        <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#020202] to-transparent z-0 pointer-events-none" />
-        
-        <button 
-          onClick={onEnter}
-          className="group relative w-full max-w-2xl h-[40vh] bg-[#020202] border-t border-x border-[rgba(255,255,255,0.02)] flex items-center justify-center overflow-hidden z-10 transition-all duration-1000 hover:border-[rgba(255,255,255,0.08)]"
-        >
-          <div className="absolute inset-y-0 left-1/2 w-[1px] bg-gradient-to-b from-transparent via-[#FDFCFB]/10 to-transparent group-hover:via-[#FDFCFB]/30 transition-all duration-1000" />
-          
-          <span className="font-heading text-sm uppercase tracking-[0.5em] text-[#4A4A4A] group-hover:text-[#FDFCFB] transition-colors duration-700 bg-[#020202] px-6 z-10">
-            Enter Exhibition
-          </span>
-        </button>
-      </div>
     </motion.div>
   );
 }
@@ -242,113 +223,4 @@ function CreatorLibrary({ profile, concepts, onBack }: { profile: User, concepts
       )}
     </motion.div>
   );
-}
-
-/* ── 3. Sanctum Transition ───────────────────────────────────────────────── */
-function SanctumTransition({ onComplete }: { onComplete: () => void }) {
-  useEffect(() => {
-    const t = setTimeout(onComplete, 3200);
-    return () => clearTimeout(t);
-  }, [onComplete]);
-
-  const content = (
-    <motion.div
-      key="transition"
-      className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#050505]"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
-        animate={{ 
-          scale: [0.8, 1, 1.05, 30], 
-          opacity: [0, 1, 1, 0],
-          filter: ['blur(10px)', 'blur(0px)', 'blur(0px)', 'blur(0px)']
-        }}
-        transition={{ 
-          duration: 3.2, 
-          times: [0, 0.3, 0.7, 1], 
-          ease: "easeInOut" 
-        }}
-        className="relative flex items-center justify-center will-change-transform"
-      >
-        {/* SOFT BACKGROUND FOG */}
-        <div className="absolute inset-0 z-[-1] mt-16 flex items-center justify-center pointer-events-none">
-          {[...Array(3)].map((_, i) => (
-            <motion.div
-              key={`cloud-${i}`}
-              className="absolute rounded-full bg-[#151515]"
-              style={{
-                width: Math.random() * 100 + 200, 
-                height: Math.random() * 100 + 200,
-                filter: 'blur(40px)',
-              }}
-              animate={{
-                opacity: [0, 0.5, 0],
-                scale: [0.8, 1.2],
-                x: [(Math.random() - 0.5) * 60, (Math.random() - 0.5) * 60],
-                y: [(Math.random() - 0.5) * 60, (Math.random() - 0.5) * 60 - 40],
-              }}
-              transition={{ 
-                duration: Math.random() * 2 + 3, 
-                repeat: Infinity, 
-                ease: "easeInOut",
-                delay: Math.random()
-              }}
-            />
-          ))}
-        </div>
-
-        {/* SHINY LANTERN IMAGE */}
-        <Image 
-          src="/images/lantern-logo.png" 
-          alt="ASHENRITUAL" 
-          width={500} 
-          height={500} 
-          className="relative z-0 h-[250px] w-auto object-contain mt-16"
-          unoptimized
-          priority
-        />
-
-        {/* COOL GLOWING ASH PARTICLES */}
-        <div className="absolute inset-0 z-[10] mt-16 flex items-center justify-center pointer-events-none">
-          {[...Array(25)].map((_, i) => {
-            const size = Math.random() * 4 + 1.5;
-            const startX = (Math.random() - 0.5) * 180;
-            const startY = (Math.random() - 0.5) * 120 + 80;
-            
-            return (
-              <motion.div
-                key={`ash-${i}`}
-                className="absolute rounded-full bg-white"
-                style={{
-                  width: size, 
-                  height: size,
-                  boxShadow: '0 0 8px 2px rgba(200, 200, 200, 0.6)',
-                  filter: 'blur(0.5px)',
-                }}
-                animate={{
-                  opacity: [0, Math.random() * 0.7 + 0.3, 0],
-                  y: [startY, startY - (Math.random() * 150 + 100)],
-                  x: [startX, startX + (Math.random() * 50 - 25)],
-                  scale: [0, 1.5, 0.5],
-                }}
-                transition={{
-                  duration: Math.random() * 1.5 + 2,
-                  repeat: Infinity,
-                  ease: "easeOut",
-                  delay: Math.random() * 2.5
-                }}
-              />
-            );
-          })}
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-
-  if (typeof document === 'undefined') return null;
-  return createPortal(content, document.body);
 }
