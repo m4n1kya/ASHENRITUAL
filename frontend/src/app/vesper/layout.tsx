@@ -16,7 +16,7 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden flex-col" style={{ paddingTop: '64px' }}>
+    <div className="flex h-screen bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden flex-col" style={{ paddingTop: '100px' }}>
       {/* Slim top nav */}
       <nav className="flex-none flex items-center gap-1 px-4 py-2 border-b border-white/[0.05] bg-[#080808] shrink-0">
         {navItems.map((item) => {
@@ -27,7 +27,7 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
               key={item.name}
               href={item.href}
               className={cn(
-                'flex items-center gap-2 px-4 py-2 rounded-lg text-[11px] uppercase tracking-wider transition-all duration-200',
+                'flex items-center gap-2 px-5 py-2.5 rounded-full text-[11px] uppercase tracking-wider transition-all duration-200',
                 isActive
                   ? 'bg-white/10 text-[#FDFCFB]'
                   : 'text-[#4A4A4A] hover:text-[#8D8D8D] hover:bg-white/[0.04]'

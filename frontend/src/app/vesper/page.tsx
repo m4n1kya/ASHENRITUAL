@@ -220,7 +220,7 @@ export default function VesperChatPage() {
                     <button
                       key={i}
                       onClick={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent, prompt)}
-                      className="text-left px-4 py-3 rounded-xl border border-white/[0.06] bg-white/[0.02] text-[11px] text-[#8D8D8D] hover:text-[#FDFCFB] hover:border-white/[0.15] hover:bg-white/[0.05] transition-all duration-300 leading-relaxed"
+                      className="text-left px-5 py-3.5 rounded-3xl border border-white/[0.06] bg-white/[0.02] text-[11px] text-[#8D8D8D] hover:text-[#FDFCFB] hover:border-white/[0.15] hover:bg-white/[0.05] transition-all duration-300 leading-relaxed"
                     >
                       {prompt}
                     </button>
@@ -256,7 +256,7 @@ export default function VesperChatPage() {
                 : '0 0 0 1px rgba(255,255,255,0.05), 0 8px 30px rgba(0,0,0,0.3)',
             }}
             transition={{ duration: 0.3 }}
-            className="relative flex items-end gap-3 bg-[#111]/90 backdrop-blur-xl rounded-2xl p-3"
+            className="relative flex items-end gap-3 bg-[#111]/90 backdrop-blur-xl rounded-[2rem] p-3 px-4"
           >
             <textarea
               ref={textareaRef}
@@ -280,7 +280,7 @@ export default function VesperChatPage() {
               disabled={!input.trim() || isLoading}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FDFCFB] text-[#0A0A0A] disabled:opacity-30 disabled:bg-white/10 disabled:text-[#666] transition-all duration-300"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FDFCFB] text-[#0A0A0A] disabled:opacity-30 disabled:bg-white/10 disabled:text-[#666] transition-all duration-300"
             >
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowUp className="h-4 w-4" />}
             </motion.button>
