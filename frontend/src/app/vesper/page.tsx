@@ -2,12 +2,12 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, Sparkles, RotateCcw, Zap, Minimize2, Eye, Ruler } from 'lucide-react';
+import { Send, Loader2, Sparkles, RotateCcw, Zap, LogIn } from 'lucide-react';
+import Link from 'next/link';
 import { useAuthStore } from '@/store/auth.store';
 import { useVesperStore } from '@/store/vesper.store';
 import { vesperApi } from '@/services/vesper.service';
 import { VesperMessageComponent } from '@/components/vesper/VesperMessage';
-import { toast } from 'sonner';
 
 const QUICK_PROMPTS = [
   'What should I wear tonight?',
@@ -17,7 +17,7 @@ const QUICK_PROMPTS = [
 ];
 
 export default function VesperChatPage() {
-  const { token } = useAuthStore();
+  const { token, isAuthenticated, _hasHydrated } = useAuthStore();
   const { messages, addMessage, updateMessage, clearMessages } = useVesperStore();
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -47,25 +47,53 @@ export default function VesperChatPage() {
     const userMsgId = Date.now().toString();
     const botMsgId = (Date.now() + 1).toString();
 
-    addMessage({ id: userMsgId, role: 'user', content: text, timestamp: new Date() });
+    addMessage({ id: userMsgId, role: 'user', content: text });
     setInput('');
     setIsLoading(true);
 
-    addMessage({ id: botMsgId, role: 'assistant', content: '', timestamp: new Date(), isStreaming: true });
+    addMessage({ id: botMsgId, role: 'model', content: '', isStreaming: true });
 
     try {
-      const response = await vesperApi.chat(text, token || undefined);
-      if (response?.message) {
-        updateMessage(botMsgId, { content: response.message, isStreaming: false });
-        if (response.recommendations?.length) {
-          updateMessage(botMsgId, { recommendations: response.recommendations, isStreaming: false });
+      // Build conversation history for the API
+      const history = messages.map(m => ({ role: m.role as 'user' | 'model', content: m.content }));
+      history.push({ role: 'user', content: text });
+
+      let accumulated = '';
+
+      await vesperApi.chatStream(
+        {
+          messages: history,
+          context: {
+            localTime: new Date().toLocaleString(),
+          },
+        },
+        // Pass token if logged in; for guests pass an empty string and let the backend handle it
+        token || '',
+        (chunk: string) => {
+          accumulated += chunk;
+          updateMessage(botMsgId, { content: accumulated, isStreaming: true });
+        },
+        (jsonData) => {
+          // Handle any structured JSON from vesper (actions, recommendations etc)
+          const updates: Parameters<typeof updateMessage>[1] = { isStreaming: false };
+          if (jsonData.recommendations) updates.recommendations = jsonData.recommendations;
+          if (jsonData.actions) updates.actions = jsonData.actions;
+          updateMessage(botMsgId, updates);
         }
-      } else {
-        updateMessage(botMsgId, { content: 'I am temporarily unreachable. Please try again shortly.', isStreaming: false });
-      }
-    } catch (err) {
+      );
+
+      // Mark streaming as done after stream completes
+      updateMessage(botMsgId, { isStreaming: false });
+
+    } catch (err: unknown) {
       console.error('Vesper error:', err);
-      updateMessage(botMsgId, { content: 'I am temporarily unreachable. Please try again shortly.', isStreaming: false });
+      const errMsg = typeof err === 'string' && err.includes('Session expired')
+        ? 'Your session has expired. Please log in again.'
+        : typeof err === 'string' && err.includes('401')
+        ? 'Vesper requires an account. Please log in to continue.'
+        : 'Vesper is temporarily unreachable. Please try again shortly.';
+
+      updateMessage(botMsgId, { content: errMsg, isStreaming: false });
     } finally {
       setIsLoading(false);
     }
@@ -80,10 +108,13 @@ export default function VesperChatPage() {
 
   const hasMessages = messages.length > 0;
 
+  // Show login prompt if not authenticated (after hydration)
+  const showLoginBanner = _hasHydrated && !isAuthenticated;
+
   return (
     <main className="flex h-full flex-col bg-[#030303] relative overflow-hidden">
 
-      {/* Background gradient art */}
+      {/* Ambient background blobs */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-white/[0.012] blur-[120px]" />
         <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-white/[0.008] blur-[100px]" />
@@ -98,6 +129,9 @@ export default function VesperChatPage() {
             className="w-1.5 h-1.5 rounded-full bg-[#FDFCFB]"
           />
           <span className="font-heading text-[10px] uppercase tracking-[0.45em] text-[#3A3A3A]">Vesper</span>
+          {showLoginBanner && (
+            <span className="ml-4 font-mono text-[9px] uppercase tracking-widest text-[#4A4A4A]">· Guest Mode</span>
+          )}
         </div>
 
         <AnimatePresence>
@@ -116,6 +150,26 @@ export default function VesperChatPage() {
         </AnimatePresence>
       </div>
 
+      {/* Login nudge banner (non-blocking) */}
+      <AnimatePresence>
+        {showLoginBanner && !hasMessages && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="relative z-10 mx-auto max-w-2xl w-full px-6 mb-0"
+          >
+            <div className="flex items-center justify-between gap-3 border border-[rgba(255,255,255,0.05)] bg-white/[0.02] px-4 py-2.5 rounded-xl">
+              <p className="text-[11px] text-[#4A4A4A]">Sign in for personalised styling, saved history &amp; full Vesper intelligence.</p>
+              <Link href="/login?redirect=/vesper"
+                className="shrink-0 flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[#FDFCFB] hover:text-[#8D8D8D] transition-colors font-heading">
+                <LogIn className="w-3 h-3" /> Sign In
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Message / welcome area */}
       <div className="relative z-10 flex-1 overflow-y-auto py-4 hide-scrollbar">
         <div className="w-full max-w-2xl mx-auto px-6">
@@ -127,32 +181,28 @@ export default function VesperChatPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="flex flex-col items-start pt-12 md:pt-20"
+                className="flex flex-col items-start pt-12 md:pt-16"
               >
-                {/* Orb */}
+                {/* Animated orb */}
                 <div className="relative mb-10 ml-1">
                   <motion.div
-                    animate={{ scale: [1, 1.3, 1], opacity: [0.08, 0.25, 0.08] }}
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.08, 0.22, 0.08] }}
                     transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                     className="absolute inset-0 w-16 h-16 rounded-full bg-white blur-xl -translate-x-2 -translate-y-2"
                   />
                   <div className="relative w-12 h-12 rounded-full border border-white/[0.06] flex items-center justify-center bg-white/[0.02]">
-                    <Sparkles className="h-4.5 w-4.5 text-[#3A3A3A]" />
+                    <Sparkles className="h-4 w-4 text-[#3A3A3A]" />
                   </div>
                 </div>
 
                 <motion.h1
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
                   className="font-display italic text-[3rem] leading-[1] text-[#FDFCFB] mb-3 tracking-tight"
                 >
                   {greeting}
                 </motion.h1>
                 <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.35 }}
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}
                   className="font-sans text-[13px] text-[#333] mb-12 leading-relaxed"
                 >
                   How can I help you today?
@@ -160,9 +210,7 @@ export default function VesperChatPage() {
 
                 {/* Quick prompts */}
                 <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.55 }}
+                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
                   className="flex flex-col gap-2 w-full"
                 >
                   {QUICK_PROMPTS.map((prompt, i) => (
@@ -194,33 +242,25 @@ export default function VesperChatPage() {
         </div>
       </div>
 
-      {/* Input bar — pinned to bottom */}
+      {/* Input bar */}
       <div className="relative z-20 shrink-0 px-6 pb-8 pt-3">
         <div className="max-w-2xl mx-auto">
 
-          {/* Thinking indicator */}
+          {/* Thinking dots */}
           <AnimatePresence>
             {isLoading && (
               <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 6 }}
+                initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }}
                 className="mb-3 flex items-center gap-2 pl-2"
               >
-                <motion.div
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{ duration: 1.2, repeat: Infinity }}
-                  className="flex gap-1"
-                >
+                <div className="flex gap-1">
                   {[0, 1, 2].map(i => (
-                    <motion.span
-                      key={i}
-                      animate={{ opacity: [0.2, 1, 0.2] }}
+                    <motion.span key={i} animate={{ opacity: [0.2, 1, 0.2] }}
                       transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
                       className="block w-1 h-1 rounded-full bg-[#3A3A3A]"
                     />
                   ))}
-                </motion.div>
+                </div>
                 <span className="text-[9px] uppercase tracking-widest text-[#222]">Vesper is thinking</span>
               </motion.div>
             )}

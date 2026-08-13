@@ -62,20 +62,16 @@ export function Footer() {
         {/* Grid — 4 columns: brand + 3 link groups */}
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
 
-          {/* Brand */}
-          <div className="col-span-2 sm:col-span-1">
+          <div className="col-span-2 sm:col-span-1 pr-6">
             <Link
               href="/"
-              className="flex items-center gap-1 text-[11px] font-bold tracking-[0.35em] text-[#FDFCFB] hover:opacity-60 transition-opacity duration-300 [font-family:var(--font-logo)]"
+              className="flex items-center gap-1 text-[13px] font-bold tracking-[0.35em] text-[#FDFCFB] hover:opacity-70 transition-opacity duration-300 [font-family:var(--font-logo)]"
             >
               ASHENRITUAL
             </Link>
-            <p className="mt-4 text-[12px] leading-relaxed text-[#8D8D8D]/60">
+            <p className="mt-5 font-mono text-[11px] leading-relaxed text-[#8D8D8D]">
               Presence isn&apos;t purchased.<br />
               It&apos;s cultivated.
-            </p>
-            <p className="mt-3 font-heading text-[9px] font-medium uppercase tracking-[0.3em] text-[#3A3A3A]">
-              Premium soft purchased.
             </p>
           </div>
 
