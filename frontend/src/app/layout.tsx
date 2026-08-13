@@ -3,7 +3,7 @@ import { Inter, Cormorant_Garamond, Manrope, Geist_Mono, League_Gothic, Chakra_P
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { StartupAnimation } from "@/components/layout/StartupAnimation";
@@ -144,7 +144,7 @@ export default function RootLayout({
         <ConceptUploadWizard />
         <Navbar />
         <main id="main-content" role="main">{children}</main>
-        <Footer />
+        <ConditionalFooter />
       </body>
     </html>
   );

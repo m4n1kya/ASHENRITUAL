@@ -341,12 +341,12 @@ function SeasonalDevelopment() {
 
 /* ── 7. Inspiration Wall ─────────────────────────────────────────────────── */
 const MASONRY_IMGS = [
-  "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?q=80&w=2000&auto=format&fit=crop", // concrete
-  "https://images.unsplash.com/photo-1507027682794-35e6c12ad5b4?q=80&w=1974&auto=format&fit=crop", // abstract architecture
-  "https://images.unsplash.com/photo-1607419725910-66444da0807b?q=80&w=2070&auto=format&fit=crop", // minimal stairs
-  "https://images.unsplash.com/photo-1594902128965-f93318b76c8c?q=80&w=2070&auto=format&fit=crop", // minimal interior
-  "https://images.unsplash.com/photo-1524334228333-0f6db392f8a1?q=80&w=2070&auto=format&fit=crop", // texture abstract
-  "https://images.unsplash.com/photo-1616423640778-28d1b53229bd?q=80&w=2000&auto=format&fit=crop", // fabric close up
+  "/images/forge-hero.jpg",
+  "/images/droplets.jpg",
+  "/images/new-texture-hero.jpg",
+  "/images/natural-texture.jpg",
+  "/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.jpg",
+  "/images/beyond/young-man-portrait.jpg",
 ];
 
 function InspirationWall() {

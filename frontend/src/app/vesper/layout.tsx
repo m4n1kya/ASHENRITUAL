@@ -20,13 +20,8 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
       className="flex h-screen bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden"
       style={{ paddingTop: '100px' }}
     >
-      {/* Left: Chat content — takes most of the width */}
-      <div className="flex-1 overflow-hidden min-w-0">
-        {children}
-      </div>
-
-      {/* Right: Vertical nav — no box, pure floating links */}
-      <nav className="flex-none flex flex-col items-end gap-1 px-6 pt-8 shrink-0" aria-label="Vesper navigation">
+      {/* Left: Vertical nav — no box, pure floating links */}
+      <nav className="flex-none flex flex-col items-start gap-1 px-6 pt-8 shrink-0 w-[180px]" aria-label="Vesper navigation">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -47,6 +42,11 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
           );
         })}
       </nav>
+
+      {/* Right: Chat content — takes most of the width */}
+      <div className="flex-1 overflow-hidden min-w-0">
+        {children}
+      </div>
     </div>
   );
 }

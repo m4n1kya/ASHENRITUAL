@@ -380,7 +380,7 @@ export function Navbar() {
       <header role="banner" className="fixed inset-x-0 top-0 z-50 transition-all duration-500">
 
         {/* Tier 1: Logo + Search + Icons */}
-        <div className="relative w-full bg-background/40 backdrop-blur-md border-b border-[rgba(255,255,255,0.08)]">
+        <div className="relative w-full bg-background border-b border-[rgba(255,255,255,0.08)]">
           <div className="relative z-10 mx-auto flex h-[52px] max-w-screen-xl items-center justify-between px-6 lg:px-10">
 
             {/* Logo */}

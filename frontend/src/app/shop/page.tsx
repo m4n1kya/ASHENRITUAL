@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ShopPage() {
   return (
-    <main className="min-h-screen bg-transparent pt-[60px] texture-grain">
+    <main className="min-h-screen bg-transparent texture-grain">
       <Suspense
         fallback={
           <div className="mx-auto max-w-screen-xl px-8 py-16 lg:px-12">
