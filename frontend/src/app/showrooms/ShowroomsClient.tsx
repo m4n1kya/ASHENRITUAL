@@ -12,7 +12,50 @@ import { Showroom } from '@/types';
    SHOWROOMS — DISCOVERY JOURNEY
    ══════════════════════════════════════════════════════════════════════════ */
 
+const FALLBACK_SHOWROOMS: Showroom[] = [
+  {
+    id: '1',
+    name: 'AshenRitual Flagship',
+    country: 'India',
+    state: 'Maharashtra',
+    city: 'Mumbai',
+    address: '1st Floor, The Palladium, Lower Parel',
+    email: 'mumbai@ashenritual.com',
+    phone: '+91 98765 43210',
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: '2',
+    name: 'AshenRitual Studio',
+    country: 'India',
+    state: 'Delhi',
+    city: 'New Delhi',
+    address: 'The Chanakya, Chanakyapuri',
+    email: 'delhi@ashenritual.com',
+    phone: '+91 98765 43211',
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: '3',
+    name: 'AshenRitual Gallery',
+    country: 'United Kingdom',
+    state: 'England',
+    city: 'London',
+    address: '15 Savile Row, Mayfair',
+    email: 'london@ashenritual.com',
+    phone: '+44 20 7123 4567',
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+];
+
 export function ShowroomsClient({ initialShowrooms }: { initialShowrooms: Showroom[] }) {
+  const activeShowrooms = initialShowrooms.length > 0 ? initialShowrooms : FALLBACK_SHOWROOMS;
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   
@@ -26,12 +69,12 @@ export function ShowroomsClient({ initialShowrooms }: { initialShowrooms: Showro
   // Extract unique locations from live data
   const locations = useMemo(() => {
     const data = {
-      countries: Array.from(new Set(initialShowrooms.map(s => s.country))).sort(),
+      countries: Array.from(new Set(activeShowrooms.map(s => s.country))).sort(),
       statesByCountry: {} as Record<string, string[]>,
       citiesByState: {} as Record<string, string[]>
     };
 
-    initialShowrooms.forEach(s => {
+    activeShowrooms.forEach(s => {
       if (!data.statesByCountry[s.country]) data.statesByCountry[s.country] = [];
       if (!data.statesByCountry[s.country].includes(s.state)) data.statesByCountry[s.country].push(s.state);
 
@@ -40,7 +83,7 @@ export function ShowroomsClient({ initialShowrooms }: { initialShowrooms: Showro
     });
 
     return data;
-  }, [initialShowrooms]);
+  }, [activeShowrooms]);
 
   useEffect(() => {
     let validLocationFound = false;
@@ -141,7 +184,7 @@ export function ShowroomsClient({ initialShowrooms }: { initialShowrooms: Showro
         <div className="min-h-[50vh] relative z-10">
           <AnimatePresence mode="wait">
             {isLoaded && selection.city ? (
-               <ShowroomGrid key={`grid-${selection.city}`} city={selection.city} showrooms={initialShowrooms} />
+               <ShowroomGrid key={`grid-${selection.city}`} city={selection.city} showrooms={activeShowrooms} />
             ) : isLoaded ? (
                <motion.div 
                  key="empty"
