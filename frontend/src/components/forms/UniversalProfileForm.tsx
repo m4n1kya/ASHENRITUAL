@@ -146,7 +146,8 @@ export function UniversalProfileForm() {
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={profile.avatar} alt="Avatar" className="w-full h-full object-cover group-hover/avatar:opacity-40 transition-opacity" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-white/20 text-xs font-mono">{profile?.displayName?.charAt(0) || 'U'}</div>
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src="/images/default-avatar.png" alt="Avatar" className="w-full h-full object-cover group-hover/avatar:opacity-40 transition-opacity" />
             )}
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity cursor-pointer bg-black/40" onClick={() => avatarInputRef.current?.click()}>
               {uploadingAvatar ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4 text-white" />}

@@ -167,7 +167,7 @@ export default async function ShowroomProfilePage({ params }: { params: Promise<
                       {c.user.avatar ? (
                         <Image src={c.user.avatar} alt={c.user.displayName || c.user.username} fill className="object-cover" />
                       ) : (
-                        <div className="absolute inset-0 bg-gradient-to-tr from-[#1A1A1A] to-[#0A0A0A]" />
+                        <Image src="/images/default-avatar.png" alt="Creator Profile" fill className="object-cover" />
                       )}
                     </div>
                     <h4 className="font-heading text-sm uppercase tracking-wider text-[#E8E8E8] group-hover:text-[#FDFCFB]">{c.user.displayName || c.user.username}</h4>
