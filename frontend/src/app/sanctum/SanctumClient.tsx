@@ -189,45 +189,63 @@ export function SanctumClient() {
 
 /* ── Dense Particle Field ────────────────────────────────────────────────── */
 function ParticleField() {
-  // More particles, higher opacity, larger glows — dense near center, sparse at edges
-  const particles = Array.from({ length: 150 }, (_, i) => {
+  // Layer 1: Behind the image (z-index 1)
+  const particlesBehind = Array.from({ length: 140 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
-    // Bias towards center using sqrt to create higher density near center
     const dist = Math.pow(Math.random(), 0.6) * 280 + 10;
     const x = Math.cos(angle) * dist;
     const y = Math.sin(angle) * dist;
     const density = Math.max(0, 1 - dist / 290);
     const opacity = density * (Math.random() * 0.7 + 0.4);
     const size = density * (Math.random() * 4 + 1) + 0.5;
-    return { id: i, x, y, opacity: Math.max(opacity, 0.1), size, delay: Math.random() * 5 };
+    return { id: `b-${i}`, x, y, opacity: Math.max(opacity, 0.1), size, delay: Math.random() * 5 };
   });
 
+  // Layer 2: In front of the image (z-index 30)
+  const particlesInFront = Array.from({ length: 80 }, (_, i) => {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = Math.pow(Math.random(), 0.6) * 220 + 10; // slightly tighter radius
+    const x = Math.cos(angle) * dist;
+    const y = Math.sin(angle) * dist;
+    const density = Math.max(0, 1 - dist / 230);
+    const opacity = density * (Math.random() * 0.6 + 0.3);
+    const size = density * (Math.random() * 3 + 1) + 0.5;
+    return { id: `f-${i}`, x, y, opacity: Math.max(opacity, 0.1), size, delay: Math.random() * 5 };
+  });
+
+  const renderParticles = (particles: any[]) => particles.map(p => (
+    <motion.div
+      key={p.id}
+      className="absolute rounded-full bg-white"
+      style={{
+        left: `calc(50% + ${p.x}px)`,
+        top: `calc(50% + ${p.y}px)`,
+        width: p.size,
+        height: p.size,
+        boxShadow: `0 0 ${p.size * 4}px ${p.size}px rgba(255,255,255,0.6)`,
+      }}
+      animate={{
+        opacity: [0, p.opacity, p.opacity * 0.6, p.opacity, 0],
+        scale: [0.3, 1.2, 0.7, 1.3, 0.3],
+      }}
+      transition={{
+        duration: Math.random() * 3 + 2,
+        repeat: Infinity,
+        delay: p.delay,
+        ease: 'easeInOut',
+      }}
+    />
+  ));
+
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 1 }}>
-      {particles.map(p => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full bg-white"
-          style={{
-            left: `calc(50% + ${p.x}px)`,
-            top: `calc(50% + ${p.y}px)`,
-            width: p.size,
-            height: p.size,
-            boxShadow: `0 0 ${p.size * 4}px ${p.size}px rgba(255,255,255,0.6)`,
-          }}
-          animate={{
-            opacity: [0, p.opacity, p.opacity * 0.6, p.opacity, 0],
-            scale: [0.3, 1.2, 0.7, 1.3, 0.3],
-          }}
-          transition={{
-            duration: Math.random() * 3 + 2,
-            repeat: Infinity,
-            delay: p.delay,
-            ease: 'easeInOut',
-          }}
-        />
-      ))}
-    </div>
+    <>
+      <div className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 1 }}>
+        {renderParticles(particlesBehind)}
+      </div>
+      <div className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 30 }}>
+        {renderParticles(particlesInFront)}
+      </div>
+    </>
   );
 }
 

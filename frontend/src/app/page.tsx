@@ -453,44 +453,53 @@ export default function HomePage() {
 
               {/* Floating White Particles */}
               {mounted && (
-                <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
-                  {[...Array(50)].map((_, i) => {
-                    const size = Math.random() * 4 + 1.5;
-                    const angle = Math.random() * Math.PI * 2;
-                    // Dense cluster near the center (image)
-                    const distance = Math.pow(Math.random(), 0.8) * 160; 
-                    const startX = Math.cos(angle) * distance;
-                    const startY = Math.sin(angle) * distance;
-                    
-                    const driftX = startX + (Math.random() * 40 - 20);
-                    const driftY = startY - (Math.random() * 80 + 20);
+                <>
+                  {/* Layer 1: Behind the image (z-10) */}
+                  <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+                    {[...Array(60)].map((_, i) => {
+                      const size = Math.random() * 4 + 1.5;
+                      const angle = Math.random() * Math.PI * 2;
+                      const distance = Math.pow(Math.random(), 0.8) * 160; 
+                      const startX = Math.cos(angle) * distance;
+                      const startY = Math.sin(angle) * distance;
+                      const driftX = startX + (Math.random() * 40 - 20);
+                      const driftY = startY - (Math.random() * 80 + 20);
 
-                    return (
-                      <motion.div
-                        key={i}
-                        className="absolute bg-[#FDFCFB] rounded-full"
-                        animate={{
-                          y: [startY, driftY],
-                          x: [startX, driftX],
-                          opacity: [0, Math.random() * 0.5 + 0.3, 0],
-                          scale: [0, 1 + Math.random() * 0.5, 0]
-                        }}
-                        transition={{
-                          duration: Math.random() * 3 + 3, // 3s to 6s
-                          repeat: Infinity,
-                          delay: Math.random() * 3,
-                          ease: "easeInOut"
-                        }}
-                        style={{
-                          width: size,
-                          height: size,
-                          boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.4)`,
-                          filter: 'blur(0.5px)'
-                        }}
-                      />
-                    );
-                  })}
-                </div>
+                      return (
+                        <motion.div
+                          key={`b-${i}`}
+                          className="absolute bg-[#FDFCFB] rounded-full"
+                          animate={{ y: [startY, driftY], x: [startX, driftX], opacity: [0, Math.random() * 0.5 + 0.3, 0], scale: [0, 1 + Math.random() * 0.5, 0] }}
+                          transition={{ duration: Math.random() * 3 + 3, repeat: Infinity, delay: Math.random() * 3, ease: "easeInOut" }}
+                          style={{ width: size, height: size, boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.4)`, filter: 'blur(0.5px)' }}
+                        />
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Layer 2: In front of the image (z-30) */}
+                  <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
+                    {[...Array(30)].map((_, i) => {
+                      const size = Math.random() * 3 + 1.0;
+                      const angle = Math.random() * Math.PI * 2;
+                      const distance = Math.pow(Math.random(), 0.8) * 120; // tighter radius for overlay 
+                      const startX = Math.cos(angle) * distance;
+                      const startY = Math.sin(angle) * distance;
+                      const driftX = startX + (Math.random() * 30 - 15);
+                      const driftY = startY - (Math.random() * 60 + 10);
+
+                      return (
+                        <motion.div
+                          key={`f-${i}`}
+                          className="absolute bg-[#FDFCFB] rounded-full"
+                          animate={{ y: [startY, driftY], x: [startX, driftX], opacity: [0, Math.random() * 0.4 + 0.2, 0], scale: [0, 1 + Math.random() * 0.3, 0] }}
+                          transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, delay: Math.random() * 3, ease: "easeInOut" }}
+                          style={{ width: size, height: size, boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.4)`, filter: 'blur(0.5px)' }}
+                        />
+                      );
+                    })}
+                  </div>
+                </>
               )}
 
               {/* Floating Lantern Image */}
