@@ -71,7 +71,7 @@ export default async function CreatorProfilePage({ params }: { params: Promise<{
               {profile.avatar ? (
                 <Image src={profile.avatar} alt={profile.displayName || profile.username} fill className="object-cover" />
               ) : (
-                <Image src="/images/default-avatar.png" alt="Creator Profile" fill className="object-contain p-2 bg-gradient-to-br from-[#1A1A1A] to-[#2A2A2A]" />
+                <Image src="/images/default-avatar.png" alt="Creator Profile" fill className="object-cover scale-[1.15] translate-y-3 bg-gradient-to-br from-[#1A1A1A] to-[#2A2A2A]" />
               )}
             </div>
 
