@@ -118,7 +118,7 @@ export default async function ConceptDetailsPage({ params }: { params: Promise<{
                   {user?.avatar ? (
                     <Image src={user.avatar} alt={user.displayName || user.username} fill className="object-cover" />
                   ) : (
-                    <Image src="/images/default-avatar.png" alt="Creator Profile" fill className="object-cover bg-gradient-to-tr from-[#D4D4D4] to-[#FFFFFF]" />
+                    <Image src="/images/default-avatar.png" alt="Creator Profile" fill className="object-contain p-2 bg-gradient-to-br from-[#1A1A1A] to-[#2A2A2A]" />
                   )}
                 </div>
                 <div>
