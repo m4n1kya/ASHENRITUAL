@@ -291,7 +291,7 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
             {profile.avatar ? (
               <Image src={profile.avatar} alt={profile.displayName || profile.username} fill className="object-cover" unoptimized />
             ) : (
-              <Image src="/images/default-avatar.png" alt="Guest Profile" fill className="object-cover" unoptimized />
+              <Image src="/images/default-avatar.png" alt="Guest Profile" fill className="object-cover bg-gradient-to-tr from-[#D4D4D4] to-[#FFFFFF]" unoptimized />
             )}
           </div>
 
