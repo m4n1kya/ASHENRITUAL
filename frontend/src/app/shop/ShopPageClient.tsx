@@ -118,7 +118,8 @@ export function ShopPageClient() {
 
   // Slideshow logic
   const SLIDESHOW_IMAGES = [
-    '/images/shop/slideshow/young-handsome-man-choosing-cloth-shop.jpg',
+    '/images/shop/slideshow/person-browsing-through-items-yard-sale-looking-bargains.jpg',
+    '/images/shop/slideshow/person-browsing-through-items-yard-sale-looking-bargains1.jpg',
     '/images/shop/slideshow/monochrome-view-handsom-businessman-room-is-drinking-alcohol-drink-near-window.jpg',
     '/images/shop/slideshow/empty-clothing-store-with-casual-formal-wear-design-retail-shop-with-clothes-hangers-racks-department-store-inside-shopping-center-fashion-merchandise-sale.jpg',
     '/images/shop/slideshow/cinematic-style-mall.jpg',
