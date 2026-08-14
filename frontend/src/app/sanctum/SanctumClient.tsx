@@ -23,7 +23,7 @@ const PROTO_IMAGES = [
   { id: 'e8',  src: '/images/exhibition_08.png',  creator: '@grey.index',   handle: 'ASHEN-3871', title: 'Moodboard 88' },
   { id: 'e9',  src: '/images/forge-hero.jpg',     creator: '@iron.stitch',  handle: 'ASHEN-5519', title: 'The Forge Series' },
   { id: 'e10', src: '/images/natural-texture.jpg',creator: '@earth.form',   handle: 'ASHEN-6634', title: 'Raw Material I' },
-  { id: 'e11', src: '/images/droplets.jpg',       creator: '@wet.ink',      handle: 'ASHEN-7701', title: 'Surface Tension' },
+  { id: 'e11', src: '/images/void-etched.png',       creator: '@wet.ink',      handle: 'ASHEN-7701', title: 'Surface Tension' },
   { id: 'e12', src: '/images/new-texture-hero.jpg',creator: '@texture.lab', handle: 'ASHEN-8823', title: 'Woven Horizon' },
   // Beyond images
   { id: 'e13', src: '/images/beyond/beautiful-belarus-person-city.jpg',           creator: '@urban.phantom', handle: 'ASHEN-9201', title: 'City Veil' },
