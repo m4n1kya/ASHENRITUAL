@@ -133,18 +133,26 @@ export function SanctumClient() {
             transition={{ duration: 0.9, ease: 'easeInOut' }}
             style={{ pointerEvents: 'all' }}
           >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
-              animate={{ scale: [0.8, 1, 1.05, 30], opacity: [0, 1, 1, 0], filter: ['blur(10px)', 'blur(0px)', 'blur(0px)', 'blur(0px)'] }}
-              transition={{ duration: 3.2, times: [0, 0.3, 0.7, 1], ease: 'easeInOut' }}
-              className="relative flex items-center justify-center"
-            >
-              <Image src="/images/lantern-logo.png" alt="ASHENRITUAL" width={500} height={500}
-                className="relative z-0 h-[250px] w-auto object-contain mt-16" unoptimized priority />
+            <div className="relative flex items-center justify-center">
+              {/* Isolate the scaling and filter to just the image wrapper, preventing child compositing lag */}
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
+                animate={{ scale: [0.8, 1, 1.05, 40], opacity: [0, 1, 1, 0], filter: ['blur(10px)', 'blur(0px)', 'blur(0px)', 'blur(0px)'] }}
+                transition={{ duration: 3.2, times: [0, 0.3, 0.7, 1], ease: [0.25, 0.1, 0.25, 1] }}
+                className="relative z-0 mt-16"
+              >
+                <Image src="/images/lantern-logo.png" alt="ASHENRITUAL" width={500} height={500}
+                  className="h-[250px] w-auto object-contain" unoptimized priority />
+              </motion.div>
 
-              {/* Dense particle field for entry animation */}
-              <div className="absolute inset-0 z-10 mt-16 flex items-center justify-center pointer-events-none">
-                {[...Array(80)].map((_, i) => {
+              {/* Fade out particles early so they aren't scaled or composited during the heavy zoom */}
+              <motion.div 
+                className="absolute inset-0 z-10 mt-16 flex items-center justify-center pointer-events-none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 2.2, times: [0, 0.2, 1], ease: 'easeInOut' }}
+              >
+                {[...Array(60)].map((_, i) => {
                   const size = Math.random() * 4 + 1.5;
                   const angle = Math.random() * Math.PI * 2;
                   // Tighter distribution to keep particles closer to the center
@@ -158,7 +166,7 @@ export function SanctumClient() {
 
                   return (
                     <motion.div key={i} className="absolute rounded-full bg-white"
-                      style={{ width: size, height: size, boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.8)`, filter: 'blur(0.5px)' }}
+                      style={{ width: size, height: size, boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.8)` }}
                       animate={{
                         opacity: [0, Math.random() * 0.5 + 0.5, 0],
                         y: [startY, driftY],
@@ -169,8 +177,8 @@ export function SanctumClient() {
                     />
                   );
                 })}
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
