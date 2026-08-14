@@ -160,10 +160,10 @@ export function ShopPageClient() {
           </div>
 
           <div className="relative z-20 flex w-full max-w-screen-2xl flex-col items-start text-left px-6 lg:px-12 pointer-events-none">
-            <h1 className="font-sans text-5xl font-bold leading-[1.1] tracking-tight text-[#FDFCFB] sm:text-6xl lg:text-[6rem] drop-shadow-2xl">
+            <h1 className="font-sans text-4xl font-bold leading-[1.1] tracking-tight text-[#FDFCFB] sm:text-5xl lg:text-[4.5rem] drop-shadow-2xl">
               Fashion changes,<br />but style endures.
             </h1>
-            <p className="mt-8 font-display italic text-2xl text-[#E8E8E8] md:text-3xl">
+            <p className="mt-6 font-display italic text-xl text-[#E8E8E8] md:text-2xl">
               A commitment to timeless pieces.
             </p>
           </div>
