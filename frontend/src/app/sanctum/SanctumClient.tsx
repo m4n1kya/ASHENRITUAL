@@ -198,7 +198,7 @@ export function SanctumClient() {
 /* ── Dense Particle Field ────────────────────────────────────────────────── */
 function ParticleField() {
   // Layer 0: Ambient dust evenly spread across the whole screen
-  const ambientParticles = Array.from({ length: 200 }, (_, i) => {
+  const ambientParticles = Array.from({ length: 350 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
     // Math.sqrt gives an even distribution in a circle
     const dist = Math.sqrt(Math.random()) * 1500;
