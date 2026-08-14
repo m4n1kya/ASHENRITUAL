@@ -130,7 +130,7 @@ export function ShopPageClient() {
     if (searchQuery) return; // don't run interval if not showing hero
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDESHOW_IMAGES.length);
-    }, 2000);
+    }, 7000);
     return () => clearInterval(interval);
   }, [searchQuery, SLIDESHOW_IMAGES.length]);
 
@@ -140,16 +140,16 @@ export function ShopPageClient() {
       {/* ── HERO CURATION SECTION ────────────────────────────────────────────── */}
       {!searchQuery && (
         <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-background">
-          <div className="absolute inset-0 z-0 bg-background">
-            <AnimatePresence mode="wait">
+          <div className="absolute inset-0 z-0 bg-background overflow-hidden">
+            <AnimatePresence initial={false}>
               <motion.img
                 key={currentSlide}
                 src={SLIDESHOW_IMAGES[currentSlide]}
                 alt="Shop Slideshow"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8 }}
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '-100%' }}
+                transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
                 className="absolute inset-0 h-full w-full object-cover object-[80%_center] md:object-center brightness-50 contrast-125"
               />
             </AnimatePresence>
