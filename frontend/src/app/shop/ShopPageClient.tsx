@@ -151,7 +151,9 @@ export function ShopPageClient() {
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ duration: 1.8, ease: "easeInOut" }}
-                className="absolute inset-0 h-full w-full object-cover object-[80%_center] md:object-center brightness-50 contrast-125"
+                className={`absolute inset-0 h-full w-full object-cover object-[80%_center] md:object-center contrast-125 ${
+                  SLIDESHOW_IMAGES[currentSlide].includes('monochrome-view') ? 'brightness-100' : 'brightness-50'
+                }`}
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10" />
