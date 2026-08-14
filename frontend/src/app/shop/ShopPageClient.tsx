@@ -118,12 +118,11 @@ export function ShopPageClient() {
 
   // Slideshow logic
   const SLIDESHOW_IMAGES = [
-    '/images/shop/slideshow/handsome-elegantly-dressed-african-american-man-working-classic-menswear-store.jpg',
-    '/images/shop/slideshow/stylish-bearded-seller-care-about-suit-mannequin-menswear-store.jpg',
+    '/images/shop/slideshow/young-handsome-man-choosing-cloth-shop.jpg',
+    '/images/shop/slideshow/monochrome-view-handsom-businessman-room-is-drinking-alcohol-drink-near-window.jpg',
+    '/images/shop/slideshow/empty-clothing-store-with-casual-formal-wear-design-retail-shop-with-clothes-hangers-racks-department-store-inside-shopping-center-fashion-merchandise-sale.jpg',
     '/images/shop/slideshow/cinematic-style-mall.jpg',
     '/images/shop/slideshow/empty-shopping-store-with-casual-formal-wear-design-retail-shop-with-fashionable-clothes-hangers-racks-modern-boutique-clothing-center-fashion-merchandise-sale.jpg',
-    '/images/shop/slideshow/monochrome-view-handsom-businessman-room-is-drinking-alcohol-drink-near-window.jpg',
-    '/images/shop/slideshow/store-employee-checking-stock-tablet.jpg',
   ];
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -131,7 +130,7 @@ export function ShopPageClient() {
     if (searchQuery) return; // don't run interval if not showing hero
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDESHOW_IMAGES.length);
-    }, 7000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [searchQuery, SLIDESHOW_IMAGES.length]);
 
@@ -150,7 +149,7 @@ export function ShopPageClient() {
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
-                transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
+                transition={{ duration: 1.8, ease: "easeInOut" }}
                 className="absolute inset-0 h-full w-full object-cover object-[80%_center] md:object-center brightness-50 contrast-125"
               />
             </AnimatePresence>
