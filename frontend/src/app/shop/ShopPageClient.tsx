@@ -119,10 +119,11 @@ export function ShopPageClient() {
   // Slideshow logic
   const SLIDESHOW_IMAGES = [
     '/images/shop/slideshow/handsome-elegantly-dressed-african-american-man-working-classic-menswear-store.jpg',
-    '/images/shop/slideshow/monochrome-view-handsom-businessman-room-is-drinking-alcohol-drink-near-window.jpg',
+    '/images/shop/slideshow/stylish-bearded-seller-care-about-suit-mannequin-menswear-store.jpg',
     '/images/shop/slideshow/cinematic-style-mall.jpg',
     '/images/shop/slideshow/empty-shopping-store-with-casual-formal-wear-design-retail-shop-with-fashionable-clothes-hangers-racks-modern-boutique-clothing-center-fashion-merchandise-sale.jpg',
-    '/images/shop/slideshow/counter-store.jpg',
+    '/images/shop/slideshow/monochrome-view-handsom-businessman-room-is-drinking-alcohol-drink-near-window.jpg',
+    '/images/shop/slideshow/store-employee-checking-stock-tablet.jpg',
   ];
   const [currentSlide, setCurrentSlide] = useState(0);
 
