@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -33,16 +34,29 @@ const PROTO_IMAGES = [
   { id: 'e18', src: '/images/beyond/young-man-portrait.jpg',                      creator: '@still.face',   handle: 'ASHEN-9706', title: 'Portrait Study' },
 ];
 
-/* Build 10 rows — each row gets a unique speed and direction */
-const ROW_SPEEDS = [55, 70, 45, 80, 60, 90, 50, 75, 40, 65]; // seconds per loop (higher = slower)
+/* Build 10 rows — each row gets a unique speed, direction, and size */
+type RowSize = 'small' | 'medium' | 'large';
+
+const ROW_CONFIGS: { speed: number; size: RowSize }[] = [
+  { speed: 120, size: 'large' },
+  { speed: 150, size: 'medium' },
+  { speed: 100, size: 'small' },
+  { speed: 180, size: 'large' },
+  { speed: 140, size: 'medium' },
+  { speed: 200, size: 'small' },
+  { speed: 110, size: 'large' },
+  { speed: 160, size: 'medium' },
+  { speed: 95,  size: 'small' },
+  { speed: 130, size: 'medium' },
+];
 
 function buildRows() {
   const rows = [];
   for (let i = 0; i < 10; i++) {
     // Each row gets a different shuffle
     const shuffled = [...PROTO_IMAGES].sort(() => Math.random() - 0.5);
-    // Triple the items so the belt never shows a gap
-    rows.push({ items: [...shuffled, ...shuffled, ...shuffled], rtl: i % 2 === 1, speed: ROW_SPEEDS[i] });
+    // Double the items so the belt can loop seamlessly
+    rows.push({ items: [...shuffled, ...shuffled], rtl: i % 2 === 1, speed: ROW_CONFIGS[i].speed, size: ROW_CONFIGS[i].size });
   }
   return rows;
 }
@@ -131,19 +145,27 @@ export function SanctumClient() {
               {/* Dense particle field for entry animation */}
               <div className="absolute inset-0 z-10 mt-16 flex items-center justify-center pointer-events-none">
                 {[...Array(80)].map((_, i) => {
-                  const size = Math.random() * 5 + 2;
-                  const startX = (Math.random() - 0.5) * 220;
-                  const startY = (Math.random() - 0.5) * 160 + 80;
+                  const size = Math.random() * 4 + 1.5;
+                  const angle = Math.random() * Math.PI * 2;
+                  // Tighter distribution to keep particles closer to the center
+                  const distance = Math.pow(Math.random(), 0.8) * 140; 
+                  const startX = Math.cos(angle) * distance;
+                  const startY = Math.sin(angle) * distance;
+                  
+                  // Gentle drift, mostly upwards like dust motes
+                  const driftX = startX + (Math.random() * 40 - 20);
+                  const driftY = startY - (Math.random() * 60 + 20);
+
                   return (
                     <motion.div key={i} className="absolute rounded-full bg-white"
-                      style={{ width: size, height: size, boxShadow: `0 0 ${size * 3}px rgba(255,255,255,0.9)`, filter: 'blur(0.3px)' }}
+                      style={{ width: size, height: size, boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.8)`, filter: 'blur(0.5px)' }}
                       animate={{
-                        opacity: [0, Math.random() * 0.8 + 0.5, Math.random() * 0.6 + 0.3, 0],
-                        y: [startY, startY - (Math.random() * 200 + 100)],
-                        x: [startX, startX + (Math.random() * 60 - 30)],
-                        scale: [0, 1.8, 0.8],
+                        opacity: [0, Math.random() * 0.5 + 0.5, 0],
+                        y: [startY, driftY],
+                        x: [startX, driftX],
+                        scale: [0.5, 1.2, 0.5],
                       }}
-                      transition={{ duration: Math.random() * 1.5 + 1.5, repeat: Infinity, ease: 'easeOut', delay: Math.random() * 2 }}
+                      transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 2 }}
                     />
                   );
                 })}
@@ -301,15 +323,25 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
 /* ── Infinite CSS-driven Scrolling Belt ──────────────────────────────────── */
 type ProtoItem = { id: string; src: string; creator: string; handle: string; title: string };
 
-function ScrollingRow({ items, rtl, speed, onSelect }: { items: ProtoItem[]; rtl: boolean; speed: number; onSelect: (item: ProtoItem) => void }) {
-  const CARD_W = 188; // width + gap
-  const singleLen = items.length / 3; // we tripled items
+function getSizeStyles(size: RowSize) {
+  switch (size) {
+    case 'small': return { w: 140, h: 180, gap: 12 };
+    case 'large': return { w: 260, h: 340, gap: 16 };
+    case 'medium': 
+    default: return { w: 180, h: 240, gap: 12 };
+  }
+}
+
+function ScrollingRow({ items, rtl, speed, size, onSelect }: { items: ProtoItem[]; rtl: boolean; speed: number; size: RowSize; onSelect: (item: ProtoItem) => void }) {
+  const { w, h, gap } = getSizeStyles(size);
+  const CARD_W = w + gap; 
+  const singleLen = items.length / 2; // we doubled items
   const totalPx = singleLen * CARD_W;
 
   // Inline keyframes so the animation is truly seamless
-  const animName = `scroll-${rtl ? 'rtl' : 'ltr'}-${speed}`;
+  const animName = `scroll-${rtl ? 'rtl' : 'ltr'}-${speed}-${size}`;
   const keyframes = rtl
-    ? `@keyframes ${animName} { from { transform: translateX(0); } to { transform: translateX(${totalPx}px); } }`
+    ? `@keyframes ${animName} { from { transform: translateX(-${totalPx}px); } to { transform: translateX(0); } }`
     : `@keyframes ${animName} { from { transform: translateX(0); } to { transform: translateX(-${totalPx}px); } }`;
 
   return (
@@ -317,8 +349,9 @@ function ScrollingRow({ items, rtl, speed, onSelect }: { items: ProtoItem[]; rtl
       <style>{keyframes}</style>
       <div className="overflow-hidden w-full select-none">
         <div
-          className="flex gap-3 will-change-transform"
+          className="flex will-change-transform"
           style={{
+            gap: `${gap}px`,
             animation: `${animName} ${speed}s linear infinite`,
             width: 'max-content',
           }}
@@ -328,7 +361,7 @@ function ScrollingRow({ items, rtl, speed, onSelect }: { items: ProtoItem[]; rtl
               key={`${item.id}-${i}`}
               onClick={() => onSelect(item)}
               className="relative shrink-0 overflow-hidden group focus:outline-none"
-              style={{ width: 180, height: 240 }}
+              style={{ width: w, height: h }}
             >
               <Image src={item.src} alt={item.title} fill
                 className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
@@ -392,6 +425,11 @@ function PopupCard({ item, onClose }: { item: ProtoItem; onClose: () => void }) 
 function ExhibitionWall({ onBack }: { profile: User; concepts: Concept[]; onBack: () => void }) {
   const [rows] = useState(buildRows);
   const [selected, setSelected] = useState<ProtoItem | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <motion.div
@@ -411,18 +449,24 @@ function ExhibitionWall({ onBack }: { profile: User; concepts: Concept[]; onBack
       {/* 10 floating belts */}
       <div className="flex flex-col gap-3">
         {rows.map((row, i) => (
-          <ScrollingRow key={i} items={row.items} rtl={row.rtl} speed={row.speed} onSelect={setSelected} />
+          <ScrollingRow key={i} items={row.items} rtl={row.rtl} speed={row.speed} size={row.size} onSelect={setSelected} />
         ))}
       </div>
 
-      {/* Back button */}
-      <button onClick={onBack}
-        className="fixed bottom-8 left-6 lg:bottom-12 lg:left-12 z-50 flex items-center gap-3 bg-[#050505]/90 backdrop-blur-md border border-[rgba(255,255,255,0.1)] px-7 py-3.5 rounded-full shadow-2xl hover:bg-[#111] hover:border-[rgba(255,255,255,0.2)] hover:scale-105 transition-all duration-300 group">
-        <ArrowLeft className="w-5 h-5 text-[#8D8D8D] group-hover:text-[#FDFCFB] group-hover:-translate-x-1 transition-all duration-300" />
-        <span className="font-heading uppercase text-[11px] tracking-[0.2em] font-semibold text-[#8D8D8D] group-hover:text-[#FDFCFB] transition-colors">Return to Studio</span>
-      </button>
+      {/* Portaled UI elements to escape Framer Motion's transform stacking context */}
+      {mounted && createPortal(
+        <>
+          {/* Back button */}
+          <button onClick={onBack}
+            className="fixed bottom-8 right-6 lg:bottom-12 lg:right-12 z-50 flex items-center gap-3 bg-[#050505]/90 backdrop-blur-md border border-[rgba(255,255,255,0.1)] px-7 py-3.5 rounded-2xl shadow-2xl hover:bg-[#111] hover:border-[rgba(255,255,255,0.2)] hover:scale-105 transition-all duration-300 group">
+            <ArrowLeft className="w-5 h-5 text-[#8D8D8D] group-hover:text-[#FDFCFB] group-hover:-translate-x-1 transition-all duration-300" />
+            <span className="font-heading uppercase text-[11px] tracking-[0.2em] font-semibold text-[#8D8D8D] group-hover:text-[#FDFCFB] transition-colors">Return</span>
+          </button>
 
-      {selected && <PopupCard item={selected} onClose={() => setSelected(null)} />}
+          {selected && <PopupCard item={selected} onClose={() => setSelected(null)} />}
+        </>,
+        document.body
+      )}
     </motion.div>
   );
 }

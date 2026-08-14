@@ -90,9 +90,9 @@ export class UsersService {
             followers: true,
             following: true,
             bookmarks: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     if (!user) throw new ConflictException('User not found');
@@ -102,8 +102,9 @@ export class UsersService {
 
   async updateUserProfile(id: string, updateData: any) {
     // Restrict what can be updated via this endpoint
-    const { displayName, bio, country, state, city, avatar, banner } = updateData;
-    
+    const { displayName, bio, country, state, city, avatar, banner } =
+      updateData;
+
     const user = await this.prisma.user.update({
       where: { id },
       data: {
@@ -116,13 +117,22 @@ export class UsersService {
         ...(banner && { banner }),
       },
     });
-    
+
     const { passwordHash: _, refreshToken: __, ...safeUser } = user;
     return safeUser;
   }
 
   async isUsernameAvailable(username: string): Promise<boolean> {
-    const reservedWords = ['admin', 'support', 'vesper', 'forge', 'showrooms', 'sanctum', 'api', 'help'];
+    const reservedWords = [
+      'admin',
+      'support',
+      'vesper',
+      'forge',
+      'showrooms',
+      'sanctum',
+      'api',
+      'help',
+    ];
     if (reservedWords.includes(username.toLowerCase())) {
       return false; // Reserved
     }
@@ -130,7 +140,7 @@ export class UsersService {
     const existingUser = await this.prisma.user.findUnique({
       where: { username },
     });
-    
+
     return !existingUser;
   }
 
@@ -138,7 +148,9 @@ export class UsersService {
     // 1. Validation
     const usernameRegex = /^[a-z0-9_]{3,20}$/;
     if (!usernameRegex.test(username)) {
-      throw new ConflictException('Username must be 3-20 characters long and contain only lowercase letters, numbers, and underscores.');
+      throw new ConflictException(
+        'Username must be 3-20 characters long and contain only lowercase letters, numbers, and underscores.',
+      );
     }
 
     // 2. Availability
@@ -153,7 +165,9 @@ export class UsersService {
     if (user.lastUsernameChange) {
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
       if (user.lastUsernameChange > thirtyDaysAgo) {
-        throw new ConflictException('You can only change your username once every 30 days.');
+        throw new ConflictException(
+          'You can only change your username once every 30 days.',
+        );
       }
     }
 

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -15,8 +19,10 @@ export class CreatorsService {
 
   async getCreatorProfile(username: string) {
     // Strip the `@` if it was included in the URL parameter
-    const cleanUsername = username.startsWith('@') ? username.substring(1) : username;
-    
+    const cleanUsername = username.startsWith('@')
+      ? username.substring(1)
+      : username;
+
     const user = await this.prisma.user.findUnique({
       where: { username: cleanUsername },
       include: {
@@ -26,10 +32,10 @@ export class CreatorsService {
               where: { status: 'PUBLISHED', deletedAt: null },
               orderBy: { createdAt: 'desc' },
             },
-            showrooms: true
-          }
+            showrooms: true,
+          },
         },
-      }
+      },
     });
 
     if (!user || !user.creator) {
@@ -44,14 +50,17 @@ export class CreatorsService {
       avatar: user.avatar,
       banner: user.banner,
       bio: user.bio,
-      location: `${user.city || ''}, ${user.country || ''}`.replace(/^, | , $/g, ''),
+      location: `${user.city || ''}, ${user.country || ''}`.replace(
+        /^, | , $/g,
+        '',
+      ),
       creatorProfile: user.creator,
     };
   }
 
   async createConcept(userId: string, data: any) {
     const creator = await this.getCreatorByUserId(userId);
-    
+
     return this.prisma.concept.create({
       data: {
         creatorId: creator.id,
@@ -73,7 +82,7 @@ export class CreatorsService {
 
   async getConcepts(userId: string, status?: any) {
     const creator = await this.getCreatorByUserId(userId);
-    
+
     return this.prisma.concept.findMany({
       where: {
         creatorId: creator.id,
@@ -83,7 +92,7 @@ export class CreatorsService {
       orderBy: { createdAt: 'desc' },
       include: {
         collection: true,
-      }
+      },
     });
   }
 
@@ -93,14 +102,14 @@ export class CreatorsService {
       where: { creatorId: creator.id, deletedAt: null },
       orderBy: { createdAt: 'desc' },
       include: {
-        _count: { select: { concepts: true } }
-      }
+        _count: { select: { concepts: true } },
+      },
     });
   }
 
   async getAnalytics(userId: string) {
     const creator = await this.getCreatorByUserId(userId);
-    
+
     const concepts = await this.prisma.concept.findMany({
       where: { creatorId: creator.id, deletedAt: null },
       select: { views: true, likesCount: true, bookmarksCount: true },
@@ -108,10 +117,13 @@ export class CreatorsService {
 
     const totalViews = concepts.reduce((acc, curr) => acc + curr.views, 0);
     const totalLikes = concepts.reduce((acc, curr) => acc + curr.likesCount, 0);
-    const totalBookmarks = concepts.reduce((acc, curr) => acc + curr.bookmarksCount, 0);
+    const totalBookmarks = concepts.reduce(
+      (acc, curr) => acc + curr.bookmarksCount,
+      0,
+    );
 
     const followersCount = await this.prisma.follow.count({
-      where: { followingId: userId }
+      where: { followingId: userId },
     });
 
     return {
@@ -124,18 +136,20 @@ export class CreatorsService {
   }
 
   async getConceptBySlug(slug: string) {
-    // We don't actually have a slug field on Concept in the Prisma schema right now, 
+    // We don't actually have a slug field on Concept in the Prisma schema right now,
     // so we'll treat 'slug' as the 'id' for the time being to fix TS errors.
     const concept = await this.prisma.concept.findUnique({
       where: { id: slug },
       include: {
         creator: {
           include: {
-            user: { select: { username: true, displayName: true, avatar: true } }
-          }
+            user: {
+              select: { username: true, displayName: true, avatar: true },
+            },
+          },
         },
         collection: true,
-      }
+      },
     });
 
     if (!concept || concept.deletedAt) {

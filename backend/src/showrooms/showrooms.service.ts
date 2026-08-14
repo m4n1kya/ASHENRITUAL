@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -11,9 +15,9 @@ export class ShowroomsService {
       orderBy: { name: 'asc' },
       include: {
         _count: {
-          select: { creators: true, products: true }
-        }
-      }
+          select: { creators: true, products: true },
+        },
+      },
     });
   }
 
@@ -22,7 +26,13 @@ export class ShowroomsService {
       where: { slug },
       include: {
         products: { include: { product: true } },
-        creators: { include: { user: { select: { displayName: true, username: true, avatar: true } } } },
+        creators: {
+          include: {
+            user: {
+              select: { displayName: true, username: true, avatar: true },
+            },
+          },
+        },
         reviews: true,
       },
     });
@@ -33,7 +43,10 @@ export class ShowroomsService {
 
   async applyToShowroom(userId: string, showroomId: string, data: any) {
     const creator = await this.prisma.creator.findUnique({ where: { userId } });
-    if (!creator) throw new UnauthorizedException('You must be a Creator to apply to a showroom');
+    if (!creator)
+      throw new UnauthorizedException(
+        'You must be a Creator to apply to a showroom',
+      );
 
     return this.prisma.showroomApplication.create({
       data: {
@@ -57,11 +70,21 @@ export class ShowroomsService {
       },
     });
 
-    if (!showrooms.length) throw new UnauthorizedException('No showrooms owned by this user');
+    if (!showrooms.length)
+      throw new UnauthorizedException('No showrooms owned by this user');
 
-    const pendingApplications = showrooms.reduce((acc, curr) => acc + curr.applications.length, 0);
-    const totalProducts = showrooms.reduce((acc, curr) => acc + curr.products.length, 0);
-    const affiliatedCreators = showrooms.reduce((acc, curr) => acc + curr.creators.length, 0);
+    const pendingApplications = showrooms.reduce(
+      (acc, curr) => acc + curr.applications.length,
+      0,
+    );
+    const totalProducts = showrooms.reduce(
+      (acc, curr) => acc + curr.products.length,
+      0,
+    );
+    const affiliatedCreators = showrooms.reduce(
+      (acc, curr) => acc + curr.creators.length,
+      0,
+    );
 
     return {
       showrooms,
@@ -71,7 +94,11 @@ export class ShowroomsService {
     };
   }
 
-  async updateApplication(userId: string, applicationId: string, status: 'APPROVED' | 'REJECTED' | 'INTERVIEW') {
+  async updateApplication(
+    userId: string,
+    applicationId: string,
+    status: 'APPROVED' | 'REJECTED' | 'INTERVIEW',
+  ) {
     const application = await this.prisma.showroomApplication.findUnique({
       where: { id: applicationId },
       include: { showroom: true },
@@ -93,9 +120,9 @@ export class ShowroomsService {
         where: { id: application.showroomId },
         data: {
           creators: {
-            connect: { id: application.creatorId }
-          }
-        }
+            connect: { id: application.creatorId },
+          },
+        },
       });
     }
 

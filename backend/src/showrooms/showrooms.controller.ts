@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Put, Body, Param, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Body,
+  Param,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { ShowroomsService } from './showrooms.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -18,7 +27,11 @@ export class ShowroomsController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/apply')
-  async applyToShowroom(@Req() req: any, @Param('id') showroomId: string, @Body() data: any) {
+  async applyToShowroom(
+    @Req() req: any,
+    @Param('id') showroomId: string,
+    @Body() data: any,
+  ) {
     const userId = req.user?.id;
     return this.showroomsService.applyToShowroom(userId, showroomId, data);
   }
@@ -35,7 +48,7 @@ export class ShowroomsController {
   async updateApplication(
     @Req() req: any,
     @Param('appId') appId: string,
-    @Body('status') status: 'APPROVED' | 'REJECTED' | 'INTERVIEW'
+    @Body('status') status: 'APPROVED' | 'REJECTED' | 'INTERVIEW',
   ) {
     const userId = req.user?.id;
     return this.showroomsService.updateApplication(userId, appId, status);

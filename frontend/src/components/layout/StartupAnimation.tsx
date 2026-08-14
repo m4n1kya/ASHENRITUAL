@@ -6,8 +6,10 @@ import Image from 'next/image';
 
 export function StartupAnimation() {
   const [show, setShow] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Check if the user has already seen the animation this session
     const hasSeen = sessionStorage.getItem('ashenritual-startup');
     
@@ -48,31 +50,33 @@ export function StartupAnimation() {
             className="relative flex items-center justify-center will-change-transform"
           >
             {/* SOFT BACKGROUND FOG */}
-            <div className="absolute inset-0 z-[-1] mt-16 flex items-center justify-center pointer-events-none">
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={`cloud-${i}`}
-                  className="absolute rounded-full bg-[#151515]"
-                  style={{
-                    width: Math.random() * 100 + 200, 
-                    height: Math.random() * 100 + 200,
-                    filter: 'blur(40px)', // Extremely soft, almost invisible background fog
-                  }}
-                  animate={{
-                    opacity: [0, 0.5, 0],
-                    scale: [0.8, 1.2],
-                    x: [(Math.random() - 0.5) * 60, (Math.random() - 0.5) * 60],
-                    y: [(Math.random() - 0.5) * 60, (Math.random() - 0.5) * 60 - 40],
-                  }}
-                  transition={{ 
-                    duration: Math.random() * 2 + 3, 
-                    repeat: Infinity, 
-                    ease: "easeInOut",
-                    delay: Math.random()
-                  }}
-                />
-              ))}
-            </div>
+            {mounted && (
+              <div className="absolute inset-0 z-[-1] mt-16 flex items-center justify-center pointer-events-none">
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={`cloud-${i}`}
+                    className="absolute rounded-full bg-[#151515]"
+                    style={{
+                      width: Math.random() * 100 + 200, 
+                      height: Math.random() * 100 + 200,
+                      filter: 'blur(40px)', // Extremely soft, almost invisible background fog
+                    }}
+                    animate={{
+                      opacity: [0, 0.5, 0],
+                      scale: [0.8, 1.2],
+                      x: [(Math.random() - 0.5) * 60, (Math.random() - 0.5) * 60],
+                      y: [(Math.random() - 0.5) * 60, (Math.random() - 0.5) * 60 - 40],
+                    }}
+                    transition={{ 
+                      duration: Math.random() * 2 + 3, 
+                      repeat: Infinity, 
+                      ease: "easeInOut",
+                      delay: Math.random()
+                    }}
+                  />
+                ))}
+              </div>
+            )}
 
             {/* SHINY LANTERN IMAGE */}
             <Image 
@@ -86,38 +90,47 @@ export function StartupAnimation() {
             />
 
             {/* DENSE GLOWING ASH PARTICLES */}
-            <div className="absolute inset-0 z-[10] mt-16 flex items-center justify-center pointer-events-none">
-              {[...Array(45)].map((_, i) => {
-                const size = Math.random() * 5 + 1.5; // 1.5px to 6.5px
-                const startX = (Math.random() - 0.5) * 220;
-                const startY = (Math.random() - 0.5) * 140 + 80; // Start near the bottom/center
-                
-                return (
-                  <motion.div
-                    key={`ash-${i}`}
-                    className="absolute rounded-full bg-white"
-                    style={{
-                      width: size, 
-                      height: size,
-                      boxShadow: `0 0 ${size * 4}px ${size}px rgba(255,255,255,0.9)`, // Bright glow
-                      filter: 'blur(0.3px)',
-                    }}
-                    animate={{
-                      opacity: [0, Math.random() * 0.6 + 0.6, 0], // Strong flash
-                      y: [startY, startY - (Math.random() * 200 + 100)],
-                      x: [startX, startX + (Math.random() * 60 - 30)],
-                      scale: [0, 1.8, 0.6],
-                    }}
-                    transition={{
-                      duration: Math.random() * 1.5 + 1.5,
-                      repeat: Infinity,
-                      ease: "easeOut",
-                      delay: Math.random() * 2
-                    }}
-                  />
-                );
-              })}
-            </div>
+            {mounted && (
+              <div className="absolute inset-0 z-[10] mt-16 flex items-center justify-center pointer-events-none">
+                {[...Array(80)].map((_, i) => {
+                  const size = Math.random() * 4 + 1.5; // 1.5px to 5.5px
+                  const angle = Math.random() * Math.PI * 2;
+                  // Tighter distribution to keep particles much closer to the image
+                  const distance = Math.pow(Math.random(), 0.8) * 140; 
+                  const startX = Math.cos(angle) * distance;
+                  const startY = Math.sin(angle) * distance;
+                  
+                  // Gentle drift, mostly upwards like dust motes
+                  const driftX = startX + (Math.random() * 40 - 20);
+                  const driftY = startY - (Math.random() * 60 + 20);
+                  
+                  return (
+                    <motion.div
+                      key={`ash-${i}`}
+                      className="absolute rounded-full bg-white"
+                      style={{
+                        width: size, 
+                        height: size,
+                        boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.8)`, // Soft glow
+                        filter: 'blur(0.5px)',
+                      }}
+                      animate={{
+                        opacity: [0, Math.random() * 0.5 + 0.5, 0], // Smooth fade in/out
+                        y: [startY, driftY],
+                        x: [startX, driftX],
+                        scale: [0.5, 1.2, 0.5],
+                      }}
+                      transition={{
+                        duration: Math.random() * 3 + 2, // 2s to 5s
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: Math.random() * 2
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </motion.div>
         </motion.div>
       )}

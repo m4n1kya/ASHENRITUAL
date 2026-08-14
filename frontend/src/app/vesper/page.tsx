@@ -86,7 +86,7 @@ export default function VesperChatPage() {
       updateMessage(botMsgId, { isStreaming: false });
 
     } catch (err: unknown) {
-      console.error('Vesper error:', err);
+      console.warn('Vesper warning:', err);
       const errMsg = typeof err === 'string' && err.includes('Session expired')
         ? 'Your session has expired. Please log in again.'
         : typeof err === 'string' && err.includes('401')
@@ -120,35 +120,7 @@ export default function VesperChatPage() {
         <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-white/[0.008] blur-[100px]" />
       </div>
 
-      {/* Identity bar */}
-      <div className="relative z-10 flex items-center justify-between px-10 pt-8 pb-3 shrink-0">
-        <div className="flex items-center gap-3">
-          <motion.div
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-1.5 h-1.5 rounded-full bg-[#FDFCFB]"
-          />
-          <span className="font-heading text-[10px] uppercase tracking-[0.45em] text-[#3A3A3A]">Vesper</span>
-          {showLoginBanner && (
-            <span className="ml-4 font-mono text-[9px] uppercase tracking-widest text-[#4A4A4A]">· Guest Mode</span>
-          )}
-        </div>
 
-        <AnimatePresence>
-          {hasMessages && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              onClick={clearMessages}
-              className="flex items-center gap-2 text-[9px] uppercase tracking-[0.25em] text-[#222] hover:text-[#555] transition-colors"
-            >
-              <RotateCcw className="h-3 w-3" />
-              New Chat
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </div>
 
       {/* Login nudge banner (non-blocking) */}
       <AnimatePresence>

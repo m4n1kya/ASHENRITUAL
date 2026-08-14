@@ -21,10 +21,7 @@ const SORT_OPTIONS = [
   { label: 'Price: High to Low', value: 'price_desc' },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.04 } },
-};
+const containerVariants = {};
 
 export function ShopPageClient() {
   const router = useRouter();
@@ -124,17 +121,17 @@ export function ShopPageClient() {
 
       {/* ── HERO CURATION SECTION ────────────────────────────────────────────── */}
       {!searchQuery && (
-        <div className="relative flex h-screen w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.03)] bg-[#050505]">
-          <div className="absolute inset-0 z-0 bg-[#050505]">
+        <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-background">
+          <div className="absolute inset-0 z-0 bg-background">
             <Image 
               src="/images/shop-hero-new.jpg" 
               alt="Shop Hero" 
               fill 
-              className="object-cover opacity-80" 
+              className="object-cover object-[80%_center] md:object-center opacity-80" 
               priority 
               unoptimized 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50 z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10" />
           </div>
 
           <div className="relative z-20 flex w-full max-w-screen-2xl flex-col items-start text-left px-6 lg:px-12">
@@ -235,10 +232,6 @@ export function ShopPageClient() {
       ) : (
         <>
           <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
             className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12"
           >
             {products.map((product, i) => (

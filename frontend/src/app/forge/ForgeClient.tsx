@@ -33,8 +33,8 @@ function HeroSection({ scrollYProgress }: { scrollYProgress: MotionValue<number>
   const opacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
   return (
-    <section className="relative flex h-screen w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.05)] bg-[#050505]">
-      <motion.div style={{ y, opacity }} className="absolute inset-0 z-0 bg-[#050505]">
+    <section className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-background">
+      <motion.div style={{ y, opacity }} className="absolute inset-0 z-0 bg-background">
         <Image
           src="/images/forge-hero.jpg"
           alt="Forge Studio"
@@ -43,7 +43,7 @@ function HeroSection({ scrollYProgress }: { scrollYProgress: MotionValue<number>
           priority
           unoptimized
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       </motion.div>
 
       <div className="relative z-10 flex flex-col items-center text-center px-6">

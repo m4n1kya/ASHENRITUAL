@@ -88,9 +88,9 @@ let UsersService = class UsersService {
                         followers: true,
                         following: true,
                         bookmarks: true,
-                    }
-                }
-            }
+                    },
+                },
+            },
         });
         if (!user)
             throw new common_1.ConflictException('User not found');
@@ -115,7 +115,16 @@ let UsersService = class UsersService {
         return safeUser;
     }
     async isUsernameAvailable(username) {
-        const reservedWords = ['admin', 'support', 'vesper', 'forge', 'showrooms', 'sanctum', 'api', 'help'];
+        const reservedWords = [
+            'admin',
+            'support',
+            'vesper',
+            'forge',
+            'showrooms',
+            'sanctum',
+            'api',
+            'help',
+        ];
         if (reservedWords.includes(username.toLowerCase())) {
             return false;
         }

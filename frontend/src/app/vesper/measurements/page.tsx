@@ -61,8 +61,8 @@ export default function MeasurementsPage() {
   };
 
   return (
-    <div className="h-full w-full px-12 py-12 overflow-y-auto hide-scrollbar relative">
-      <div className="max-w-4xl mx-auto h-full flex flex-col">
+    <div className="h-full w-full px-6 md:px-12 pt-32 pb-12 overflow-y-auto hide-scrollbar relative">
+      <div className="max-w-4xl mx-auto min-h-full flex flex-col justify-center">
         
         <header className="mb-16 flex items-end justify-between border-b border-[#202020] pb-8">
           <div>

@@ -31,7 +31,7 @@ let ProductsService = class ProductsService {
             this.prisma.product.findMany({
                 where: whereCondition,
                 include: { category: true },
-                orderBy: { createdAt: 'desc' },
+                orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
                 skip,
                 take: limit,
             }),
@@ -68,7 +68,7 @@ let ProductsService = class ProductsService {
             this.prisma.product.findMany({
                 where: { categoryId: category.id },
                 include: { category: true },
-                orderBy: { createdAt: 'desc' },
+                orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
                 skip,
                 take: limit,
             }),

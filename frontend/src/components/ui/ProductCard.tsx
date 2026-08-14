@@ -43,7 +43,13 @@ export function ProductCard({ product, priority = false, className }: ProductCar
   const src = !imgErr && product.images?.[0] ? product.images[0] : '/images/product.png';
 
   return (
-    <motion.article variants={cardVariants} className={cn('group', className)}>
+    <motion.article 
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "50px" }}
+      className={cn('group', className)}
+    >
       <Link
         href={`/products/${product.id}`}
         className="block border border-[rgba(255,255,255,0.08)] bg-transparent p-6 transition-colors duration-[500ms] ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-card focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(255,255,255,0.3)]"

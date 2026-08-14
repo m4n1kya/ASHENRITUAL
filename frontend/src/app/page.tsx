@@ -49,6 +49,9 @@ const FORGED = [
    HOMEPAGE
 ══════════════════════════════════════════════════════════════════════════ */
 export default function HomePage() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
   const imgY   = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
@@ -449,28 +452,46 @@ export default function HomePage() {
               </div>
 
               {/* Floating White Particles */}
-              {[...Array(15)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1.5 h-1.5 bg-[#FDFCFB] rounded-full z-10 blur-[1px]"
-                  animate={{
-                    y: [0, -150 - (i % 5) * 30],
-                    x: [0, (i % 3 === 0 ? 1 : -1) * (20 + (i % 5) * 15)],
-                    opacity: [0, 0.7, 0],
-                    scale: [0, 1 + (i % 3) * 0.5, 0]
-                  }}
-                  transition={{
-                    duration: 4 + (i % 4),
-                    repeat: Infinity,
-                    delay: (i % 5) * 0.8,
-                    ease: "easeInOut"
-                  }}
-                  style={{
-                    left: `${20 + (i % 7) * 10}%`,
-                    top: `${40 + (i % 5) * 12}%`
-                  }}
-                />
-              ))}
+              {mounted && (
+                <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+                  {[...Array(50)].map((_, i) => {
+                    const size = Math.random() * 4 + 1.5;
+                    const angle = Math.random() * Math.PI * 2;
+                    // Dense cluster near the center (image)
+                    const distance = Math.pow(Math.random(), 0.8) * 160; 
+                    const startX = Math.cos(angle) * distance;
+                    const startY = Math.sin(angle) * distance;
+                    
+                    const driftX = startX + (Math.random() * 40 - 20);
+                    const driftY = startY - (Math.random() * 80 + 20);
+
+                    return (
+                      <motion.div
+                        key={i}
+                        className="absolute bg-[#FDFCFB] rounded-full"
+                        animate={{
+                          y: [startY, driftY],
+                          x: [startX, driftX],
+                          opacity: [0, Math.random() * 0.5 + 0.3, 0],
+                          scale: [0, 1 + Math.random() * 0.5, 0]
+                        }}
+                        transition={{
+                          duration: Math.random() * 3 + 3, // 3s to 6s
+                          repeat: Infinity,
+                          delay: Math.random() * 3,
+                          ease: "easeInOut"
+                        }}
+                        style={{
+                          width: size,
+                          height: size,
+                          boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.4)`,
+                          filter: 'blur(0.5px)'
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              )}
 
               {/* Floating Lantern Image */}
               <motion.div

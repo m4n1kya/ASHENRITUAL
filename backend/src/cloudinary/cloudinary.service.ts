@@ -4,7 +4,7 @@ import { v2 as cloudinary } from 'cloudinary';
 @Injectable()
 export class CloudinaryService {
   constructor() {
-    // These should ideally come from ConfigService in a real app, 
+    // These should ideally come from ConfigService in a real app,
     // but we can set them directly for now if they exist in env.
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -15,13 +15,24 @@ export class CloudinaryService {
 
   generateSignature(folder: string) {
     if (!process.env.CLOUDINARY_API_SECRET) {
-      throw new InternalServerErrorException('Cloudinary credentials not configured');
+      throw new InternalServerErrorException(
+        'Cloudinary credentials not configured',
+      );
     }
 
     const timestamp = Math.round(new Date().getTime() / 1000);
-    
+
     // Enforce folder structure as per Phase 2 requirements
-    const allowedFolders = ['avatars', 'banners', 'concepts', 'collections', 'products', 'showrooms', 'logos', 'gallery'];
+    const allowedFolders = [
+      'avatars',
+      'banners',
+      'concepts',
+      'collections',
+      'products',
+      'showrooms',
+      'logos',
+      'gallery',
+    ];
     const safeFolder = allowedFolders.includes(folder) ? folder : 'misc';
 
     const signature = cloudinary.utils.api_sign_request(
