@@ -5,7 +5,7 @@
 <br />
 
 <div align="center">
-  <img src=".github/assets/Shop.png" alt="Shop Interface" width="100%" />
+  <img src=".github/assets/shop.png" alt="Shop Interface" width="100%" />
 </div>
 
 <br />
@@ -17,7 +17,7 @@
 <br />
 
 <div align="center">
-  <img src=".github/assets/Forge.png" alt="Forge Layout" width="49%" />
+  <img src=".github/assets/forge.png" alt="Forge Layout" width="49%" />
   <img src=".github/assets/beyond.png" alt="Editorial Beyond Section" width="49%" />
 </div>
 
