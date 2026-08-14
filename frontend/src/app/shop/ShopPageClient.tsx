@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ArrowRight, Shirt, Box, SlidersHorizontal, Search } from 'lucide-react';
 import Image from 'next/image';
 import { ProductCard } from '@/components/ui/ProductCard';
@@ -116,6 +116,24 @@ export function ShopPageClient() {
     gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
 
+  // Slideshow logic
+  const SLIDESHOW_IMAGES = [
+    '/images/shop/slideshow/handsome-elegantly-dressed-african-american-man-working-classic-menswear-store.jpg',
+    '/images/shop/slideshow/monochrome-view-handsom-businessman-room-is-drinking-alcohol-drink-near-window.jpg',
+    '/images/shop/slideshow/cinematic-style-mall.jpg',
+    '/images/shop/slideshow/empty-shopping-store-with-casual-formal-wear-design-retail-shop-with-fashionable-clothes-hangers-racks-modern-boutique-clothing-center-fashion-merchandise-sale.jpg',
+    '/images/shop/slideshow/counter-store.jpg',
+  ];
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    if (searchQuery) return; // don't run interval if not showing hero
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % SLIDESHOW_IMAGES.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [searchQuery, SLIDESHOW_IMAGES.length]);
+
   return (
     <div className="w-full">
 
@@ -123,18 +141,24 @@ export function ShopPageClient() {
       {!searchQuery && (
         <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-background">
           <div className="absolute inset-0 z-0 bg-background">
-            <Image 
-              src="/images/shop-hero-new.jpg" 
-              alt="Shop Hero" 
-              fill 
-              className="object-cover object-[80%_center] md:object-center opacity-80" 
-              priority 
-              unoptimized 
-            />
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={currentSlide}
+                src={SLIDESHOW_IMAGES[currentSlide]}
+                alt="Shop Slideshow"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8 }}
+                className="absolute inset-0 h-full w-full object-cover object-[80%_center] md:object-center brightness-50 contrast-125"
+              />
+            </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10" />
+            {/* Extra dark overlay for bright images */}
+            <div className="absolute inset-0 bg-black/30 z-10 pointer-events-none" />
           </div>
 
-          <div className="relative z-20 flex w-full max-w-screen-2xl flex-col items-start text-left px-6 lg:px-12">
+          <div className="relative z-20 flex w-full max-w-screen-2xl flex-col items-start text-left px-6 lg:px-12 pointer-events-none">
             <h1 className="font-sans text-5xl font-bold leading-[1.1] tracking-tight text-[#FDFCFB] sm:text-6xl lg:text-[6rem] drop-shadow-2xl">
               Fashion changes,<br />but style endures.
             </h1>
