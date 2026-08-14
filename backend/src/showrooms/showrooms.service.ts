@@ -1,7 +1,7 @@
 import {
   Injectable,
   NotFoundException,
-  UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -44,7 +44,7 @@ export class ShowroomsService {
   async applyToShowroom(userId: string, showroomId: string, data: any) {
     const creator = await this.prisma.creator.findUnique({ where: { userId } });
     if (!creator)
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         'You must be a Creator to apply to a showroom',
       );
 
@@ -71,7 +71,7 @@ export class ShowroomsService {
     });
 
     if (!showrooms.length)
-      throw new UnauthorizedException('No showrooms owned by this user');
+      throw new ForbiddenException('No showrooms owned by this user');
 
     const pendingApplications = showrooms.reduce(
       (acc, curr) => acc + curr.applications.length,
@@ -106,7 +106,7 @@ export class ShowroomsService {
 
     if (!application) throw new NotFoundException('Application not found');
     if (application.showroom.ownerId !== userId) {
-      throw new UnauthorizedException('You do not own this showroom');
+      throw new ForbiddenException('You do not own this showroom');
     }
 
     const updated = await this.prisma.showroomApplication.update({

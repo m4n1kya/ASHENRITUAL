@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -13,7 +14,7 @@ export class CreatorsService {
     const creator = await this.prisma.creator.findUnique({
       where: { userId },
     });
-    if (!creator) throw new UnauthorizedException('User is not a Creator');
+    if (!creator) throw new ForbiddenException('User is not a Creator');
     return creator;
   }
 
