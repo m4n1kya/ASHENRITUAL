@@ -120,7 +120,7 @@ export function SanctumClient() {
   }
 
   return (
-    <div className="w-full bg-background selection:bg-[#FDFCFB] selection:text-[#0A0A0A] min-h-screen relative overflow-hidden">
+    <div className="w-full bg-background selection:bg-[#FDFCFB] selection:text-[#0A0A0A] min-h-screen relative overflow-x-hidden overflow-y-auto">
 
       {/* Full-screen startup animation — covers entire website, blocks all interaction */}
       <AnimatePresence>
@@ -239,7 +239,7 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
-      className="w-full flex flex-col pt-24"
+      className="w-full flex flex-col pt-24 pb-24"
     >
       <div className="mx-auto max-w-screen-xl px-6 w-full flex-1 flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-24 relative z-10 py-12">
 
@@ -292,7 +292,7 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
 
         {/* Floating Lantern + dense particle halo */}
         <div
-          className="w-full max-w-sm hidden md:flex items-center justify-center group cursor-pointer relative"
+          className="w-full max-w-sm flex items-center justify-center group cursor-pointer relative"
           onClick={onEnterExhibition}
           style={{ minHeight: 460 }}
         >
