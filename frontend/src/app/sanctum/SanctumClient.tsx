@@ -189,29 +189,41 @@ export function SanctumClient() {
 
 /* ── Dense Particle Field ────────────────────────────────────────────────── */
 function ParticleField() {
-  // Layer 1: Behind the image (z-index 1) - Covers the whole screen
-  const particlesBehind = Array.from({ length: 350 }, (_, i) => {
+  // Layer 0: Ambient dust evenly spread across the whole screen
+  const ambientParticles = Array.from({ length: 200 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
-    // Bias towards center (power of 3 makes it very dense in center, sparse at edges)
-    const dist = Math.pow(Math.random(), 3) * 1400 + 10;
+    // Math.sqrt gives an even distribution in a circle
+    const dist = Math.sqrt(Math.random()) * 1500;
     const x = Math.cos(angle) * dist;
     const y = Math.sin(angle) * dist;
-    const density = Math.max(0, 1 - dist / 1500);
-    const opacity = density * (Math.random() * 0.8 + 0.2);
-    const size = density * (Math.random() * 4 + 1) + 0.5;
-    return { id: `b-${i}`, x, y, opacity: Math.max(opacity, 0.1), size, delay: Math.random() * 3 };
+    const opacity = Math.random() * 0.4 + 0.1;
+    const size = Math.random() * 2 + 0.5;
+    return { id: `a-${i}`, x, y, opacity, size, delay: Math.random() * 5, duration: Math.random() * 5 + 4 };
   });
 
-  // Layer 2: In front of the image (z-index 30) - Covers the whole screen
-  const particlesInFront = Array.from({ length: 150 }, (_, i) => {
+  // Layer 1: Behind the image (z-index 1) - Lantern cluster
+  const particlesBehind = Array.from({ length: 150 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
+    // Bias towards center
     const dist = Math.pow(Math.random(), 3) * 1200 + 10;
     const x = Math.cos(angle) * dist;
     const y = Math.sin(angle) * dist;
     const density = Math.max(0, 1 - dist / 1300);
-    const opacity = density * (Math.random() * 0.7 + 0.3);
+    const opacity = density * (Math.random() * 0.6 + 0.2);
     const size = density * (Math.random() * 3 + 1) + 0.5;
-    return { id: `f-${i}`, x, y, opacity: Math.max(opacity, 0.1), size, delay: Math.random() * 3 };
+    return { id: `b-${i}`, x, y, opacity: Math.max(opacity, 0.1), size, delay: Math.random() * 5, duration: Math.random() * 4 + 3 };
+  });
+
+  // Layer 2: In front of the image (z-index 30) - Lantern cluster
+  const particlesInFront = Array.from({ length: 70 }, (_, i) => {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = Math.pow(Math.random(), 3) * 1000 + 10;
+    const x = Math.cos(angle) * dist;
+    const y = Math.sin(angle) * dist;
+    const density = Math.max(0, 1 - dist / 1100);
+    const opacity = density * (Math.random() * 0.5 + 0.2);
+    const size = density * (Math.random() * 2 + 1) + 0.5;
+    return { id: `f-${i}`, x, y, opacity: Math.max(opacity, 0.1), size, delay: Math.random() * 5, duration: Math.random() * 4 + 3 };
   });
 
   const renderParticles = (particles: any[]) => particles.map(p => (
@@ -227,10 +239,10 @@ function ParticleField() {
       }}
       animate={{
         opacity: [0, p.opacity, p.opacity * 0.2, p.opacity, 0],
-        scale: [0.1, 1.5, 0.5, 1.8, 0.1],
+        scale: [0.3, 1.2, 0.6, 1.4, 0.3],
       }}
       transition={{
-        duration: Math.random() * 2 + 1.5,
+        duration: p.duration,
         repeat: Infinity,
         delay: p.delay,
         ease: 'easeInOut',
@@ -240,6 +252,9 @@ function ParticleField() {
 
   return (
     <>
+      <div className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 0 }}>
+        {renderParticles(ambientParticles)}
+      </div>
       <div className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 1 }}>
         {renderParticles(particlesBehind)}
       </div>
