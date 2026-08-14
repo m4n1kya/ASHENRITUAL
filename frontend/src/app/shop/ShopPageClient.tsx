@@ -91,8 +91,7 @@ export function ShopPageClient() {
           setTotalPages(res.totalPages || 1);
           setTotalItems(res.total || 0);
         }
-      } catch (err) {
-        console.error("Error loading products:", err);
+      } catch {
         if (!cancelled) {
           if (page === 1) { setProducts([]); setTotalItems(0); }
           setTotalPages(1);

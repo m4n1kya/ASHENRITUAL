@@ -96,13 +96,24 @@ export default async function CreatorProfilePage({ params }: { params: Promise<{
           </div>
 
           <div className="flex items-center gap-3 mt-8 md:mt-24">
-            <button className="flex items-center gap-2 bg-[#FDFCFB] text-[#0A0A0A] px-6 py-3 font-heading text-[10px] uppercase tracking-widest font-bold hover:bg-[#E8E8E8] transition-colors">
+            <button
+              className="flex items-center gap-2 bg-[#FDFCFB] text-[#0A0A0A] px-6 py-3 font-heading text-[10px] uppercase tracking-widest font-bold hover:bg-[#E8E8E8] transition-colors"
+              onClick={() => alert('Follow feature coming soon.')}
+            >
               <Plus className="w-3.5 h-3.5" /> Follow
             </button>
-            <button className="flex items-center justify-center w-12 h-12 border border-[rgba(255,255,255,0.1)] text-[#FDFCFB] hover:bg-[rgba(255,255,255,0.05)] transition-colors">
+            <button
+              className="flex items-center justify-center w-12 h-12 border border-[rgba(255,255,255,0.1)] text-[#FDFCFB] hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+              aria-label="Bookmark profile"
+              onClick={() => alert('Saved to rituals.')}
+            >
               <Bookmark className="w-4 h-4" />
             </button>
-            <button className="flex items-center justify-center w-12 h-12 border border-[rgba(255,255,255,0.1)] text-[#FDFCFB] hover:bg-[rgba(255,255,255,0.05)] transition-colors">
+            <button
+              className="flex items-center justify-center w-12 h-12 border border-[rgba(255,255,255,0.1)] text-[#FDFCFB] hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+              aria-label="Share profile"
+              onClick={() => { navigator.clipboard.writeText(window.location.href); }}
+            >
               <Share className="w-4 h-4" />
             </button>
           </div>

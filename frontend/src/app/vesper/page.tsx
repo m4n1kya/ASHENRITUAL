@@ -86,7 +86,6 @@ export default function VesperChatPage() {
       updateMessage(botMsgId, { isStreaming: false });
 
     } catch (err: unknown) {
-      console.warn('Vesper warning:', err);
       const errMsg = typeof err === 'string' && err.includes('Session expired')
         ? 'Your session has expired. Please log in again.'
         : typeof err === 'string' && err.includes('401')

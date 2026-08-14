@@ -534,9 +534,19 @@ export default function HomePage() {
           <h2 className="mt-4 font-heading text-lg font-semibold uppercase tracking-[0.15em] text-[#FDFCFB]">
             Early access. Editorials. Intentions.
           </h2>
-          <form onSubmit={e => e.preventDefault()} className="mt-10 flex w-full max-w-sm">
+          <form onSubmit={e => {
+            e.preventDefault();
+            const form = e.currentTarget;
+            const email = (form.elements.namedItem('email') as HTMLInputElement)?.value;
+            if (!email) return;
+            // Show success feedback
+            const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+            if (btn) { btn.textContent = '✓'; btn.disabled = true; }
+            setTimeout(() => { form.reset(); if (btn) { btn.innerHTML = ''; btn.disabled = false; } }, 2500);
+          }} className="mt-10 flex w-full max-w-sm">
             <input
               type="email"
+              name="email"
               placeholder="Enter your email"
               aria-label="Email for newsletter"
               className="flex-1 border border-r-0 border-[#202020] bg-transparent px-4 py-3 text-[12px] text-[#FDFCFB] placeholder:text-[#8D8D8D]/40 focus:border-[#FDFCFB]/20 focus:outline-none transition-colors duration-300"

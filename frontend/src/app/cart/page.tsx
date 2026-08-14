@@ -34,7 +34,7 @@ export default function CartPage() {
               Cart
             </h1>
             <p className="mt-6 text-[13px] text-[#8D8D8D]">
-              Continue continue your ritual.
+              Continue your ritual.
             </p>
             <Link
               href="/shop"
@@ -62,7 +62,7 @@ export default function CartPage() {
               Cart
             </h1>
             <p className="mt-2 text-[13px] text-[#8D8D8D]">
-              Continue continue your ritual.
+              Continue your ritual.
             </p>
           </div>
 

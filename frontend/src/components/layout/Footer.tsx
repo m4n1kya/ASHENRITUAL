@@ -33,11 +33,11 @@ const COLS = [
   {
     heading: 'Company',
     links: [
-      { label: 'About',        href: '/about' },
-      { label: 'FAQs',         href: '/faq' },
-      { label: 'Shipping',     href: '/shipping' },
-      { label: 'Returns',      href: '/returns' },
-      { label: 'Contact',      href: '/contact' },
+      { label: 'About',        href: '/beyond' },
+      { label: 'Showrooms',    href: '/showrooms' },
+      { label: 'Creators',     href: '/sanctum' },
+      { label: 'Forge',        href: '/forge' },
+      { label: 'Archive',      href: '/archive' },
     ],
   },
 ] as const;
@@ -101,13 +101,17 @@ export function Footer() {
             © {year} ASHENRITUAL. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            {['Privacy', 'Terms', 'Contact'].map(l => (
+            {[
+              { label: 'Chapters', href: '/chapters' },
+              { label: 'Sanctum',  href: '/sanctum' },
+              { label: 'Vesper',   href: '/vesper' },
+            ].map(({ label, href }) => (
               <Link
-                key={l}
-                href={`/${l.toLowerCase()}`}
+                key={label}
+                href={href}
                 className="font-heading text-[10px] text-[#3A3A3A] hover:text-[#8D8D8D] transition-colors duration-300"
               >
-                {l}
+                {label}
               </Link>
             ))}
           </div>

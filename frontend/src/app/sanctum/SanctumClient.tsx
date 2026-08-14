@@ -317,18 +317,20 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
               className="bg-[#FDFCFB] text-[#0A0A0A] px-6 py-2.5 font-heading text-[10px] uppercase tracking-widest font-bold hover:bg-[#E8E8E8] transition-colors flex items-center gap-2">
               <PenTool className="w-3 h-3" /> Upload Concept
             </button>
-            <button className="border border-[rgba(255,255,255,0.1)] text-[#FDFCFB] px-6 py-2.5 font-heading text-[10px] uppercase tracking-widest hover:bg-[rgba(255,255,255,0.05)] transition-colors flex items-center gap-2">
-              <ImageIcon className="w-3 h-3" /> Manage Portfolio
-            </button>
+            <Link href={`/u/${profile.username}`}
+              className="border border-[rgba(255,255,255,0.1)] text-[#FDFCFB] px-6 py-2.5 font-heading text-[10px] uppercase tracking-widest hover:bg-[rgba(255,255,255,0.05)] transition-colors flex items-center gap-2">
+              <ImageIcon className="w-3 h-3" /> View Portfolio
+            </Link>
             <button onClick={() => useUIStore.getState().openSettings()}
               className="border border-[rgba(255,255,255,0.05)] text-[#8D8D8D] w-10 h-10 flex items-center justify-center hover:bg-[rgba(255,255,255,0.02)] transition-colors shrink-0">
               <Settings className="w-4 h-4" />
             </button>
           </div>
           <div className="mt-4 flex w-full justify-center lg:justify-start">
-            <button className="w-full max-w-[340px] border border-[rgba(255,255,255,0.1)] py-2.5 font-heading text-[10px] uppercase tracking-widest text-[#FDFCFB] hover:bg-[rgba(255,255,255,0.05)] transition-colors">
+            <Link href="/showrooms"
+              className="w-full max-w-[340px] border border-[rgba(255,255,255,0.1)] py-2.5 font-heading text-[10px] uppercase tracking-widest text-[#FDFCFB] hover:bg-[rgba(255,255,255,0.05)] transition-colors text-center">
               Apply to Showroom
-            </button>
+            </Link>
           </div>
         </div>
 
