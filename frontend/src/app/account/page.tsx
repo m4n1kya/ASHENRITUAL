@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth.store';
 import { useThemeStore } from '@/store/theme.store';
@@ -89,7 +90,7 @@ export default function AccountPage() {
   return (
     <>
       {/* ── Background Lantern & Particles ── */}
-      {mounted && theme !== 'light' && (
+      {mounted && theme !== 'light' && document.getElementById('main-content') && createPortal(
         <div className="pointer-events-none fixed right-0 top-0 h-screen w-full max-w-[800px] z-0 opacity-40 transition-all duration-1000">
           <Image
             src="/images/lantern.png"
@@ -132,7 +133,8 @@ export default function AccountPage() {
               );
             })}
           </div>
-        </div>
+        </div>,
+        document.getElementById('main-content')!
       )}
 
       <PageTransition>
