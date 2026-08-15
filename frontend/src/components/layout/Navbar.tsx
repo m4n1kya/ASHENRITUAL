@@ -377,10 +377,10 @@ export function Navbar() {
   return (
     <>
       {/* ── Fixed bar ───────────────────────────────────────────────────── */}
-      <header role="banner" className="fixed inset-x-0 top-0 z-50 transition-all duration-500 bg-[#0A0A0A]">
+      <header role="banner" className="fixed inset-x-0 top-0 z-50 transition-all duration-500">
 
         {/* Tier 1: Logo + Search + Icons */}
-        <div className="relative w-full border-b border-[rgba(255,255,255,0.08)]">
+        <div className={cn("relative w-full border-b border-[rgba(255,255,255,0.08)] bg-background", pathname === '/' && "home-tier1")}>
           <div className="relative z-10 mx-auto flex h-[52px] max-w-screen-xl items-center justify-between px-6 lg:px-10">
 
             {/* Logo */}
