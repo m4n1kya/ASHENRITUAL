@@ -92,12 +92,12 @@ export default function AccountPage() {
         
         {/* ── Background Lantern & Particles ── */}
         {mounted && theme !== 'light' && (
-          <div className="pointer-events-none fixed right-0 top-0 h-screen w-[70vw] min-w-[700px] z-0 opacity-40 transition-all duration-1000">
+          <div className="pointer-events-none fixed right-0 top-0 h-screen w-full max-w-[800px] z-0 opacity-40 transition-all duration-1000">
             <Image
               src="/images/lantern.png"
               alt=""
               fill
-              className="object-contain opacity-50 object-right"
+              className="object-contain opacity-50 object-right scale-110 origin-right"
               unoptimized
             />
             
