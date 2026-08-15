@@ -97,13 +97,13 @@ export default function AccountPage() {
               src="/images/lantern.png"
               alt=""
               fill
-              className="object-cover opacity-50 object-right"
+              className="object-contain opacity-50 object-right"
               unoptimized
             />
             
             {/* Glowing Ash Particles around the lantern */}
             <div className="absolute inset-0 z-10 flex items-center justify-center">
-              {[...Array(20)].map((_, i) => {
+              {[...Array(40)].map((_, i) => {
                 const size = Math.random() * 4 + 1.5;
                 const startX = (Math.random() - 0.5) * 300;
                 const startY = (Math.random() - 0.5) * 400 + 100;
