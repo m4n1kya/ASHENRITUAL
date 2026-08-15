@@ -87,58 +87,58 @@ export default function AccountPage() {
   }
 
   return (
-    <PageTransition>
-      <main className="min-h-screen bg-background pt-16 relative transition-colors duration-500">
-        
-        {/* ── Background Lantern & Particles ── */}
-        {mounted && theme !== 'light' && (
-          <div className="pointer-events-none fixed right-0 top-0 h-screen w-full max-w-[800px] z-0 opacity-40 transition-all duration-1000">
-            <Image
-              src="/images/lantern.png"
-              alt=""
-              fill
-              className="object-contain opacity-50 object-right scale-110 origin-right"
-              unoptimized
-            />
-            
-            {/* Glowing Ash Particles around the lantern */}
-            <div className="absolute inset-0 z-10 flex items-center justify-center">
-              {[...Array(40)].map((_, i) => {
-                const size = Math.random() * 4 + 1.5;
-                const startX = (Math.random() - 0.5) * 300;
-                const startY = (Math.random() - 0.5) * 400 + 100;
-                
-                return (
-                  <motion.div
-                    key={`ash-${i}`}
-                    className="absolute rounded-full bg-white"
-                    style={{
-                      width: size, 
-                      height: size,
-                      boxShadow: '0 0 8px 2px rgba(200, 200, 200, 0.6)',
-                      filter: 'blur(0.5px)',
-                    }}
-                    animate={{
-                      opacity: [0, Math.random() * 0.7 + 0.3, 0],
-                      y: [startY, startY - (Math.random() * 200 + 100)],
-                      x: [startX, startX + (Math.random() * 50 - 25)],
-                      scale: [0, 1.5, 0.5],
-                    }}
-                    transition={{
-                      duration: Math.random() * 2 + 3,
-                      repeat: Infinity,
-                      ease: "easeOut",
-                      delay: Math.random() * 2.5
-                    }}
-                  />
-                );
-              })}
-            </div>
+    <>
+      {/* ── Background Lantern & Particles ── */}
+      {mounted && theme !== 'light' && (
+        <div className="pointer-events-none fixed right-0 top-0 h-screen w-full max-w-[800px] z-0 opacity-40 transition-all duration-1000">
+          <Image
+            src="/images/lantern.png"
+            alt=""
+            fill
+            className="object-contain opacity-50 object-right scale-110 origin-right"
+            unoptimized
+          />
+          
+          {/* Glowing Ash Particles around the lantern */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center">
+            {[...Array(40)].map((_, i) => {
+              const size = Math.random() * 4 + 1.5;
+              const startX = (Math.random() - 0.5) * 300;
+              const startY = (Math.random() - 0.5) * 400 + 100;
+              
+              return (
+                <motion.div
+                  key={`ash-${i}`}
+                  className="absolute rounded-full bg-white"
+                  style={{
+                    width: size, 
+                    height: size,
+                    boxShadow: '0 0 8px 2px rgba(200, 200, 200, 0.6)',
+                    filter: 'blur(0.5px)',
+                  }}
+                  animate={{
+                    opacity: [0, Math.random() * 0.7 + 0.3, 0],
+                    y: [startY, startY - (Math.random() * 200 + 100)],
+                    x: [startX, startX + (Math.random() * 50 - 25)],
+                    scale: [0, 1.5, 0.5],
+                  }}
+                  transition={{
+                    duration: Math.random() * 2 + 3,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                    delay: Math.random() * 2.5
+                  }}
+                />
+              );
+            })}
           </div>
-        )}
+        </div>
+      )}
 
-        <div className="relative z-10 mx-auto max-w-screen-lg px-6 py-12 lg:px-8">
-          {/* Profile Header */}
+      <PageTransition>
+        <main className="min-h-screen bg-transparent pt-16 relative transition-colors duration-500">
+          <div className="relative z-10 mx-auto max-w-screen-lg px-6 py-12 lg:px-8">
+            {/* Profile Header */}
           <div className="mb-12 flex flex-col gap-6 border-b border-border pb-10 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Identity</p>
@@ -325,6 +325,7 @@ export default function AccountPage() {
         </div>
       </main>
     </PageTransition>
+    </>
   );
 }
 
