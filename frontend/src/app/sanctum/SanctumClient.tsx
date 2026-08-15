@@ -210,8 +210,8 @@ export function SanctumClient() {
                 initial={{ scale: 0.7, opacity: 0, filter: 'blur(14px)' }}
                 animate={{
                   scale: [0.7, 1, 1.08, 50],
-                  opacity: [0, 1, 1, 0],
-                  filter: ['blur(14px)', 'blur(0px)', 'blur(0px)', 'blur(2px)'],
+                  opacity: [0, 1, 1, 1],
+                  filter: ['blur(14px)', 'blur(0px)', 'blur(0px)', 'blur(0px)'],
                 }}
                 transition={{ duration: 3.6, times: [0, 0.25, 0.65, 1], ease: [0.22, 1, 0.36, 1] }}
                 className="relative z-0 mt-16"
