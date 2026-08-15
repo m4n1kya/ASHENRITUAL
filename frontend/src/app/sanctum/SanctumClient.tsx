@@ -92,7 +92,7 @@ export function SanctumClient() {
       setSanctumState('EXHIBITION');
       document.body.style.overflow = '';
       document.body.style.pointerEvents = '';
-    }, 3400);
+    }, 4200);
   }, []);
 
   if (!_hasHydrated || loading) {
@@ -127,58 +127,108 @@ export function SanctumClient() {
         {sanctumState === 'ANIM' && (
           <motion.div
             key="entry-anim"
-            className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#050505] cursor-default"
+            className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#050505] cursor-default overflow-hidden"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.9, ease: 'easeInOut' }}
+            transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
             style={{ pointerEvents: 'all' }}
           >
-            <div className="relative flex items-center justify-center">
-              {/* Isolate the scaling and filter to just the image wrapper, preventing child compositing lag */}
+            {/* === FULL-SCREEN PARTICLE BURST — behind lantern === */}
+            <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
+              {[...Array(160)].map((_, i) => {
+                const size = Math.random() * 3 + 0.8;
+                const angle = Math.random() * Math.PI * 2;
+                // Spread across the entire screen with slight center bias
+                const dist = Math.pow(Math.random(), 0.5) * Math.max(window?.innerWidth ?? 800, 800);
+                const startX = Math.cos(angle) * dist * 0.1;
+                const startY = Math.sin(angle) * dist * 0.1;
+                const endX = Math.cos(angle) * dist;
+                const endY = Math.sin(angle) * dist;
+                const delay = Math.random() * 1.5;
+                return (
+                  <motion.div
+                    key={`s-${i}`}
+                    className="absolute rounded-full bg-white"
+                    style={{
+                      left: '50%', top: '50%',
+                      width: size, height: size,
+                      boxShadow: `0 0 ${size * 6}px ${size * 2}px rgba(255,255,255,0.9)`,
+                      translateX: '-50%', translateY: '-50%',
+                    }}
+                    initial={{ x: startX, y: startY, opacity: 0, scale: 0 }}
+                    animate={{
+                      x: [startX, endX],
+                      y: [startY, endY],
+                      opacity: [0, 0.9, 0.6, 0],
+                      scale: [0, 1.5, 1, 0],
+                    }}
+                    transition={{
+                      duration: Math.random() * 1.5 + 1.8,
+                      delay,
+                      ease: [0.2, 0, 0.8, 1],
+                      repeat: 0,
+                    }}
+                  />
+                );
+              })}
+            </div>
+
+            {/* === FLOATING DUST around lantern === */}
+            <motion.div
+              className="absolute inset-0 pointer-events-none flex items-center justify-center"
+              style={{ zIndex: 3 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ duration: 2.4, times: [0, 0.15, 1], ease: 'easeInOut' }}
+            >
+              {[...Array(90)].map((_, i) => {
+                const size = Math.random() * 5 + 1.5;
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.pow(Math.random(), 0.7) * 200;
+                const startX = Math.cos(angle) * distance;
+                const startY = Math.sin(angle) * distance;
+                const driftX = startX + (Math.random() * 60 - 30);
+                const driftY = startY - (Math.random() * 80 + 20);
+                return (
+                  <motion.div key={`d-${i}`} className="absolute rounded-full bg-white"
+                    style={{ width: size, height: size, boxShadow: `0 0 ${size * 4}px ${size}px rgba(255,255,255,0.8)` }}
+                    animate={{
+                      opacity: [0, Math.random() * 0.6 + 0.5, 0],
+                      y: [startY, driftY],
+                      x: [startX, driftX],
+                      scale: [0.3, 1.4, 0.3],
+                    }}
+                    transition={{ duration: Math.random() * 2.5 + 1.5, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 1.5 }}
+                  />
+                );
+              })}
+            </motion.div>
+
+            {/* === LANTERN — isolated scale so particles don't inherit transform === */}
+            <div className="relative flex items-center justify-center" style={{ zIndex: 2 }}>
               <motion.div
-                initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
-                animate={{ scale: [0.8, 1, 1.05, 40], opacity: [0, 1, 1, 0], filter: ['blur(10px)', 'blur(0px)', 'blur(0px)', 'blur(0px)'] }}
-                transition={{ duration: 3.2, times: [0, 0.3, 0.7, 1], ease: [0.25, 0.1, 0.25, 1] }}
+                initial={{ scale: 0.7, opacity: 0, filter: 'blur(14px)' }}
+                animate={{
+                  scale: [0.7, 1, 1.08, 50],
+                  opacity: [0, 1, 1, 0],
+                  filter: ['blur(14px)', 'blur(0px)', 'blur(0px)', 'blur(2px)'],
+                }}
+                transition={{ duration: 3.6, times: [0, 0.25, 0.65, 1], ease: [0.22, 1, 0.36, 1] }}
                 className="relative z-0 mt-16"
               >
                 <Image src="/images/lantern-logo.png" alt="ASHENRITUAL" width={500} height={500}
-                  className="h-[250px] w-auto object-contain" unoptimized priority />
-              </motion.div>
-
-              {/* Fade out particles early so they aren't scaled or composited during the heavy zoom */}
-              <motion.div 
-                className="absolute inset-0 z-10 mt-16 flex items-center justify-center pointer-events-none"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ duration: 2.2, times: [0, 0.2, 1], ease: 'easeInOut' }}
-              >
-                {[...Array(60)].map((_, i) => {
-                  const size = Math.random() * 4 + 1.5;
-                  const angle = Math.random() * Math.PI * 2;
-                  // Tighter distribution to keep particles closer to the center
-                  const distance = Math.pow(Math.random(), 0.8) * 140; 
-                  const startX = Math.cos(angle) * distance;
-                  const startY = Math.sin(angle) * distance;
-                  
-                  // Gentle drift, mostly upwards like dust motes
-                  const driftX = startX + (Math.random() * 40 - 20);
-                  const driftY = startY - (Math.random() * 60 + 20);
-
-                  return (
-                    <motion.div key={i} className="absolute rounded-full bg-white"
-                      style={{ width: size, height: size, boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.8)` }}
-                      animate={{
-                        opacity: [0, Math.random() * 0.5 + 0.5, 0],
-                        y: [startY, driftY],
-                        x: [startX, driftX],
-                        scale: [0.5, 1.2, 0.5],
-                      }}
-                      transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 2 }}
-                    />
-                  );
-                })}
+                  className="h-[260px] w-auto object-contain" unoptimized priority />
               </motion.div>
             </div>
+
+            {/* === VIGNETTE — radial darkening at edges for cinematic feel === */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                zIndex: 4,
+                background: 'radial-gradient(ellipse at center, transparent 20%, rgba(5,5,5,0.6) 70%, rgba(5,5,5,0.95) 100%)',
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
