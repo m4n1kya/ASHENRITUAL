@@ -196,12 +196,12 @@ button:focus {
 
   /* Lapis mode — deep midnight navy with vivid metallic shine & black void shadows (Darkened) */
   html[data-theme="light"] {
-    background-color: #04060A;
+    background-color: #010204;
     background-image:
-      radial-gradient(ellipse at 10% 10%, rgba(80, 140, 255, 0.15) 0%, rgba(50, 90, 180, 0.05) 30%, transparent 55%),
-      radial-gradient(ellipse at 90% 88%, rgba(2, 4, 10, 0.95) 0%, transparent 55%),
-      radial-gradient(ellipse at 50% 50%, rgba(20, 35, 65, 0.25) 0%, transparent 80%),
-      linear-gradient(150deg, rgba(15, 30, 60, 0.40) 0%, rgba(1, 1, 2, 1.0) 100%),
+      radial-gradient(ellipse at 10% 10%, rgba(60, 110, 220, 0.10) 0%, rgba(30, 60, 140, 0.03) 30%, transparent 55%),
+      radial-gradient(ellipse at 90% 88%, rgba(0, 1, 3, 0.98) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(15, 25, 45, 0.15) 0%, transparent 80%),
+      linear-gradient(150deg, rgba(10, 20, 40, 0.60) 0%, rgba(0, 0, 1, 1.0) 100%),
       url('/images/light-bg.jpg');
     color-scheme: light;
   }
