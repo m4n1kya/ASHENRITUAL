@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, PenTool, Image as ImageIcon, MapPin, CheckCircle, ArrowLeft, LogIn, Loader2, X } from 'lucide-react';
+import { Settings, PenTool, Image as ImageIcon, MapPin, CheckCircle, ArrowLeft, LogIn, X } from 'lucide-react';
 import { useUIStore } from '@/store/ui.store';
 import { useAuthStore } from '@/store/auth.store';
 import { api } from '@/lib/api';
@@ -67,19 +67,18 @@ export function SanctumClient() {
   const [sanctumState, setSanctumState] = useState<'HUB' | 'ANIM' | 'EXHIBITION'>('HUB');
   const [profile, setProfile] = useState<User | null>(null);
   const [concepts, setConcepts] = useState<Concept[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   useEffect(() => {
     if (_hasHydrated && isAuthenticated) {
+      setProfileLoading(true);
       Promise.all([
         api.get<{ user: User }>('/users/me'),
         api.get<{ data: Concept[] }>('/creators/concepts').catch(() => ({ data: [] }))
       ]).then(([profileRes, conceptsRes]) => {
         setProfile(profileRes.user);
         setConcepts(conceptsRes.data || []);
-      }).finally(() => setLoading(false));
-    } else if (_hasHydrated && !isAuthenticated) {
-      setLoading(false);
+      }).finally(() => setProfileLoading(false));
     }
   }, [_hasHydrated, isAuthenticated]);
 
@@ -95,15 +94,7 @@ export function SanctumClient() {
     }, 3400);
   }, []);
 
-  if (!_hasHydrated || loading) {
-    return (
-      <div className="w-full bg-background min-h-screen flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-[#8D8D8D] animate-spin" />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
+  if (_hasHydrated && !isAuthenticated) {
     return (
       <div className="w-full bg-background min-h-screen flex flex-col items-center justify-center text-center p-8">
         <h1 className="font-heading text-4xl uppercase tracking-widest text-[#E8E8E8] mb-4">Please Login</h1>
