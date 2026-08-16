@@ -65,6 +65,7 @@ export function AddToCartButtonServer({ product }: { product: Product }) {
       )}
 
       <div className="flex items-center gap-4">
+        <SaveRitualButton productId={product.id} variant="full" className="flex-[0.5] h-14 px-4" />
         <button
           onClick={handle}
           disabled={outOfStock}
@@ -90,7 +91,6 @@ export function AddToCartButtonServer({ product }: { product: Product }) {
             </>
           )}
         </button>
-        <SaveRitualButton productId={product.id} variant="full" className="flex-[0.5] h-14 px-4" />
       </div>
     </div>
   );
