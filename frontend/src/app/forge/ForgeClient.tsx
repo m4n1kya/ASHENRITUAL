@@ -342,7 +342,7 @@ function SeasonalDevelopment() {
 /* ── 7. Inspiration Wall ─────────────────────────────────────────────────── */
 const MASONRY_IMGS = [
   "/images/forge-hero.jpg",
-  "/images/void-etched.png",
+  "/images/cowboy-silhouette.jpg",
   "/images/new-texture-hero.jpg",
   "/images/natural-texture.jpg",
   "/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.jpg",
