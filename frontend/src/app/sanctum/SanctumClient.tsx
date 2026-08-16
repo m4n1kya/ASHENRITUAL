@@ -245,7 +245,7 @@ export function SanctumClient() {
 /* ── Dense Particle Field ────────────────────────────────────────────────── */
 function ParticleField() {
   // Layer 0: Ambient dust evenly spread across the whole screen
-  const ambientParticles = Array.from({ length: 350 }, (_, i) => {
+  const ambientParticles = Array.from({ length: 700 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
     // Math.sqrt gives an even distribution in a circle
     const dist = Math.sqrt(Math.random()) * 1500;
@@ -257,10 +257,10 @@ function ParticleField() {
   });
 
   // Layer 1: Behind the image (z-index 1) - Lantern cluster
-  const particlesBehind = Array.from({ length: 150 }, (_, i) => {
+  const particlesBehind = Array.from({ length: 300 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
-    // Bias towards center
-    const dist = Math.pow(Math.random(), 3) * 1200 + 10;
+    // Bias towards center, power of 2 spreads them more than 3
+    const dist = Math.pow(Math.random(), 2) * 1200 + 10;
     const x = Math.cos(angle) * dist;
     const y = Math.sin(angle) * dist;
     const density = Math.max(0, 1 - dist / 1300);
@@ -270,9 +270,9 @@ function ParticleField() {
   });
 
   // Layer 2: In front of the image (z-index 30) - Lantern cluster
-  const particlesInFront = Array.from({ length: 70 }, (_, i) => {
+  const particlesInFront = Array.from({ length: 140 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
-    const dist = Math.pow(Math.random(), 3) * 1000 + 10;
+    const dist = Math.pow(Math.random(), 2) * 1000 + 10;
     const x = Math.cos(angle) * dist;
     const y = Math.sin(angle) * dist;
     const density = Math.max(0, 1 - dist / 1100);
