@@ -306,15 +306,24 @@ function ParticleField() {
           75% { opacity: var(--p-opacity); transform: scale(1.4); }
         }
       `}} />
-      <div className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 0 }}>
+      <motion.div 
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 2, ease: "easeOut" }}
+        className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 0 }}
+      >
         {renderParticles(ambientParticles)}
-      </div>
-      <div className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 1 }}>
+      </motion.div>
+      <motion.div 
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 2, ease: "easeOut" }}
+        className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 1 }}
+      >
         {renderParticles(particlesBehind)}
-      </div>
-      <div className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 30 }}>
+      </motion.div>
+      <motion.div 
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 2, ease: "easeOut" }}
+        className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 30 }}
+      >
         {renderParticles(particlesInFront)}
-      </div>
+      </motion.div>
     </>
   );
 }
