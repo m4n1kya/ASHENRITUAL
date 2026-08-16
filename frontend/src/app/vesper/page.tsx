@@ -119,7 +119,7 @@ export default function VesperChatPage() {
         <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-white/[0.008] blur-[100px]" />
         
         {/* Shiny magical particles */}
-        {mounted && [...Array(25)].map((_, i) => (
+        {mounted && [...Array(50)].map((_, i) => (
           <motion.div
             key={`particle-${i}`}
             className="absolute rounded-full bg-white"
