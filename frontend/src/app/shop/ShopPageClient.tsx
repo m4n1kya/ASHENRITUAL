@@ -139,7 +139,7 @@ export function ShopPageClient() {
 
       {/* ── HERO CURATION SECTION ────────────────────────────────────────────── */}
       {!searchQuery && (
-        <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-background">
+        <div className="relative flex h-[65vh] md:h-screen w-full items-center justify-center overflow-hidden bg-background">
           <div className="absolute inset-0 z-0 bg-background overflow-hidden">
             <AnimatePresence initial={false}>
               <motion.img
