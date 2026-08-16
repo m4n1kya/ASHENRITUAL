@@ -27,7 +27,7 @@ export default function BeyondPage() {
     <main ref={container} className="relative w-full bg-[#0E0E0E] text-[#FDFCFB] overflow-x-hidden pt-20">
       
       {/* Shiny magical particles background */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden opacity-80">
+      <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden opacity-80 mix-blend-screen">
         {mounted && [...Array(50)].map((_, i) => (
           <motion.div
             key={`particle-${i}`}
