@@ -177,9 +177,9 @@ function CreativeProcess() {
 
 /* ── 4. Material Library ─────────────────────────────────────────────────── */
 const MATERIALS = [
-  { name: 'Japanese Heavyweight Cotton', origin: 'Okayama, Japan', texture: 'Dense, structured, matte', desc: 'Woven on vintage looms, this cotton provides an architectural rigidity that softens beautifully over years of wear.', img: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=1972&auto=format&fit=crop' },
-  { name: 'Brushed Italian Wool', origin: 'Biella, Italy', texture: 'Soft, dense, heavy-drape', desc: 'A meticulously milled wool offering profound warmth and a fluid drape, engineered for the deepest winter months.', img: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?q=80&w=2000&auto=format&fit=crop' },
-  { name: 'Vegetable-Tanned Calfskin', origin: 'Tuscany, Italy', texture: 'Smooth, rigid, patinating', desc: 'Treated with natural tannins, this leather begins stiff and structural, molding uniquely to the wearer\'s anatomy over time.', img: 'https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?q=80&w=2070&auto=format&fit=crop' },
+  { name: 'Japanese Selvedge Denim', origin: 'Okayama, Japan', texture: 'Dense, structured, matte', desc: 'Woven on vintage looms, this cotton provides an architectural rigidity that softens beautifully over years of wear.', img: '/images/forge/Japanese Selvedge Denim.jpg' },
+  { name: 'Brushed Italian Wool', origin: 'Biella, Italy', texture: 'Soft, dense, heavy-drape', desc: 'A meticulously milled wool offering profound warmth and a fluid drape, engineered for the deepest winter months.', img: '/images/forge/Brushed Italian Wool.jpg' },
+  { name: 'Vegetable-Tanned Calfskin', origin: 'Tuscany, Italy', texture: 'Smooth, rigid, patinating', desc: 'Treated with natural tannins, this leather begins stiff and structural, molding uniquely to the wearer\'s anatomy over time.', img: '/images/forge/Vegetable-Tanned Calfskin.jpg' },
 ];
 
 function MaterialLibrary() {
