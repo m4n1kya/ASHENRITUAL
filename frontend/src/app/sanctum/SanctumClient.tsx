@@ -317,8 +317,8 @@ function ParticleField() {
 }
 
 /* ── 1. Creator Hub ──────────────────────────────────────────────────────── */
-function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhibition: () => void }) {
-  const isVerified = profile.creatorProfile?.verified || false;
+function CreatorHub({ profile, onEnterExhibition }: { profile: User | null; onEnterExhibition: () => void }) {
+  const isVerified = profile?.creatorProfile?.verified || false;
 
   return (
     <motion.div
@@ -331,8 +331,8 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
         {/* Avatar + Info */}
         <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
           <div className="w-32 h-32 lg:w-48 lg:h-48 rounded-full bg-[#111] overflow-hidden border-2 border-[rgba(255,255,255,0.05)] mb-6 relative">
-            {profile.avatar ? (
-              <Image src={profile.avatar} alt={profile.displayName || profile.username} fill className="object-cover" unoptimized />
+            {profile?.avatar ? (
+              <Image src={profile.avatar} alt={profile.displayName || profile.username || 'User'} fill className="object-cover" unoptimized />
             ) : (
               <Image src="/images/default-avatar.png" alt="Guest Profile" fill className="object-cover scale-[1.15] translate-y-3 bg-gradient-to-br from-[#1A1A1A] to-[#2A2A2A]" unoptimized />
             )}
@@ -340,19 +340,19 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
 
           <div className="flex items-center gap-3 mb-2 justify-center lg:justify-start w-full">
             <h1 className="font-heading text-4xl uppercase tracking-wider text-[#FDFCFB]">
-              {profile.displayName || profile.username}
+              {profile?.displayName || profile?.username || 'Guest'}
             </h1>
             {isVerified && <CheckCircle className="w-5 h-5 text-[#FDFCFB]" />}
           </div>
 
           <p className="font-mono text-[10px] uppercase tracking-widest text-[#8D8D8D] mb-6 flex items-center justify-center lg:justify-start gap-2">
-            <MapPin className="w-3 h-3" /> {profile.location || 'Unknown Location'}
+            <MapPin className="w-3 h-3" /> {profile?.location || 'Unknown Location'}
             <span className="mx-2">|</span>
-            {profile.creatorProfile?.specialization || 'Independent Designer'}
+            {profile?.creatorProfile?.specialization || 'Independent Designer'}
           </p>
 
           <p className="font-sans text-sm text-[#A8A8A8] max-w-md leading-relaxed mb-8">
-            {profile.bio || 'Add a bio in your settings to define your philosophy.'}
+            {profile?.bio || 'Add a bio in your settings to define your philosophy.'}
           </p>
 
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
@@ -360,7 +360,7 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User; onEnterExhi
               className="bg-[#FDFCFB] text-[#0A0A0A] px-6 py-2.5 font-heading text-[10px] uppercase tracking-widest font-bold hover:bg-[#E8E8E8] transition-colors flex items-center gap-2">
               <PenTool className="w-3 h-3" /> Upload Concept
             </button>
-            <Link href={`/u/${profile.username}`}
+            <Link href={`/u/${profile?.username || ''}`}
               className="border border-[rgba(255,255,255,0.1)] text-[#FDFCFB] px-6 py-2.5 font-heading text-[10px] uppercase tracking-widest hover:bg-[rgba(255,255,255,0.05)] transition-colors flex items-center gap-2">
               <ImageIcon className="w-3 h-3" /> View Portfolio
             </Link>
@@ -509,7 +509,7 @@ function PopupCard({ item, onClose }: { item: ProtoItem; onClose: () => void }) 
 }
 
 /* ── 2. Exhibition Wall ──────────────────────────────────────────────────── */
-function ExhibitionWall({ onBack }: { profile: User; concepts: Concept[]; onBack: () => void }) {
+function ExhibitionWall({ onBack }: { profile: User | null; concepts: Concept[]; onBack: () => void }) {
   const [rows] = useState(buildRows);
   const [selected, setSelected] = useState<ProtoItem | null>(null);
   const [mounted, setMounted] = useState(false);
