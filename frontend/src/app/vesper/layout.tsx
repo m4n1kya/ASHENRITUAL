@@ -38,14 +38,13 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
 
   return (
     <div
-      className="flex h-screen bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden relative"
-      style={{ paddingTop: '100px' }}
+      className="flex h-screen bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden relative pt-[72px] md:pt-[100px]"
     >
       {/* Top Left Floating Vesper Bubble */}
-      <div className="absolute top-[116px] left-4 md:left-8 z-50 flex flex-col" ref={dropdownRef}>
+      <div className="absolute top-[68px] md:top-[116px] left-4 md:left-8 z-50 flex flex-col" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="group inline-flex h-11 items-center gap-5 border border-[#FDFCFB]/20 bg-[#050505]/80 backdrop-blur-md px-5 md:px-7 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-[#FDFCFB] hover:bg-[#FDFCFB] hover:text-[#0A0A0A]"
+          className="group inline-flex h-11 items-center gap-5 border border-white/10 bg-black/50 backdrop-blur-xl px-5 md:px-7 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-white hover:bg-white hover:text-black shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
         >
           <span className="flex items-center gap-2">
             <ActiveIcon className="h-3.5 w-3.5" />
@@ -63,11 +62,11 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -10, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -10, filter: 'blur(10px)' }}
-              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              className="absolute top-[calc(100%+8px)] left-0 w-full min-w-[200px] flex flex-col border border-[#FDFCFB]/15 rounded-2xl bg-[#0A0A0A]/80 backdrop-blur-xl shadow-2xl overflow-hidden"
+              initial={{ opacity: 0, y: -10, filter: 'blur(10px)', scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 }}
+              exit={{ opacity: 0, y: -10, filter: 'blur(10px)', scale: 0.95 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute top-[calc(100%+12px)] left-0 w-full min-w-[220px] flex flex-col border border-white/10 rounded-[20px] bg-[#0A0A0A]/70 backdrop-blur-2xl shadow-[0_16px_40px_rgba(0,0,0,0.6)] p-2"
             >
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
@@ -78,14 +77,20 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
                     href={item.href}
                     onClick={() => setIsOpen(false)}
                     className={cn(
-                      'flex items-center gap-3 px-6 py-4 text-[10px] uppercase tracking-[0.2em] transition-all duration-300 font-heading border-b border-[#FDFCFB]/5 last:border-b-0',
+                      'flex items-center gap-3 px-5 py-3.5 text-[10px] uppercase tracking-[0.25em] transition-all duration-300 font-heading rounded-xl relative overflow-hidden',
                       isActive
-                        ? 'bg-[#FDFCFB]/10 text-[#FDFCFB]'
-                        : 'text-[#888] hover:bg-[#FDFCFB]/5 hover:text-[#CCC]'
+                        ? 'bg-white/15 text-white'
+                        : 'text-[#888] hover:bg-white/5 hover:text-white'
                     )}
                   >
-                    <Icon className="h-3.5 w-3.5" />
-                    <span>{item.name}</span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeIndicator"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-1/2 bg-white rounded-r-full"
+                      />
+                    )}
+                    <Icon className="h-3.5 w-3.5 relative z-10" />
+                    <span className="relative z-10">{item.name}</span>
                   </Link>
                 );
               })}
@@ -95,10 +100,10 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
       </div>
 
       {/* Top Right Floating New Chat Bubble */}
-      <div className="absolute top-[116px] right-4 md:right-8 z-50">
+      <div className="absolute top-[68px] md:top-[116px] right-4 md:right-8 z-50">
         <button
           onClick={clearMessages}
-          className="group inline-flex h-11 items-center gap-3 md:gap-4 border border-[#FDFCFB]/20 bg-[#050505]/80 backdrop-blur-md px-4 md:px-7 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-[#FDFCFB] hover:bg-[#FDFCFB] hover:text-[#0A0A0A]"
+          className="group inline-flex h-11 items-center gap-3 md:gap-4 border border-white/10 bg-black/50 backdrop-blur-xl px-4 md:px-7 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-white hover:bg-white hover:text-black shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
         >
           <RotateCcw className="h-3.5 w-3.5 transition-transform duration-500 group-hover:-rotate-180" strokeWidth={1.5} />
           <span className="hidden sm:inline">New Chat</span>
