@@ -508,15 +508,8 @@ export function Navbar() {
               role="dialog"
               aria-modal="true"
               aria-label="Mobile navigation"
-              className="absolute inset-y-0 right-0 flex w-full max-w-[280px] flex-col border-l border-[#202020] bg-background/90 backdrop-blur-xl px-8 py-6 shadow-2xl overflow-y-auto hide-scrollbar"
+              className="absolute inset-y-0 right-0 flex w-full max-w-[280px] flex-col border-l border-[#202020] bg-background/90 backdrop-blur-xl px-8 pt-[90px] pb-6 shadow-2xl overflow-y-auto hide-scrollbar"
             >
-              <button
-                onClick={close}
-                aria-label="Close"
-                className="mb-12 ml-auto flex h-9 w-9 items-center justify-center text-[#8D8D8D] hover:text-[#FDFCFB] transition-colors"
-              >
-                <X className="h-5 w-5" strokeWidth={1.5} />
-              </button>
 
               <div className="flex flex-col">
                 {NAV.map(({ label, href }, i) => (
