@@ -181,17 +181,6 @@ export default function VesperChatPage() {
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className="flex flex-col items-start pt-12 md:pt-16"
               >
-                {/* Animated orb */}
-                <div className="relative mb-10 ml-1">
-                  <motion.div
-                    animate={{ scale: [1, 1.3, 1], opacity: [0.08, 0.22, 0.08] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute inset-0 w-16 h-16 rounded-full bg-white blur-xl -translate-x-2 -translate-y-2"
-                  />
-                  <div className="relative w-12 h-12 rounded-full border border-white/[0.06] flex items-center justify-center bg-white/[0.02]">
-                    <Sparkles className="h-4 w-4 text-[#3A3A3A]" />
-                  </div>
-                </div>
 
                 <motion.h1
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
