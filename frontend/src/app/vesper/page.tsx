@@ -111,7 +111,7 @@ export default function VesperChatPage() {
   const showLoginBanner = _hasHydrated && !isAuthenticated;
 
   return (
-    <main className="flex h-full flex-col bg-[#030303] relative overflow-hidden">
+    <main className="flex h-full flex-col bg-[#030303] relative overflow-hidden pt-[64px] md:pt-4">
 
       {/* Ambient background blobs & magical particles */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
