@@ -94,7 +94,7 @@ function BrandPhilosophy() {
           className="lg:col-span-5 relative aspect-[4/5] w-full max-w-md mx-auto lg:mx-0 overflow-hidden bg-[#1A1A1A]"
         >
           <Image
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop"
+            src="/images/forge/low-key-portrait.jpg"
             alt="Philosophy"
             fill
             className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 opacity-80"
