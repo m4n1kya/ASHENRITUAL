@@ -282,14 +282,14 @@ function ParticleField() {
   const renderParticles = (particles: any[]) => particles.map(p => (
     <div
       key={p.id}
-      className="absolute rounded-full bg-white will-change-transform will-change-opacity"
+      className="absolute rounded-full bg-white will-change-transform will-change-opacity opacity-0"
       style={{
         left: `calc(50% + ${p.x}px)`,
         top: `calc(50% + ${p.y}px)`,
         width: p.size,
         height: p.size,
         boxShadow: `0 0 ${p.size * 5}px ${p.size * 1.5}px rgba(255,255,255,0.8)`,
-        animation: `particle-flicker ${p.duration}s infinite ease-in-out ${p.delay}s`,
+        animation: `particle-flicker ${p.duration}s infinite ease-in-out -${p.delay}s`,
         // Custom CSS variable to let keyframes use the random base opacity
         ['--p-opacity' as any]: p.opacity,
       }}
