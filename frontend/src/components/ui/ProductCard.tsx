@@ -52,7 +52,7 @@ export function ProductCard({ product, priority = false, className }: ProductCar
     >
       <Link
         href={`/products/${product.id}`}
-        className="block border border-[rgba(255,255,255,0.08)] bg-transparent p-6 transition-colors duration-[500ms] ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-card focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(255,255,255,0.3)]"
+        className="block border border-[rgba(255,255,255,0.08)] bg-transparent p-3 md:p-5 lg:p-6 transition-colors duration-[500ms] ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-card focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(255,255,255,0.3)]"
         aria-label={`${product.name} — ${price}`}
       >
         {/* Image — 3:4 portrait, dark bg, cinematic hover zoom */}
