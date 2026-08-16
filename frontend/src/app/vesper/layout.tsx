@@ -38,10 +38,10 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
 
   return (
     <div
-      className="flex h-screen bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden relative pt-[72px] md:pt-[100px]"
+      className="flex h-[100dvh] bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden relative pt-[72px] md:pt-[100px]"
     >
       {/* Top Left Floating Vesper Bubble */}
-      <div className="absolute top-[68px] md:top-[116px] left-4 md:left-8 z-50 flex flex-col" ref={dropdownRef}>
+      <div className="fixed top-[72px] md:top-[116px] left-4 md:left-8 z-50 flex flex-col" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="group inline-flex h-11 items-center gap-5 border border-white/10 bg-black/50 backdrop-blur-xl px-5 md:px-7 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-white hover:bg-white hover:text-black shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
@@ -99,8 +99,8 @@ export default function VesperLayout({ children }: { children: React.ReactNode }
         </AnimatePresence>
       </div>
 
-      {/* Top Right Floating New Chat Bubble */}
-      <div className="absolute top-[68px] md:top-[116px] right-4 md:right-8 z-50">
+      {/* Top Right Floating Actions */}
+      <div className="fixed top-[72px] md:top-[116px] right-4 md:right-8 z-50">
         <button
           onClick={clearMessages}
           className="group inline-flex h-11 items-center gap-3 md:gap-4 border border-white/10 bg-black/50 backdrop-blur-xl px-4 md:px-7 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-white hover:bg-white hover:text-black shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
