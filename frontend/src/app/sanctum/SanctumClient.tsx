@@ -245,9 +245,8 @@ export function SanctumClient() {
 /* ── Dense Particle Field ────────────────────────────────────────────────── */
 function ParticleField() {
   // Layer 0: Ambient dust evenly spread across the whole screen
-  const ambientParticles = Array.from({ length: 700 }, (_, i) => {
+  const ambientParticles = Array.from({ length: 500 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
-    // Math.sqrt gives an even distribution in a circle
     const dist = Math.sqrt(Math.random()) * 1500;
     const x = Math.cos(angle) * dist;
     const y = Math.sin(angle) * dist;
@@ -257,9 +256,8 @@ function ParticleField() {
   });
 
   // Layer 1: Behind the image (z-index 1) - Lantern cluster
-  const particlesBehind = Array.from({ length: 300 }, (_, i) => {
+  const particlesBehind = Array.from({ length: 200 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
-    // Bias towards center, power of 2 spreads them more than 3
     const dist = Math.pow(Math.random(), 2) * 1200 + 10;
     const x = Math.cos(angle) * dist;
     const y = Math.sin(angle) * dist;
@@ -270,7 +268,7 @@ function ParticleField() {
   });
 
   // Layer 2: In front of the image (z-index 30) - Lantern cluster
-  const particlesInFront = Array.from({ length: 140 }, (_, i) => {
+  const particlesInFront = Array.from({ length: 100 }, (_, i) => {
     const angle = Math.random() * Math.PI * 2;
     const dist = Math.pow(Math.random(), 2) * 1000 + 10;
     const x = Math.cos(angle) * dist;
@@ -282,31 +280,32 @@ function ParticleField() {
   });
 
   const renderParticles = (particles: any[]) => particles.map(p => (
-    <motion.div
+    <div
       key={p.id}
-      className="absolute rounded-full bg-white"
+      className="absolute rounded-full bg-white will-change-transform will-change-opacity"
       style={{
         left: `calc(50% + ${p.x}px)`,
         top: `calc(50% + ${p.y}px)`,
         width: p.size,
         height: p.size,
         boxShadow: `0 0 ${p.size * 5}px ${p.size * 1.5}px rgba(255,255,255,0.8)`,
-      }}
-      animate={{
-        opacity: [0, p.opacity, p.opacity * 0.2, p.opacity, 0],
-        scale: [0.3, 1.2, 0.6, 1.4, 0.3],
-      }}
-      transition={{
-        duration: p.duration,
-        repeat: Infinity,
-        delay: p.delay,
-        ease: 'easeInOut',
+        animation: `particle-flicker ${p.duration}s infinite ease-in-out ${p.delay}s`,
+        // Custom CSS variable to let keyframes use the random base opacity
+        ['--p-opacity' as any]: p.opacity,
       }}
     />
   ));
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes particle-flicker {
+          0%, 100% { opacity: 0; transform: scale(0.3); }
+          25% { opacity: var(--p-opacity); transform: scale(1.2); }
+          50% { opacity: calc(var(--p-opacity) * 0.2); transform: scale(0.6); }
+          75% { opacity: var(--p-opacity); transform: scale(1.4); }
+        }
+      `}} />
       <div className="absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 0 }}>
         {renderParticles(ambientParticles)}
       </div>
