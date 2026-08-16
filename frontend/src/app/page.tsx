@@ -406,7 +406,7 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════════════════════════════
           VESPER SECTION
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="border-t border-[#202020]">
+      <section className="border-t border-[#202020] overflow-hidden">
         <div className="mx-auto max-w-screen-xl px-8 py-20 lg:px-12 lg:py-28">
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24">
             <motion.div
