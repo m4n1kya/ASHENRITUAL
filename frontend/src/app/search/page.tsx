@@ -62,6 +62,11 @@ export default function SearchPage() {
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && query.trim()) {
+                router.push(`/shop?q=${encodeURIComponent(query.trim())}`);
+              }
+            }}
             placeholder="Search for pieces, materials, occasions..."
             className="w-full bg-transparent font-sans text-xl text-foreground placeholder:text-muted-foreground focus:outline-none"
             aria-label="Search products"
