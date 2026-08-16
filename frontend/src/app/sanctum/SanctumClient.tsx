@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -267,8 +267,18 @@ function ParticleField() {
     return { id: `f-${i}`, x, y, opacity: Math.max(opacity, 0.1), size, delay: Math.random() * 5, duration: Math.random() * 4 + 3 };
   });
 
-  const renderParticles = (particles: any[]) => particles.map(p => (
-    <div
+  interface Particle {
+    id: string;
+    x: number;
+    y: number;
+    opacity: number;
+    size: number;
+    delay: number;
+    duration: number;
+  }
+
+  const renderParticles = (particles: Particle[]) => particles.map(p => (
+    <motion.div
       key={p.id}
       className="absolute rounded-full bg-white will-change-transform will-change-opacity opacity-0"
       style={{
@@ -279,8 +289,8 @@ function ParticleField() {
         boxShadow: `0 0 ${p.size * 5}px ${p.size * 1.5}px rgba(255,255,255,0.8)`,
         animation: `particle-flicker ${p.duration}s infinite ease-in-out -${p.delay}s`,
         // Custom CSS variable to let keyframes use the random base opacity
-        ['--p-opacity' as any]: p.opacity,
-      }}
+        '--p-opacity': p.opacity,
+      } as React.CSSProperties}
     />
   ));
 
