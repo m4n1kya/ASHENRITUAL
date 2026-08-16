@@ -82,13 +82,23 @@ export class AuthService {
       // Create guest user via register flow (internally calls create + login)
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash('guest_demo_2026', salt);
-      // Use the users service create which accepts any data object
-      guest = await this.usersService.create({
-        email: 'guest@ashenritual.com',
-        passwordHash,
-        displayName: 'Guest',
-        username: 'guest',
-      });
+      try {
+        // Use the users service create which accepts any data object
+        guest = await this.usersService.create({
+          email: 'guest@ashenritual.com',
+          passwordHash,
+          displayName: 'Guest',
+          username: 'guest',
+        });
+      } catch (err) {
+        // Fallback if 'guest' username is already taken by a modified guest account
+        guest = await this.usersService.create({
+          email: `guest_${Date.now()}@ashenritual.com`,
+          passwordHash,
+          displayName: 'Guest',
+          username: `guest_${Date.now()}`,
+        });
+      }
     }
     return this.login(guest);
   }
