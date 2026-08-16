@@ -113,10 +113,37 @@ export default function VesperChatPage() {
   return (
     <main className="flex h-full flex-col bg-[#030303] relative overflow-hidden">
 
-      {/* Ambient background blobs */}
+      {/* Ambient background blobs & magical particles */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-white/[0.012] blur-[120px]" />
         <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-white/[0.008] blur-[100px]" />
+        
+        {/* Shiny magical particles */}
+        {mounted && [...Array(25)].map((_, i) => (
+          <motion.div
+            key={`particle-${i}`}
+            className="absolute rounded-full bg-white"
+            style={{
+              width: Math.random() * 2 + 1,
+              height: Math.random() * 2 + 1,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              boxShadow: '0 0 8px 1px rgba(255,255,255,0.4)',
+            }}
+            animate={{
+              y: [0, Math.random() * -100 - 50],
+              x: [0, (Math.random() - 0.5) * 50],
+              opacity: [0, Math.random() * 0.4 + 0.1, 0],
+              scale: [0, 1.5, 0],
+            }}
+            transition={{
+              duration: Math.random() * 5 + 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: Math.random() * 5
+            }}
+          />
+        ))}
       </div>
 
 
@@ -239,7 +266,7 @@ export default function VesperChatPage() {
 
           <motion.form
             onSubmit={handleSubmit}
-            className="relative flex items-end gap-3 rounded-2xl px-5 py-4"
+            className="relative flex items-end gap-3 rounded-2xl px-5 py-4 overflow-hidden"
             style={{
               background: focused ? 'rgba(20,20,20,0.95)' : 'rgba(12,12,12,0.9)',
               boxShadow: focused
@@ -248,6 +275,14 @@ export default function VesperChatPage() {
               transition: 'all 0.35s ease',
             }}
           >
+            {/* Shine animation */}
+            <motion.div
+              className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent"
+              animate={{ x: ['-200%', '200%'] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 5 }}
+              style={{ transform: 'skewX(-20deg)' }}
+            />
+
             <textarea
               ref={textareaRef}
               value={input}
@@ -255,7 +290,7 @@ export default function VesperChatPage() {
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               placeholder="Ask Vesper anything..."
-              className="flex-1 bg-transparent text-[13px] text-[#FDFCFB] placeholder:text-[#2A2A2A] outline-none resize-none hide-scrollbar leading-relaxed tracking-wide"
+              className="relative z-10 flex-1 bg-transparent text-[13px] text-[#FDFCFB] placeholder:text-[#2A2A2A] outline-none resize-none hide-scrollbar leading-relaxed tracking-wide"
               rows={1}
               style={{ maxHeight: '120px' }}
               onKeyDown={(e) => {
@@ -270,7 +305,7 @@ export default function VesperChatPage() {
               disabled={!input.trim() || isLoading}
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FDFCFB] text-[#0A0A0A] transition-all duration-300 disabled:opacity-15 disabled:cursor-not-allowed"
+              className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FDFCFB] text-[#0A0A0A] transition-all duration-300 disabled:opacity-15 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
