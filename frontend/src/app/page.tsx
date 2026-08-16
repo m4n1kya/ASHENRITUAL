@@ -456,14 +456,14 @@ export default function HomePage() {
                 <>
                   {/* Layer 1: Behind the image (z-10) */}
                   <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
-                    {[...Array(60)].map((_, i) => {
+                    {[...Array(150)].map((_, i) => {
                       const size = Math.random() * 4 + 1.5;
                       const angle = Math.random() * Math.PI * 2;
-                      const distance = Math.pow(Math.random(), 0.8) * 160; 
+                      const distance = Math.pow(Math.random(), 0.7) * 350; 
                       const startX = Math.cos(angle) * distance;
                       const startY = Math.sin(angle) * distance;
-                      const driftX = startX + (Math.random() * 40 - 20);
-                      const driftY = startY - (Math.random() * 80 + 20);
+                      const driftX = startX + (Math.random() * 60 - 30);
+                      const driftY = startY - (Math.random() * 100 + 30);
 
                       return (
                         <motion.div
@@ -479,14 +479,14 @@ export default function HomePage() {
                   
                   {/* Layer 2: In front of the image (z-30) */}
                   <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
-                    {[...Array(30)].map((_, i) => {
+                    {[...Array(80)].map((_, i) => {
                       const size = Math.random() * 3 + 1.0;
                       const angle = Math.random() * Math.PI * 2;
-                      const distance = Math.pow(Math.random(), 0.8) * 120; // tighter radius for overlay 
+                      const distance = Math.pow(Math.random(), 0.7) * 250; 
                       const startX = Math.cos(angle) * distance;
                       const startY = Math.sin(angle) * distance;
-                      const driftX = startX + (Math.random() * 30 - 15);
-                      const driftY = startY - (Math.random() * 60 + 10);
+                      const driftX = startX + (Math.random() * 40 - 20);
+                      const driftY = startY - (Math.random() * 80 + 20);
 
                       return (
                         <motion.div
