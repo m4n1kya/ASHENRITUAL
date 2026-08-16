@@ -67,18 +67,15 @@ export function SanctumClient() {
   const [sanctumState, setSanctumState] = useState<'HUB' | 'ANIM' | 'EXHIBITION'>('HUB');
   const [profile, setProfile] = useState<User | null>(null);
   const [concepts, setConcepts] = useState<Concept[]>([]);
-  const [profileLoading, setProfileLoading] = useState(false);
-
   useEffect(() => {
     if (_hasHydrated && isAuthenticated) {
-      setProfileLoading(true);
       Promise.all([
         api.get<{ user: User }>('/users/me'),
         api.get<{ data: Concept[] }>('/creators/concepts').catch(() => ({ data: [] }))
       ]).then(([profileRes, conceptsRes]) => {
         setProfile(profileRes.user);
         setConcepts(conceptsRes.data || []);
-      }).finally(() => setProfileLoading(false));
+      });
     }
   }, [_hasHydrated, isAuthenticated]);
 
