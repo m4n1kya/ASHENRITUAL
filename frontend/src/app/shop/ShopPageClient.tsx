@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useTransition } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ArrowRight, Shirt, Box, SlidersHorizontal, Search } from 'lucide-react';
@@ -43,6 +43,8 @@ export function ShopPageClient() {
   const filterKey = `${selectedCategory}|${selectedSort}|${searchQuery}`;
   const filterKeyRef = useRef(filterKey);
 
+  const [isPending, startTransition] = useTransition();
+
   const updateParams = useCallback(
     (updates: Record<string, string>) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -50,7 +52,9 @@ export function ShopPageClient() {
         if (v) params.set(k, v);
         else params.delete(k);
       });
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+      startTransition(() => {
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      });
     },
     [searchParams, router, pathname],
   );
