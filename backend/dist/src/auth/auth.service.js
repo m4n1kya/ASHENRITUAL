@@ -104,12 +104,22 @@ let AuthService = class AuthService {
         if (!guest) {
             const salt = await bcrypt.genSalt(10);
             const passwordHash = await bcrypt.hash('guest_demo_2026', salt);
-            guest = await this.usersService.create({
-                email: 'guest@ashenritual.com',
-                passwordHash,
-                displayName: 'Guest',
-                username: 'guest',
-            });
+            try {
+                guest = await this.usersService.create({
+                    email: 'guest@ashenritual.com',
+                    passwordHash,
+                    displayName: 'Guest',
+                    username: 'guest',
+                });
+            }
+            catch (err) {
+                guest = await this.usersService.create({
+                    email: `guest_${Date.now()}@ashenritual.com`,
+                    passwordHash,
+                    displayName: 'Guest',
+                    username: `guest_${Date.now()}`,
+                });
+            }
         }
         return this.login(guest);
     }

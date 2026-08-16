@@ -136,10 +136,10 @@ export declare class UsersService {
             createdAt: Date;
             updatedAt: Date;
             deletedAt: Date | null;
-            links: import("@prisma/client/runtime/library").JsonValue | null;
             userId: string;
             specialization: string | null;
             philosophy: string | null;
+            links: import("@prisma/client/runtime/library").JsonValue | null;
             verification: string | null;
             portfolioCount: number;
         } | null;
@@ -168,19 +168,19 @@ export declare class UsersService {
             description: string;
             image: string | null;
             address: string | null;
-            hours: string | null;
             specialization: string | null;
             verification: string | null;
             ownerId: string | null;
+            logo: string | null;
             history: string | null;
             knownFor: string | null;
             establishedYear: number | null;
-            logo: string | null;
             gallery: string[];
             contactEmail: string | null;
             phone: string | null;
             website: string | null;
             instagram: string | null;
+            hours: string | null;
         }[];
         _count: {
             followers: number;

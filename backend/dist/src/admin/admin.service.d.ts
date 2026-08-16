@@ -68,8 +68,8 @@ export declare class AdminService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        total: Decimal;
         userId: string;
+        total: Decimal;
         status: import(".prisma/client").$Enums.OrderStatus;
     })[]>;
 }
