@@ -23,12 +23,6 @@ const SOCIALS = [
     url: 'https://x.com/ashenritual',
     description: 'Brand manifesto & cultural discourse',
   },
-  {
-    name: 'YouTube',
-    handle: 'AshenRitual',
-    url: 'https://youtube.com/@ashenritual',
-    description: 'Films, process & behind the seams',
-  },
 ];
 
 export function BeyondJoin() {
@@ -43,7 +37,7 @@ export function BeyondJoin() {
           We exist everywhere.
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-px bg-white/[0.04]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.04]">
           {SOCIALS.map((social, i) => (
             <motion.a
               key={i}
