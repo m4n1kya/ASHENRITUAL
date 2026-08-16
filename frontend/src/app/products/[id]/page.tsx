@@ -222,6 +222,26 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </section>
       )}
+      {/* ── Recommended Products ──────────────────────────────────────────────── */}
+      {related.length > 0 && (
+        <section className="border-t border-[#202020] bg-background">
+          <div className="mx-auto max-w-screen-xl px-8 py-24 lg:px-12">
+            <div className="flex flex-col items-center text-center mb-16">
+              <p className="font-heading text-[10px] font-medium uppercase tracking-[0.4em] text-[#8D8D8D]">
+                Continue the Ritual
+              </p>
+              <h2 className="mt-4 font-display italic text-4xl lg:text-5xl text-[#FDFCFB]">
+                Recommended Products
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 gap-x-4 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+              {related.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
@@ -229,3 +249,4 @@ export default async function ProductPage({ params }: ProductPageProps) {
 import { AddToCartButtonServer } from './AddToCartButton';
 import { SaveRitualButton } from '@/components/ui/SaveRitualButton';
 import { SizeRecommendationClient } from './SizeRecommendationClient';
+import { ProductCard } from '@/components/ui/ProductCard';
