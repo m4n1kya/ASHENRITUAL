@@ -35,9 +35,16 @@ export function ShopPageClient() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
-  const selectedCategory = searchParams.get('category') || '';
-  const selectedSort = searchParams.get('sort') || 'newest';
-  const searchQuery = searchParams.get('q') || '';
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
+  const [selectedSort, setSelectedSort] = useState(searchParams.get('sort') || 'newest');
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+
+  useEffect(() => {
+    setSelectedCategory(searchParams.get('category') || '');
+    setSelectedSort(searchParams.get('sort') || 'newest');
+    setSearchQuery(searchParams.get('q') || '');
+  }, [searchParams]);
+
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const filterKey = `${selectedCategory}|${selectedSort}|${searchQuery}`;
@@ -47,16 +54,21 @@ export function ShopPageClient() {
 
   const updateParams = useCallback(
     (updates: Record<string, string>) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(window.location.search);
       Object.entries(updates).forEach(([k, v]) => {
         if (v) params.set(k, v);
         else params.delete(k);
       });
-      startTransition(() => {
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-      });
+      
+      const newUrl = `${pathname}?${params.toString()}`;
+      window.history.replaceState(null, '', newUrl);
+
+      // Manually trigger state updates
+      if (updates.category !== undefined) setSelectedCategory(updates.category);
+      if (updates.sort !== undefined) setSelectedSort(updates.sort);
+      if (updates.q !== undefined) setSearchQuery(updates.q);
     },
-    [searchParams, router, pathname],
+    [pathname],
   );
 
   // Reset to page 1 when filters change
