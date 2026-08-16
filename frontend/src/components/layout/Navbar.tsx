@@ -381,15 +381,15 @@ export function Navbar() {
 
         {/* Tier 1: Logo + Search + Icons */}
         <div className={cn("relative w-full border-b border-[rgba(255,255,255,0.08)] bg-background", pathname === '/' && "home-tier1")}>
-          <div className="relative z-10 mx-auto flex h-[52px] max-w-screen-xl items-center justify-between px-6 lg:px-10">
+          <div className="relative z-10 mx-auto flex h-[52px] max-w-screen-xl items-center justify-between px-3 sm:px-6 lg:px-10">
 
             {/* Logo */}
             <Link
               href="/"
               aria-label="ASHENRITUAL"
               className={cn(
-                'flex items-center gap-1 text-[11px] font-bold tracking-[0.35em] transition-colors duration-300 hover:opacity-70',
-                '[font-family:var(--font-logo)]',
+                'flex items-center gap-1 text-[9px] sm:text-[11px] font-bold tracking-[0.2em] sm:tracking-[0.35em] transition-colors duration-300 hover:opacity-70',
+                '[font-family:var(--font-logo)] whitespace-nowrap shrink-0',
                 logoTextCls,
               )}
             >
@@ -400,7 +400,7 @@ export function Navbar() {
             <NavSearch />
 
             {/* Right icons: Saved Rituals → Cart → User */}
-            <div className="flex items-center gap-1 md:gap-2">
+            <div className="flex items-center gap-0 sm:gap-1 md:gap-2 shrink-0">
               {/* Mobile search icon */}
               <div className="md:hidden">
                 <NavIcon href="/search" label="Search" iconCls={iconCls}>
@@ -425,7 +425,7 @@ export function Navbar() {
               <button
                 onClick={toggle}
                 aria-label={mobileOpen ? 'Close menu' : 'Menu'}
-                className={cn('ml-1 flex h-9 w-9 items-center justify-center transition-colors duration-300 md:hidden', iconCls)}
+                className={cn('flex h-9 w-9 items-center justify-center transition-colors duration-300 md:hidden ml-0.5 sm:ml-1', iconCls)}
               >
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.span
