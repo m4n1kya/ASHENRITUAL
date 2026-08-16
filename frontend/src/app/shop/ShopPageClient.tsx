@@ -188,7 +188,7 @@ export function ShopPageClient() {
       )}
 
       {/* ── DYNAMIC GRID ────────────────────────────────────────────────────── */}
-      <div id="shop-grid" ref={gridRef} className={cn("mx-auto max-w-screen-xl px-8 pb-24 lg:px-12", searchQuery ? "pt-32 lg:pt-40" : "pt-24")}>
+      <div id="shop-grid" ref={gridRef} className={cn("mx-auto max-w-screen-xl px-4 md:px-8 pb-24 lg:px-12", searchQuery ? "pt-32 lg:pt-40" : "pt-24")}>
         {/* Header inside grid */}
         <div className="mb-12">
           <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">
