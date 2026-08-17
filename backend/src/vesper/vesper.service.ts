@@ -23,7 +23,7 @@ Only recommend productIds that are provided to you in the Product Catalog contex
 
   constructor(private prisma: PrismaService) {
     this.ai = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY || 'dummy_key_for_build',
+      apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || 'dummy_key_for_build',
     });
   }
 

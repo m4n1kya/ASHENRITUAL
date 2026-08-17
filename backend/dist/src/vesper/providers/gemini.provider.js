@@ -5,13 +5,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var GeminiProvider_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GeminiProvider = void 0;
 const common_1 = require("@nestjs/common");
 let GeminiProvider = GeminiProvider_1 = class GeminiProvider {
     logger = new common_1.Logger(GeminiProvider_1.name);
-    apiKey = process.env.GEMINI_API_KEY || '';
+    apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || '';
+    constructor() {
+        if (!this.apiKey) {
+            this.logger.error('CRITICAL: No Gemini API key found! Set GEMINI_API_KEY or GOOGLE_GEMINI_API_KEY in environment.');
+        }
+        else {
+            this.logger.log(`Gemini API key loaded (starts with: ${this.apiKey.substring(0, 6)}...)`);
+        }
+    }
     async *generateStream(messages, systemPrompt, contextData) {
         try {
             const contents = messages.map((m) => ({
@@ -46,7 +57,7 @@ If there are no actions or recommendations, output an empty JSON object {} insid
             else {
                 contents.push({ role: 'user', parts: [{ text: fullSystemPrompt }] });
             }
-            const url = new URL('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent');
+            const url = new URL('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:streamGenerateContent');
             url.searchParams.append('alt', 'sse');
             url.searchParams.append('key', this.apiKey);
             const response = await fetch(url.toString(), {
@@ -155,6 +166,7 @@ If there are no actions or recommendations, output an empty JSON object {} insid
 };
 exports.GeminiProvider = GeminiProvider;
 exports.GeminiProvider = GeminiProvider = GeminiProvider_1 = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [])
 ], GeminiProvider);
 //# sourceMappingURL=gemini.provider.js.map
