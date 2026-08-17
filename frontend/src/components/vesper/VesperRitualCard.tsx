@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -15,19 +15,32 @@ export function VesperRitualCard({ type, recommendedProducts }: { type: 'ritual'
   const [products, setProducts] = useState<(Product & { reason: string, confidence: number })[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Stabilize the dependency so we don't re-fetch on every render
+  const productIds = useMemo(
+    () => recommendedProducts.map(p => p.id).join(','),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [recommendedProducts.map(p => p.id).join(',')]
+  );
+
   useEffect(() => {
     async function fetchProducts() {
       try {
-        // Fetch all products to get their details. We can map them locally.
-        // In a real optimized system, we would have a specific endpoint `GET /products?ids=...`
-        const res = await api.get<{ data: Product[] }>('/products?limit=100');
-        const catalog = res.data || [];
-        
-        const hydrated = recommendedProducts.map(rp => {
-          const match = catalog.find(p => p.id === rp.id);
-          return match ? { ...match, reason: rp.reason, confidence: rp.confidence } : null;
-        }).filter(Boolean) as (Product & { reason: string, confidence: number })[];
-        
+        const ids = productIds.split(',').filter(Boolean);
+        if (ids.length === 0) { setLoading(false); return; }
+
+        // Fetch only the specific products we need by their IDs
+        const results = await Promise.all(
+          ids.map(id => api.get<Product>(`/products/${id}`).catch(() => null))
+        );
+
+        const hydrated = results
+          .map((p, i) => {
+            if (!p) return null;
+            const rp = recommendedProducts[i];
+            return { ...p, reason: rp?.reason ?? '', confidence: rp?.confidence ?? 0 };
+          })
+          .filter(Boolean) as (Product & { reason: string, confidence: number })[];
+
         setProducts(hydrated);
       } catch (e) {
         console.error('Failed to fetch recommended products', e);
@@ -35,13 +48,13 @@ export function VesperRitualCard({ type, recommendedProducts }: { type: 'ritual'
         setLoading(false);
       }
     }
-    
-    if (recommendedProducts.length > 0) {
+
+    if (productIds) {
       fetchProducts();
     } else {
       setLoading(false);
     }
-  }, [recommendedProducts]);
+  }, [productIds]);
 
   if (loading) {
     return (

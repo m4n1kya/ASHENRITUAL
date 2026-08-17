@@ -44,6 +44,12 @@ export const useAuthStore = create<AuthStore>()(
       logout: () => {
         Cookies.remove('isAuthenticated');
         set({ user: null, token: null, isAuthenticated: false });
+        // Clear Vesper chat history so previous user's conversations don't bleed through
+        try {
+          localStorage.removeItem('vesper-storage');
+        } catch (_) {
+          // Safe to ignore in SSR
+        }
       },
     }),
     {
