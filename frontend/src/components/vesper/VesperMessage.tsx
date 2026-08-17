@@ -25,11 +25,11 @@ export function VesperMessageComponent({ message }: { message: VesperMessageType
         if (prev === message.content) return prev;
         
         const diff = message.content.length - prev.length;
-        // Adjust typing speed based on how far behind we are
-        const charsToAdd = diff > 80 ? 12 : diff > 40 ? 6 : diff > 15 ? 3 : 1;
+        // Adjust typing speed to be significantly slower and more deliberate
+        const charsToAdd = diff > 80 ? 3 : diff > 30 ? 2 : 1;
         return message.content.slice(0, prev.length + charsToAdd);
       });
-    }, 20); // 20ms per tick
+    }, 45); // Slower: 45ms per tick
 
     return () => clearInterval(intervalId);
   }, [message.content, isUser]);
