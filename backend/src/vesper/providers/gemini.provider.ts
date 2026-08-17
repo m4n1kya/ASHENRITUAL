@@ -28,7 +28,21 @@ export class GeminiProvider implements AIProvider {
     unknown
   > {
     try {
-      const contents = messages.map((m) => ({
+      // 1. Sanitize messages: filter empty and combine consecutive roles (Gemini requires alternating roles)
+      const sanitizedMessages: typeof messages = [];
+      for (const m of messages) {
+        const text = m.content?.trim();
+        if (!text) continue; // Skip empty messages
+        
+        const last = sanitizedMessages[sanitizedMessages.length - 1];
+        if (last && last.role === m.role) {
+          last.content += '\n\n' + text;
+        } else {
+          sanitizedMessages.push({ ...m, content: text });
+        }
+      }
+
+      const contents = sanitizedMessages.map((m) => ({
         role: m.role,
         parts: [{ text: m.content }],
       }));
@@ -66,7 +80,7 @@ If there are no actions or recommendations, output an empty JSON object {} insid
 
       // Use ?key= query param for authentication
       const url = new URL(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:streamGenerateContent',
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent',
       );
       url.searchParams.append('alt', 'sse');
       url.searchParams.append('key', this.apiKey);
