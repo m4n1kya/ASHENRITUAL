@@ -46,7 +46,7 @@ If there are no actions or recommendations, output an empty JSON object {} insid
             else {
                 contents.push({ role: 'user', parts: [{ text: fullSystemPrompt }] });
             }
-            const url = new URL('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:streamGenerateContent');
+            const url = new URL('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent');
             url.searchParams.append('alt', 'sse');
             url.searchParams.append('key', this.apiKey);
             const response = await fetch(url.toString(), {

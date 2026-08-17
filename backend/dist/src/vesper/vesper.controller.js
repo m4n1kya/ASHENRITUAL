@@ -36,7 +36,7 @@ let VesperController = class VesperController {
         res.flushHeaders();
         let eventId = 0;
         try {
-            const stream = this.orchestrator.chatStream(dto.messages, dto.context, user?.userId);
+            const stream = this.orchestrator.chatStream(dto.messages, dto.context, user?.userId, user?.email);
             for await (const chunk of stream) {
                 eventId++;
                 const data = JSON.stringify(chunk);

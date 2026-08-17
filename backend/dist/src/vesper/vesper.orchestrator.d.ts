@@ -11,7 +11,7 @@ export declare class VesperOrchestrator {
     private readonly logger;
     private readonly SYSTEM_PROMPT;
     constructor(geminiProvider: GeminiProvider, contextManager: ContextManager, recommendationEngine: RecommendationEngine, prisma: PrismaService);
-    chatStream(messages: ChatMessage[], context: VesperUserContext, userId?: string): AsyncGenerator<{
+    chatStream(messages: ChatMessage[], context: VesperUserContext, userId?: string, userEmail?: string): AsyncGenerator<{
         type: string;
         content: string;
     } | {

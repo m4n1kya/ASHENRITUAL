@@ -56,6 +56,7 @@ export class VesperController {
         dto.messages,
         dto.context,
         user?.userId,
+        user?.email,
       );
 
       for await (const chunk of stream) {
