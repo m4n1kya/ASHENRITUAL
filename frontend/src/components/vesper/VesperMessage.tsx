@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { VesperRitualCard } from './VesperRitualCard';
@@ -6,6 +7,34 @@ import type { VesperMessage as VesperMessageType } from '@/store/vesper.store';
 
 export function VesperMessageComponent({ message }: { message: VesperMessageType }) {
   const isUser = message.role === 'user';
+
+  // Initialize with full content if it's a user message or an old non-streaming message
+  const [displayedContent, setDisplayedContent] = useState(() => {
+    if (isUser || (!message.isStreaming && message.content)) return message.content;
+    return '';
+  });
+
+  useEffect(() => {
+    if (isUser) {
+      setDisplayedContent(message.content);
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      setDisplayedContent((prev) => {
+        if (prev === message.content) return prev;
+        
+        const diff = message.content.length - prev.length;
+        // Adjust typing speed based on how far behind we are
+        const charsToAdd = diff > 80 ? 12 : diff > 40 ? 6 : diff > 15 ? 3 : 1;
+        return message.content.slice(0, prev.length + charsToAdd);
+      });
+    }, 20); // 20ms per tick
+
+    return () => clearInterval(intervalId);
+  }, [message.content, isUser]);
+
+  const isTyping = displayedContent !== message.content || message.isStreaming;
 
   return (
     <motion.div
@@ -22,21 +51,21 @@ export function VesperMessageComponent({ message }: { message: VesperMessageType
 
         {/* Text Content */}
         {message.content && (
-          <div className={`prose prose-invert max-w-none text-[12px] md:text-[13px] font-sans leading-relaxed ${isUser ? 'text-[#E8E8E8]' : 'text-[#A8A8A8]'} ${message.isStreaming ? 'animate-pulse' : ''}`}>
+          <div className={`prose prose-invert max-w-none text-[12px] md:text-[13px] font-sans leading-relaxed ${isUser ? 'text-[#E8E8E8]' : 'text-[#A8A8A8]'}`}>
             {isUser ? (
-              <p>{message.content}</p>
+              <p>{displayedContent}</p>
             ) : (
-              <ReactMarkdown>{message.content}</ReactMarkdown>
+              <ReactMarkdown>{displayedContent + (isTyping ? ' ▋' : '')}</ReactMarkdown>
             )}
           </div>
         )}
 
         {/* Rich Components (only if model and not streaming text) */}
-        {!isUser && message.recommendations && (
+        {!isUser && !isTyping && message.recommendations && (
           <VesperRitualCard type={message.recommendations.type} recommendedProducts={message.recommendations.products} />
         )}
 
-        {!isUser && message.actions && (
+        {!isUser && !isTyping && message.actions && (
           <VesperActionNav actions={message.actions} />
         )}
 
