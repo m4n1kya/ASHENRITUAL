@@ -291,6 +291,8 @@ const SEASONS = [
   { name: 'The White Hour', desc: 'Absolute reduction. The ultimate expression of our philosophy in pristine, untouched monochrome.', img: '/images/chapters/The White Hour.jpg' },
 ];
 
+import Link from 'next/link';
+
 function SeasonalDevelopment() {
   return (
     <section className="w-full py-32 lg:py-48 bg-background">
@@ -310,29 +312,33 @@ function SeasonalDevelopment() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-16">
-          {SEASONS.map((season, i) => (
-            <motion.div
-              key={season.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.8, delay: i * 0.1 }}
-              className="group cursor-default"
-            >
-              <div className="relative aspect-square w-full overflow-hidden bg-[#111] mb-6">
-                <Image
-                  src={season.img}
-                  alt={season.name}
-                  fill
-                  className="object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-[1.5s] ease-[0.22,1,0.36,1]"
-                  unoptimized
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </div>
-              <h3 className="font-heading text-xl uppercase tracking-wide text-[#E8E8E8] mb-3">{season.name}</h3>
-              <p className="font-sans text-[13px] leading-relaxed text-[#A8A8A8]">{season.desc}</p>
-            </motion.div>
-          ))}
+          {SEASONS.map((season, i) => {
+            const slug = season.name.toLowerCase().replace(/\s+/g, '-');
+            return (
+              <motion.div
+                key={season.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.8, delay: i * 0.1 }}
+              >
+                <Link href={`/chapters/${slug}`} className="group block cursor-pointer">
+                  <div className="relative aspect-square w-full overflow-hidden bg-[#111] mb-6">
+                    <Image
+                      src={season.img}
+                      alt={season.name}
+                      fill
+                      className="object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-[1.5s] ease-[0.22,1,0.36,1]"
+                      unoptimized
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  </div>
+                  <h3 className="font-heading text-xl uppercase tracking-wide text-[#E8E8E8] mb-3 group-hover:text-[#FDFCFB] transition-colors">{season.name}</h3>
+                  <p className="font-sans text-[13px] leading-relaxed text-[#A8A8A8] group-hover:text-[#E8E8E8] transition-colors">{season.desc}</p>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
