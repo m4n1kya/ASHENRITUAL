@@ -39,7 +39,9 @@ export class RecommendationEngine {
               OR: matchedKeywords.map((k) => ({
                 OR: [
                   { name: { contains: k, mode: 'insensitive' as const } },
-                  { description: { contains: k, mode: 'insensitive' as const } },
+                  {
+                    description: { contains: k, mode: 'insensitive' as const },
+                  },
                 ],
               })),
             }

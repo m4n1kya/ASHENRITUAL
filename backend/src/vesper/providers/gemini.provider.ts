@@ -8,13 +8,18 @@ import {
 @Injectable()
 export class GeminiProvider implements AIProvider {
   private readonly logger = new Logger(GeminiProvider.name);
-  private apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || '';
+  private apiKey =
+    process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || '';
 
   constructor() {
     if (!this.apiKey) {
-      this.logger.error('CRITICAL: No Gemini API key found! Set GEMINI_API_KEY or GOOGLE_GEMINI_API_KEY in environment.');
+      this.logger.error(
+        'CRITICAL: No Gemini API key found! Set GEMINI_API_KEY or GOOGLE_GEMINI_API_KEY in environment.',
+      );
     } else {
-      this.logger.log(`Gemini API key loaded (starts with: ${this.apiKey.substring(0, 6)}...)`);
+      this.logger.log(
+        `Gemini API key loaded (starts with: ${this.apiKey.substring(0, 6)}...)`,
+      );
     }
   }
 
@@ -33,7 +38,7 @@ export class GeminiProvider implements AIProvider {
       for (const m of messages) {
         const text = m.content?.trim();
         if (!text) continue; // Skip empty messages
-        
+
         const last = sanitizedMessages[sanitizedMessages.length - 1];
         if (last && last.role === m.role) {
           last.content += '\n\n' + text;

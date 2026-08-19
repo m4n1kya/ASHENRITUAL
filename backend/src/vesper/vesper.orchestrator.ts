@@ -67,18 +67,22 @@ Always base your product recommendations on the INVENTORY SAMPLES provided. Do n
       const isGuest = userEmail?.toLowerCase().startsWith('guest');
       if (isGuest) {
         this.logger.log(`Guest user detected (${userEmail}), bypassing AI...`);
-        
+
         // Yield specific text for guests
         yield {
           type: 'text',
-          content: 'I can give you random recommendations. For proper working of Vesper, sign in using Google.',
+          content:
+            'I can give you random recommendations. For proper working of Vesper, sign in using Google.',
         };
 
         // Fetch 3 random products from the database for recommendations
         // Using Prisma's take and skip for a simple random effect or just take 3.
         const productCount = await this.prisma.product.count();
-        const randomSkip = Math.max(0, Math.floor(Math.random() * (productCount - 3)));
-        
+        const randomSkip = Math.max(
+          0,
+          Math.floor(Math.random() * (productCount - 3)),
+        );
+
         const randomProducts = await this.prisma.product.findMany({
           take: 3,
           skip: randomSkip,
@@ -97,7 +101,7 @@ Always base your product recommendations on the INVENTORY SAMPLES provided. Do n
         };
 
         yield { type: 'json', content: guestJson };
-        
+
         // Log analytics for guest and exit early
         this.logAnalytics({
           userId,
@@ -106,8 +110,10 @@ Always base your product recommendations on the INVENTORY SAMPLES provided. Do n
           responseType: 'guest_bypass',
           productIds: randomProducts.map((p) => p.id).join(','),
           responseTimeMs: Date.now() - startTime,
-        }).catch((e) => this.logger.error('Failed to log analytics (guest)', e));
-        
+        }).catch((e) =>
+          this.logger.error('Failed to log analytics (guest)', e),
+        );
+
         return;
       }
 

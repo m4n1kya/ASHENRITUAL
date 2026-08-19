@@ -42,7 +42,10 @@ EXPECTED JSON STRUCTURE:
 
   constructor() {
     this.ai = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || 'dummy_key_for_build',
+      apiKey:
+        process.env.GEMINI_API_KEY ||
+        process.env.GOOGLE_GEMINI_API_KEY ||
+        'dummy_key_for_build',
     });
   }
 

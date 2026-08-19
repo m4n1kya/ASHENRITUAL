@@ -13,7 +13,19 @@ jest.mock('framer-motion', () => ({
 }));
 
 // Mock react-markdown to just render content as plain text in tests
-jest.mock('react-markdown', () => ({ children }: { children: string }) => <p>{children}</p>);
+jest.mock('react-markdown', () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const MockReactMarkdown = React.forwardRef<HTMLElement, any>(({ children, className }, ref) => {
+    return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      <div data-testid="markdown" className={className} ref={ref as any}>
+        {children}
+      </div>
+    );
+  });
+  MockReactMarkdown.displayName = 'ReactMarkdown';
+  return MockReactMarkdown;
+});
 
 // Mock child components
 jest.mock('./VesperRitualCard', () => ({

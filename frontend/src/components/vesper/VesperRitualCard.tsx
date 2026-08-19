@@ -54,6 +54,7 @@ export function VesperRitualCard({ type, recommendedProducts }: { type: 'ritual'
     } else {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productIds]);
 
   if (loading) {
