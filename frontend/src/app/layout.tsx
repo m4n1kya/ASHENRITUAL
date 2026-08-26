@@ -3,12 +3,14 @@ import { Inter, Cormorant_Garamond, Manrope, Geist_Mono, League_Gothic, Chakra_P
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
-import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { StartupAnimation } from "@/components/layout/StartupAnimation";
-import SettingsDrawer from "@/components/layout/SettingsDrawer";
-import { ConceptUploadWizard } from "@/components/forms/ConceptUploadWizard";
+import dynamic from "next/dynamic";
+
+const ConditionalFooter = dynamic(() => import("@/components/layout/ConditionalFooter").then(mod => mod.ConditionalFooter), { ssr: true });
+const SettingsDrawer = dynamic(() => import("@/components/layout/SettingsDrawer"));
+const ConceptUploadWizard = dynamic(() => import("@/components/forms/ConceptUploadWizard").then(mod => mod.ConceptUploadWizard));
 
 /* ════════════════════════════════════════════════════════════════════════════
    TYPOGRAPHY — matches reference design tokens exactly

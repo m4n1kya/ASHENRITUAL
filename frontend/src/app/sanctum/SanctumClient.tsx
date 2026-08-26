@@ -342,9 +342,9 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User | null; onEn
         <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
           <div className="w-32 h-32 lg:w-48 lg:h-48 rounded-full bg-[#111] overflow-hidden border-2 border-[rgba(255,255,255,0.05)] mb-6 relative">
             {profile?.avatar ? (
-              <Image src={profile.avatar} alt={profile.displayName || profile.username || 'User'} fill className="object-cover" unoptimized />
+              <Image src={profile.avatar} alt={profile.displayName || profile.username || 'User'} fill className="object-cover" />
             ) : (
-              <Image src="/images/default-avatar.png" alt="Guest Profile" fill className="object-cover scale-[1.15] translate-y-3 bg-gradient-to-br from-[#1A1A1A] to-[#2A2A2A]" unoptimized />
+              <Image src="/images/default-avatar.png" alt="Guest Profile" fill className="object-cover scale-[1.15] translate-y-3 bg-gradient-to-br from-[#1A1A1A] to-[#2A2A2A]" />
             )}
           </div>
 
@@ -398,11 +398,11 @@ function CreatorHub({ profile, onEnterExhibition }: { profile: User | null; onEn
             animate={{ y: [-15, 15, -15] }}
             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
             className="relative z-20 w-full transition-transform duration-[1500ms] ease-out group-hover:scale-[1.05]"
-            style={{ height: '380px' }}
+            style={{ height: '380px', willChange: 'transform', WebkitTransform: 'translateZ(0)' }}
           >
-            <Image src="/images/lantern.png" alt="Enter Exhibition" fill sizes="380px"
+            <Image src="/images/lantern.png" alt="Enter Exhibition" fill sizes="380px" priority
               className="object-contain drop-shadow-[0_0_40px_rgba(255,255,255,0.25)] opacity-85 group-hover:opacity-100 transition-opacity duration-700"
-              unoptimized />
+               />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
               <div className="w-[70%] h-[70%] bg-[#FDFCFB]/8 blur-[100px] rounded-full transition-all duration-1000 group-hover:bg-[#FDFCFB]/20 group-hover:blur-[140px]" />
             </div>
@@ -462,7 +462,7 @@ function ScrollingRow({ items, rtl, speed, size, onSelect }: { items: ProtoItem[
             >
               <Image src={item.src} alt={item.title} fill
                 className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                unoptimized />
+                 />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 <p className="font-heading text-[9px] uppercase tracking-widest text-[#FDFCFB] leading-tight truncate">{item.title}</p>
@@ -496,7 +496,7 @@ function PopupCard({ item, onClose }: { item: ProtoItem; onClose: () => void }) 
           onClick={e => e.stopPropagation()}
         >
           <div className="relative w-full" style={{ height: 340 }}>
-            <Image src={item.src} alt={item.title} fill className="object-cover" unoptimized />
+            <Image src={item.src} alt={item.title} fill className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
           </div>
           <div className="p-6">

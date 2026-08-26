@@ -41,7 +41,6 @@ function HeroSection({ scrollYProgress }: { scrollYProgress: MotionValue<number>
           fill
           className="object-cover object-center opacity-80"
           priority
-          unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       </motion.div>
@@ -98,7 +97,6 @@ function BrandPhilosophy() {
             alt="Philosophy"
             fill
             className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 opacity-80"
-            unoptimized
           />
         </motion.div>
         <motion.div
@@ -217,7 +215,6 @@ function MaterialLibrary() {
                 alt={mat.name}
                 fill
                 className="object-cover grayscale opacity-60 group-hover:scale-105 group-hover:opacity-100 transition-all duration-1000 ease-[0.22,1,0.36,1]"
-                unoptimized
               />
             </div>
             <h3 className="font-heading text-lg uppercase tracking-wide text-[#E8E8E8] mb-2">{mat.name}</h3>
@@ -329,7 +326,6 @@ function SeasonalDevelopment() {
                       alt={season.name}
                       fill
                       className="object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-[1.5s] ease-[0.22,1,0.36,1]"
-                      unoptimized
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
@@ -400,7 +396,6 @@ function Craftsmanship() {
             alt="Tailoring"
             fill
             className="object-cover grayscale opacity-60"
-            unoptimized
           />
           <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-background hidden lg:block" />
         </div>
@@ -446,7 +441,6 @@ function StudioGallery() {
               alt="Studio Gallery"
               fill
               className="object-cover grayscale hover:grayscale-0 transition-all duration-[2s]"
-              unoptimized
             />
           </div>
         ))}

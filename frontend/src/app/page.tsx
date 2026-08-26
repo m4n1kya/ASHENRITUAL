@@ -86,7 +86,6 @@ export default function HomePage() {
             sizes="100vw"
             className="object-cover object-center"
             quality={100}
-            unoptimized
           />
           {/* Gradient: heavy on left for text legibility, bottom fade to site bg */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A]/85 via-[#0A0A0A]/30 to-transparent" />
@@ -515,7 +514,6 @@ export default function HomePage() {
                   fill 
                   sizes="(max-width: 1024px) 80vw, 50vw" 
                   className="object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]" 
-                  unoptimized
                 />
               </motion.div>
             </motion.div>

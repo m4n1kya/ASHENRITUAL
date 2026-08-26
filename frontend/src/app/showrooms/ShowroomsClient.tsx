@@ -220,7 +220,7 @@ function HeroSection({ scrollYProgress }: { scrollYProgress: MotionValue<number>
   return (
     <section className="relative flex h-screen w-full items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.03)]">
       <motion.div style={{ y, opacity }} className="absolute inset-0 z-0 bg-[#050505]">
-        <Image src="/images/showrooms/showroom-hero-dark.jpg" alt="Showrooms Hero" fill className="object-cover opacity-80" unoptimized priority />
+        <Image src="/images/showrooms/showroom-hero-dark.jpg" alt="Showrooms Hero" fill className="object-cover opacity-80" priority />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/40 to-background z-10" />
       </motion.div>
 
@@ -364,7 +364,6 @@ function ShowroomGrid({ city, showrooms }: { city: string, showrooms: Showroom[]
                     alt={store.name}
                     fill
                     className="object-cover grayscale opacity-70 group-hover:opacity-100 group-hover:scale-[1.03] transition-all duration-[2000ms] ease-[0.22,1,0.36,1]"
-                    unoptimized
                   />
                 ) : (
                   <div className="absolute inset-0 bg-[#0A0A0A]" />
