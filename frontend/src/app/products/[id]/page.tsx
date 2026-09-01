@@ -14,7 +14,7 @@ interface ProductPageProps {
 
 async function getProduct(id: string) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-  const res = await fetch(`${API_URL}/products/${id}`, { cache: 'no-store' });
+  const res = await fetch(`${API_URL}/products/${id}`, { next: { revalidate: 3600 } });
   if (!res.ok) return null;
   return res.json();
 }
@@ -22,7 +22,7 @@ async function getProduct(id: string) {
 async function getRelated(categoryId: string, currentId: string): Promise<Product[]> {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
   try {
-    const res = await fetch(`${API_URL}/products?category=${categoryId}`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/products?category=${categoryId}`, { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const data = await res.json();
     return data.filter((p: Product) => p.id !== currentId).slice(0, 4);

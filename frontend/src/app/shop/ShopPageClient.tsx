@@ -23,17 +23,33 @@ const SORT_OPTIONS = [
 
 const containerVariants = {};
 
-export function ShopPageClient() {
+export interface ShopPageClientProps {
+  initialProducts: Product[];
+  initialCategories: Category[];
+  initialTotal: number;
+  initialTotalPages: number;
+}
+
+export function ShopPageClient({
+  initialProducts,
+  initialCategories,
+  initialTotal,
+  initialTotalPages,
+}: ShopPageClientProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const gridRef = useRef<HTMLDivElement>(null);
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  
+  // If there are initial products, we don't need to show the loading skeleton initially unless query params exist that differ
+  const hasInitialParams = searchParams.toString() !== '';
+  const [loading, setLoading] = useState(hasInitialParams);
+  
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [totalItems, setTotalItems] = useState(initialTotal);
 
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
   const [selectedSort, setSelectedSort] = useState(searchParams.get('sort') || 'newest');
@@ -79,9 +95,19 @@ export function ShopPageClient() {
     }
   }, [filterKey]);
 
-    useEffect(() => {
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
     let cancelled = false;
     async function load() {
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        if (!selectedCategory && !searchQuery && selectedSort === 'newest' && page === 1) {
+          setLoading(false);
+          return;
+        }
+      }
+
       if (page === 1) setLoading(true);
       else setLoadingMore(true);
 
@@ -122,10 +148,6 @@ export function ShopPageClient() {
     load();
     return () => { cancelled = true; };
   }, [selectedCategory, selectedSort, searchQuery, page]);
-
-  useEffect(() => {
-    api.get<Category[]>('/categories').then(setCategories).catch(() => {});
-  }, []);
 
   const scrollToGrid = useCallback(() => {
     gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
