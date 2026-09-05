@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module addresses.service.ts
+ */
 import {
   Injectable,
   NotFoundException,
