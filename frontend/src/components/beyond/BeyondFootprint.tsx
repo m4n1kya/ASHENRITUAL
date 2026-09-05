@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module BeyondFootprint.tsx
+ */
 'use client';
 
 export function BeyondFootprint() {
