@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module utils.spec.ts
+ */
 import { cn } from './utils';
 
 describe('utils', () => {
