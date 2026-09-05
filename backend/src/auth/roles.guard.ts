@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module roles.guard.ts
+ */
 import {
   Injectable,
   CanActivate,
