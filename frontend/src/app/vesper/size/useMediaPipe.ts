@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module useMediaPipe.ts
+ */
 import { useEffect, useState, useRef } from "react";
 import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
