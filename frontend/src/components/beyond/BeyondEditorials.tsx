@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module BeyondEditorials.tsx
+ */
 'use client';
 
 import { useRef } from 'react';
