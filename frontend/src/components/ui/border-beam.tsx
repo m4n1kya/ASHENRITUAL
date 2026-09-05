@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module border-beam.tsx
+ */
 import { cn } from "@/lib/utils";
 
 interface BorderBeamProps {
