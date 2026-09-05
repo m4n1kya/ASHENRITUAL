@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module validate-cart.dto.ts
+ */
 import {
   IsString,
   IsInt,
