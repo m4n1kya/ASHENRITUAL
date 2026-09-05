@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module admin.controller.ts
+ */
 import {
   Controller,
   Get,
