@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module layout.tsx
+ */
 "use client";
 
 import { useState, useEffect } from "react";
