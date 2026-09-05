@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module auth.service.ts
+ */
 import {
   Injectable,
   UnauthorizedException,
