@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module page.tsx
+ */
 "use client";
 
 export default function AdminCouponsPage() {
