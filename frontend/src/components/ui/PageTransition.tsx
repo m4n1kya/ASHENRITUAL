@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module PageTransition.tsx
+ */
 'use client';
 
 import { motion } from 'framer-motion';
