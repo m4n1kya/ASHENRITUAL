@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module VesperTeaser.tsx
+ */
 'use client';
 
 import { motion } from 'framer-motion';
