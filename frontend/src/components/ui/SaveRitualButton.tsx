@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module SaveRitualButton.tsx
+ */
 'use client';
 
 import { useState } from 'react';
