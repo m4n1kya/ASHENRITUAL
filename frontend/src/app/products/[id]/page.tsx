@@ -1,9 +1,9 @@
-import type { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import type { Product } from '@/types';
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import type { Product } from "@/types";
 
 /* Reference: Product detail — large image left with 4-grid thumbnails bottom,
    right panel has breadcrumb, huge product name, price, "MOVE TO REVEAL" CTA */
@@ -13,26 +13,39 @@ interface ProductPageProps {
 }
 
 async function getProduct(id: string) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-  const res = await fetch(`${API_URL}/products/${id}`, { next: { revalidate: 3600 } });
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    next: { revalidate: 3600 },
+  });
   if (!res.ok) return null;
   return res.json();
 }
 
-async function getRelated(categoryId: string, currentId: string): Promise<Product[]> {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+async function getRelated(
+  categoryId: string,
+  currentId: string,
+): Promise<Product[]> {
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
   try {
-    const res = await fetch(`${API_URL}/products?category=${categoryId}`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API_URL}/products?category=${categoryId}`, {
+      next: { revalidate: 3600 },
+    });
     if (!res.ok) return [];
     const data = await res.json();
     return data.filter((p: Product) => p.id !== currentId).slice(0, 4);
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
-export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
   const { id } = await params;
   const product = await getProduct(id);
-  if (!product) return { title: 'Product Not Found — ASHENRITUAL' };
+  if (!product) return { title: "Product Not Found — ASHENRITUAL" };
   return {
     title: `${product.name} — ASHENRITUAL`,
     description: product.description,
@@ -48,7 +61,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const related = await getRelated(product.categoryId, id);
 
   const avgRating = product.reviews?.length
-    ? (product.reviews.reduce((s: number, r: { rating: number }) => s + r.rating, 0) / product.reviews.length).toFixed(1)
+    ? (
+        product.reviews.reduce(
+          (s: number, r: { rating: number }) => s + r.rating,
+          0,
+        ) / product.reviews.length
+      ).toFixed(1)
     : null;
 
   return (
@@ -56,7 +74,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
       {/* ── Product Hero ──────────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-screen-xl px-8 py-12 lg:px-12">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
-
           {/* Left — Images */}
           <div className="space-y-3">
             {/* Main image — large, no border */}
@@ -72,7 +89,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="font-heading text-8xl font-semibold uppercase tracking-[0.2em] text-[#202020]">AR</span>
+                  <span className="font-heading text-8xl font-semibold uppercase tracking-[0.2em] text-[#202020]">
+                    AR
+                  </span>
                 </div>
               )}
             </div>
@@ -81,7 +100,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {product.images?.length > 1 && (
               <div className="grid grid-cols-4 gap-2">
                 {product.images.slice(0, 4).map((img: string, i: number) => (
-                  <div key={i} className="relative aspect-square overflow-hidden bg-card">
+                  <div
+                    key={i}
+                    className="relative aspect-square overflow-hidden bg-card"
+                  >
                     <Image
                       src={img}
                       alt={`${product.name} ${i + 1}`}
@@ -102,7 +124,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </p>
                 <div className="grid grid-cols-4 gap-2">
                   {related.map((p) => (
-                    <Link key={p.id} href={`/products/${p.id}`} className="group">
+                    <Link
+                      key={p.id}
+                      href={`/products/${p.id}`}
+                      className="group"
+                    >
                       <div className="relative aspect-[3/4] overflow-hidden bg-card">
                         {p.images?.[0] && (
                           <Image
@@ -114,7 +140,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
                           />
                         )}
                       </div>
-                      <p className="mt-2 text-[10px] text-[#8D8D8D] group-hover:text-[#E8E8E8] transition-colors duration-300 truncate">{p.name}</p>
+                      <p className="mt-2 text-[10px] text-[#8D8D8D] group-hover:text-[#E8E8E8] transition-colors duration-300 truncate">
+                        {p.name}
+                      </p>
                     </Link>
                   ))}
                 </div>
@@ -126,13 +154,23 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div className="flex flex-col">
             {/* Breadcrumb — exact reference style */}
             <nav className="mb-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-[#8D8D8D]">
-              <Link href="/shop" className="hover:text-[#E8E8E8] transition-colors duration-300">Shop</Link>
+              <Link
+                href="/shop"
+                className="hover:text-[#E8E8E8] transition-colors duration-300"
+              >
+                Shop
+              </Link>
               <span className="text-[#202020]">/</span>
-              <Link href={`/shop?category=${product.category?.slug}`} className="hover:text-[#E8E8E8] transition-colors duration-300">
+              <Link
+                href={`/shop?category=${product.category?.slug}`}
+                className="hover:text-[#E8E8E8] transition-colors duration-300"
+              >
                 {product.category?.name}
               </Link>
               <span className="text-[#202020]">/</span>
-              <span className="text-[#E8E8E8] truncate max-w-[140px]">{product.name}</span>
+              <span className="text-[#E8E8E8] truncate max-w-[140px]">
+                {product.name}
+              </span>
             </nav>
 
             {/* Product name — large, reference style */}
@@ -143,7 +181,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {/* Price */}
             <div className="mt-5 flex items-baseline gap-4">
               <span className="font-heading text-2xl font-medium text-[#E8E8E8]">
-                ₹{Number(product.price).toLocaleString('en-IN')}.00
+                ₹{Number(product.price).toLocaleString("en-IN")}.00
               </span>
               {avgRating && (
                 <span className="text-[11px] text-[#8D8D8D]">
@@ -163,9 +201,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             {/* Stock indicator */}
             <div className="mb-6 flex items-center gap-3">
-              <span className={`h-1.5 w-1.5 ${product.stock > 0 ? 'bg-[#E8E8E8]' : 'bg-[#8D8D8D]'}`} />
+              <span
+                className={`h-1.5 w-1.5 ${product.stock > 0 ? "bg-[#E8E8E8]" : "bg-[#8D8D8D]"}`}
+              />
               <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-[#8D8D8D]">
-                {product.stock > 0 ? `${product.stock} available` : 'Sold Out'}
+                {product.stock > 0 ? `${product.stock} available` : "Sold Out"}
               </span>
             </div>
 
@@ -180,12 +220,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {/* Meta details */}
             <div className="space-y-3">
               {[
-                { label: 'Category', value: product.category?.name },
-                { label: 'SKU', value: product.id.slice(0, 8).toUpperCase() },
-                { label: 'Availability', value: product.stock > 0 ? 'In Stock' : 'Unavailable' },
+                { label: "Category", value: product.category?.name },
+                { label: "SKU", value: product.id.slice(0, 8).toUpperCase() },
+                {
+                  label: "Availability",
+                  value: product.stock > 0 ? "In Stock" : "Unavailable",
+                },
               ].map(({ label, value }) => (
-                <div key={label} className="flex items-center justify-between border-b border-[#202020]/40 pb-3">
-                  <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-[#8D8D8D]">{label}</span>
+                <div
+                  key={label}
+                  className="flex items-center justify-between border-b border-[#202020]/40 pb-3"
+                >
+                  <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-[#8D8D8D]">
+                    {label}
+                  </span>
                   <span className="text-[12px] text-[#E8E8E8]">{value}</span>
                 </div>
               ))}
@@ -198,26 +246,47 @@ export default async function ProductPage({ params }: ProductPageProps) {
       {product.reviews?.length > 0 && (
         <section className="border-t border-[#202020]">
           <div className="mx-auto max-w-screen-xl px-8 py-16 lg:px-12">
-            <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">Perspectives</p>
-            <h2 className="mt-3 font-heading text-2xl font-semibold uppercase tracking-[0.1em] text-[#E8E8E8]">Reviews</h2>
+            <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">
+              Perspectives
+            </p>
+            <h2 className="mt-3 font-heading text-2xl font-semibold uppercase tracking-[0.1em] text-[#E8E8E8]">
+              Reviews
+            </h2>
             <div className="mt-8 grid gap-4 md:grid-cols-3">
-              {product.reviews.map((review: { id: string; rating: number; comment?: string; user?: { email: string } }) => (
-                <div key={review.id} className="border border-[#202020] bg-card p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i} className={`text-[11px] ${i < review.rating ? 'text-[#E8E8E8]' : 'text-[#202020]'}`}>★</span>
-                      ))}
+              {product.reviews.map(
+                (review: {
+                  id: string;
+                  rating: number;
+                  comment?: string;
+                  user?: { email: string };
+                }) => (
+                  <div
+                    key={review.id}
+                    className="border border-[#202020] bg-card p-6"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span
+                            key={i}
+                            className={`text-[11px] ${i < review.rating ? "text-[#E8E8E8]" : "text-[#202020]"}`}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-[#8D8D8D] truncate ml-2 max-w-[120px]">
+                        {review.user?.email?.split("@")[0]}
+                      </span>
                     </div>
-                    <span className="text-[10px] text-[#8D8D8D] truncate ml-2 max-w-[120px]">
-                      {review.user?.email?.split('@')[0]}
-                    </span>
+                    {review.comment && (
+                      <p className="text-[12px] leading-relaxed text-[#8D8D8D]">
+                        {review.comment}
+                      </p>
+                    )}
                   </div>
-                  {review.comment && (
-                    <p className="text-[12px] leading-relaxed text-[#8D8D8D]">{review.comment}</p>
-                  )}
-                </div>
-              ))}
+                ),
+              )}
             </div>
           </div>
         </section>
@@ -246,7 +315,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   );
 }
 
-import { AddToCartButtonServer } from './AddToCartButton';
-import { SaveRitualButton } from '@/components/ui/SaveRitualButton';
-import { SizeRecommendationClient } from './SizeRecommendationClient';
-import { ProductCard } from '@/components/ui/ProductCard';
+import { AddToCartButtonServer } from "./AddToCartButton";
+import { SaveRitualButton } from "@/components/ui/SaveRitualButton";
+import { SizeRecommendationClient } from "./SizeRecommendationClient";
+import { ProductCard } from "@/components/ui/ProductCard";
