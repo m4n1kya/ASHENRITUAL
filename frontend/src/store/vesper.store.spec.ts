@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module vesper.store.spec.ts
+ */
 import { act } from 'react';
 import { useVesperStore } from './vesper.store';
 
