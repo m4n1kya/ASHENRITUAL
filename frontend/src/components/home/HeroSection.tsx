@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module HeroSection.tsx
+ */
 "use client";
 
 import { motion } from "framer-motion";
