@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module UniversalProfileForm.tsx
+ */
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
