@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module addresses.controller.ts
+ */
 import {
   Controller,
   Post,
