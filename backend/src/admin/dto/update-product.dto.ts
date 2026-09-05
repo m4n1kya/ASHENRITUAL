@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module update-product.dto.ts
+ */
 import {
   IsString,
   IsOptional,
