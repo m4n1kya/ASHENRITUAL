@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module page.tsx
+ */
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ShowroomsClient } from "./ShowroomsClient";
