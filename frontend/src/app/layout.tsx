@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module layout.tsx
+ */
 import type { Metadata } from "next";
 import {
   Inter,
