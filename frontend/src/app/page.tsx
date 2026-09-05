@@ -1,33 +1,60 @@
-'use client';
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module page.tsx
+ */
+"use client";
 
-import { useRef, useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Plus, Hourglass } from 'lucide-react';
-import { HomeConcierge } from '@/components/vesper/HomeConcierge';
+import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+} from "framer-motion";
+import { ArrowRight, Plus, Hourglass } from "lucide-react";
+import { HomeConcierge } from "@/components/vesper/HomeConcierge";
 
 /* ─── Motion ─────────────────────────────────────────────────────────────── */
 const E = [0.4, 0, 0.2, 1] as const;
-const SLOW   = { duration: 0.8, ease: E };
+const SLOW = { duration: 0.8, ease: E };
 const MEDIUM = { duration: 0.5, ease: E };
 
 /* ─── Hourly rotating quotes ─────────────────────────────────────────────── */
 const QUOTES = [
-  { q: 'Fashion changes, but style endures.',                                 author: 'Coco Chanel'            },
-  { q: 'Simplicity is the ultimate sophistication.',                          author: 'Leonardo da Vinci'      },
-  { q: 'Elegance is elimination.',                                            author: 'Cristóbal Balenciaga'   },
-  { q: 'Luxury must be comfortable, otherwise it is not luxury.',             author: 'Coco Chanel'            },
-  { q: 'Clothes mean nothing until someone lives in them.',                   author: 'Marc Jacobs'            },
-  { q: 'The details are not the details. They make the design.',              author: 'Charles Eames'          },
-  { q: 'God is in the details.',                                              author: 'Ludwig Mies van der Rohe'},
-  { q: 'Quality is remembered long after price is forgotten.',                author: 'Aldo Gucci'             },
+  { q: "Fashion changes, but style endures.", author: "Coco Chanel" },
+  {
+    q: "Simplicity is the ultimate sophistication.",
+    author: "Leonardo da Vinci",
+  },
+  { q: "Elegance is elimination.", author: "Cristóbal Balenciaga" },
+  {
+    q: "Luxury must be comfortable, otherwise it is not luxury.",
+    author: "Coco Chanel",
+  },
+  {
+    q: "Clothes mean nothing until someone lives in them.",
+    author: "Marc Jacobs",
+  },
+  {
+    q: "The details are not the details. They make the design.",
+    author: "Charles Eames",
+  },
+  { q: "God is in the details.", author: "Ludwig Mies van der Rohe" },
+  {
+    q: "Quality is remembered long after price is forgotten.",
+    author: "Aldo Gucci",
+  },
 ];
 function useHourlyQuote() {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
     setIdx(Math.floor(Date.now() / 3_600_000) % QUOTES.length);
-    const t = setInterval(() => setIdx(i => (i + 1) % QUOTES.length), 3_600_000);
+    const t = setInterval(
+      () => setIdx((i) => (i + 1) % QUOTES.length),
+      3_600_000,
+    );
     return () => clearInterval(t);
   }, []);
   return QUOTES[idx];
@@ -35,14 +62,54 @@ function useHourlyQuote() {
 
 /* ─── Static product strip ───────────────────────────────────────────────── */
 const FORGED = [
-  { id: '1', name: 'Charcoal Overcoat',      price: '₹ 18,990',  img: '/images/clothes/Jackets/cmm25223_charcoal_xl.webp' },
-  { id: '2', name: 'Slate Grey Power Suit',  price: '₹ 24,990',  img: '/images/clothes/Suit/m5056611947048_grey_xl.webp'  },
-  { id: '3', name: 'Void Black Tee',         price: '₹  1,990',  img: '/images/clothes/Tshirts/cmm19350_black_xl.webp'    },
-  { id: '4', name: 'Carbon Derby',           price: '₹  9,499',  img: '/images/clothes/Shoes/bmm40163_black_xl.webp'      },
-  { id: '5', name: 'Obsidian Biker Jacket',  price: '₹ 14,300',  img: '/images/clothes/Jackets/cmm19047_black_xl.webp'    },
-  { id: '6', name: 'Graphite Overshirt',     price: '₹  4,999',  img: '/images/clothes/Shirts/cmm24428_black_xl.webp'     },
-  { id: '7', name: 'Ash Grey Trousers',      price: '₹  6,499',  img: '/images/clothes/Trousers/cmm17128_grey_xl.webp'    },
-  { id: '8', name: 'Midnight Trench Coat',   price: '₹ 21,990',  img: '/images/clothes/Coat/cmm14610_black_xl.webp'       },
+  {
+    id: "1",
+    name: "Charcoal Overcoat",
+    price: "₹ 18,990",
+    img: "/images/clothes/Jackets/cmm25223_charcoal_xl.webp",
+  },
+  {
+    id: "2",
+    name: "Slate Grey Power Suit",
+    price: "₹ 24,990",
+    img: "/images/clothes/Suit/m5056611947048_grey_xl.webp",
+  },
+  {
+    id: "3",
+    name: "Void Black Tee",
+    price: "₹  1,990",
+    img: "/images/clothes/Tshirts/cmm19350_black_xl.webp",
+  },
+  {
+    id: "4",
+    name: "Carbon Derby",
+    price: "₹  9,499",
+    img: "/images/clothes/Shoes/bmm40163_black_xl.webp",
+  },
+  {
+    id: "5",
+    name: "Obsidian Biker Jacket",
+    price: "₹ 14,300",
+    img: "/images/clothes/Jackets/cmm19047_black_xl.webp",
+  },
+  {
+    id: "6",
+    name: "Graphite Overshirt",
+    price: "₹  4,999",
+    img: "/images/clothes/Shirts/cmm24428_black_xl.webp",
+  },
+  {
+    id: "7",
+    name: "Ash Grey Trousers",
+    price: "₹  6,499",
+    img: "/images/clothes/Trousers/cmm17128_grey_xl.webp",
+  },
+  {
+    id: "8",
+    name: "Midnight Trench Coat",
+    price: "₹ 21,990",
+    img: "/images/clothes/Coat/cmm14610_black_xl.webp",
+  },
 ];
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -50,22 +117,29 @@ const FORGED = [
 ══════════════════════════════════════════════════════════════════════════ */
 export default function HomePage() {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const imgY   = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
   const heroOp = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
-  
+
   const bannerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress: bannerScroll } = useScroll({ target: bannerRef, offset: ['start end', 'end start'] });
+  const { scrollYProgress: bannerScroll } = useScroll({
+    target: bannerRef,
+    offset: ["start end", "end start"],
+  });
   const bannerOp = useTransform(bannerScroll, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
 
-  const quote  = useHourlyQuote();
+  const quote = useHourlyQuote();
 
   return (
     <div className="min-h-screen bg-background">
-
       {/* ════════════════════════════════════════════════════════════════════
           HERO — exact reference layout:
           • "PRESENCE ISN'T PURCHASED." — large Cormorant Garamond, bottom-left
@@ -74,10 +148,16 @@ export default function HomePage() {
           • Bottom-left: 001
           • Bottom-right: ANCIENT. PERMANENT. RITUALISTIC.
       ════════════════════════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="keep-light-text relative h-screen w-full overflow-hidden" aria-label="Hero">
-
+      <section
+        ref={heroRef}
+        className="keep-light-text relative h-screen w-full overflow-hidden"
+        aria-label="Hero"
+      >
         {/* ── Background image — parallax ── */}
-        <motion.div style={{ y: imgY }} className="absolute top-[52px] inset-x-0 bottom-0 z-0 will-change-transform">
+        <motion.div
+          style={{ y: imgY }}
+          className="absolute top-[52px] inset-x-0 bottom-0 z-0 will-change-transform"
+        >
           <Image
             src="/images/home-hero.jpg"
             alt="ASHENRITUAL — Presence isn't purchased"
@@ -99,23 +179,90 @@ export default function HomePage() {
           aria-hidden="true"
         >
           {/* Left-side vertical lines */}
-          <svg className="absolute inset-0 h-full w-full opacity-[0.08]" preserveAspectRatio="none">
+          <svg
+            className="absolute inset-0 h-full w-full opacity-[0.08]"
+            preserveAspectRatio="none"
+          >
             {/* Horizontal rule near top */}
-            <line x1="0" y1="12%" x2="38%" y2="12%" stroke="#FDFCFB" strokeWidth="0.5" />
+            <line
+              x1="0"
+              y1="12%"
+              x2="38%"
+              y2="12%"
+              stroke="#FDFCFB"
+              strokeWidth="0.5"
+            />
             {/* Vertical line left */}
-            <line x1="6%" y1="0" x2="6%" y2="100%" stroke="#FDFCFB" strokeWidth="0.5" />
+            <line
+              x1="6%"
+              y1="0"
+              x2="6%"
+              y2="100%"
+              stroke="#FDFCFB"
+              strokeWidth="0.5"
+            />
             {/* Small crosshair top-left */}
-            <line x1="5.5%" y1="11.5%" x2="6.5%" y2="11.5%" stroke="#FDFCFB" strokeWidth="0.8" />
-            <line x1="6%" y1="11%" x2="6%" y2="12%" stroke="#FDFCFB" strokeWidth="0.8" />
+            <line
+              x1="5.5%"
+              y1="11.5%"
+              x2="6.5%"
+              y2="11.5%"
+              stroke="#FDFCFB"
+              strokeWidth="0.8"
+            />
+            <line
+              x1="6%"
+              y1="11%"
+              x2="6%"
+              y2="12%"
+              stroke="#FDFCFB"
+              strokeWidth="0.8"
+            />
             {/* Bottom horizontal rule */}
-            <line x1="0" y1="88%" x2="38%" y2="88%" stroke="#FDFCFB" strokeWidth="0.5" />
+            <line
+              x1="0"
+              y1="88%"
+              x2="38%"
+              y2="88%"
+              stroke="#FDFCFB"
+              strokeWidth="0.5"
+            />
             {/* Corner crosshair bottom-left */}
-            <line x1="5.5%" y1="88%" x2="6.5%" y2="88%" stroke="#FDFCFB" strokeWidth="0.8" />
-            <line x1="6%" y1="87.5%" x2="6%" y2="88.5%" stroke="#FDFCFB" strokeWidth="0.8" />
+            <line
+              x1="5.5%"
+              y1="88%"
+              x2="6.5%"
+              y2="88%"
+              stroke="#FDFCFB"
+              strokeWidth="0.8"
+            />
+            <line
+              x1="6%"
+              y1="87.5%"
+              x2="6%"
+              y2="88.5%"
+              stroke="#FDFCFB"
+              strokeWidth="0.8"
+            />
             {/* Mid vertical dashed */}
-            <line x1="32%" y1="10%" x2="32%" y2="90%" stroke="#FDFCFB" strokeWidth="0.4" strokeDasharray="2 8" />
+            <line
+              x1="32%"
+              y1="10%"
+              x2="32%"
+              y2="90%"
+              stroke="#FDFCFB"
+              strokeWidth="0.4"
+              strokeDasharray="2 8"
+            />
             {/* Subtle horizontal rule mid */}
-            <line x1="6%" y1="60%" x2="32%" y2="60%" stroke="#FDFCFB" strokeWidth="0.4" />
+            <line
+              x1="6%"
+              y1="60%"
+              x2="32%"
+              y2="60%"
+              stroke="#FDFCFB"
+              strokeWidth="0.4"
+            />
           </svg>
         </motion.div>
 
@@ -128,19 +275,28 @@ export default function HomePage() {
           {/* Infinite Vertical Tailor's Measuring Tape (Sophisticated) */}
           <div className="relative h-full w-12 border-l border-[rgba(255,255,255,0.04)] overflow-hidden">
             <motion.div
-              animate={{ y: ['-50%', '0%'] }}
-              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+              animate={{ y: ["-50%", "0%"] }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
               className="flex w-full flex-col pt-10"
             >
               {/* Loop the tape twice to make it infinite */}
               {[0, 1].map((loopIdx) => (
                 <div key={loopIdx} className="w-full">
                   {[...Array(100)].map((_, i) => (
-                    <div key={i} className="flex w-full items-center justify-end pr-3" style={{ height: '30px' }}>
+                    <div
+                      key={i}
+                      className="flex w-full items-center justify-end pr-3"
+                      style={{ height: "30px" }}
+                    >
                       {i % 10 === 0 ? (
                         <>
                           <span className="font-sans text-[10px] tracking-widest text-[#8D8D8D] mr-3 -rotate-90 origin-right translate-x-1 opacity-60">
-                            {i.toString().replace(/[0-9]/g, d => '०१२३४५६७८९'[parseInt(d)])}
+                            {i
+                              .toString()
+                              .replace(
+                                /[0-9]/g,
+                                (d) => "०१२३४५६७८९"[parseInt(d)],
+                              )}
                           </span>
                           <div className="h-[1px] w-4 bg-[#8D8D8D]/40" />
                         </>
@@ -160,7 +316,6 @@ export default function HomePage() {
         {/* ── Floating Vesper Home Concierge ── */}
         <HomeConcierge />
 
-
         {/* ── Main text content — bottom-left ── */}
         <motion.div
           style={{ opacity: heroOp }}
@@ -174,14 +329,16 @@ export default function HomePage() {
               transition={{ ...SLOW, delay: 0.45 }}
               className="mt-4 font-gothic leading-[1.0] text-[#FDFCFB]"
               style={{
-                fontSize: 'clamp(3.5rem, 8vw, 6.5rem)',
+                fontSize: "clamp(3.5rem, 8vw, 6.5rem)",
                 fontWeight: 400,
-                letterSpacing: '0.02em',
-                fontStyle: 'normal',
+                letterSpacing: "0.02em",
+                fontStyle: "normal",
               }}
             >
-              DESIGNED<br />
-              WITH<br />
+              DESIGNED
+              <br />
+              WITH
+              <br />
               INTENT.
             </motion.h1>
 
@@ -192,9 +349,8 @@ export default function HomePage() {
               transition={{ ...SLOW, delay: 0.8 }}
               className="mt-5 max-w-[340px] text-[12px] leading-relaxed text-[#8D8D8D] keep-light-text"
             >
-              AshenRitual is not about trends. It&apos;s about
-              timeless design, intentional craft, and the discipline
-              to choose less.
+              AshenRitual is not about trends. It&apos;s about timeless design,
+              intentional craft, and the discipline to choose less.
             </motion.p>
 
             {/* CTA — exact reference: outlined, "EXPLORE THE RITUAL →" */}
@@ -209,7 +365,10 @@ export default function HomePage() {
                 className="group inline-flex h-11 items-center gap-5 border border-[#FDFCFB]/30 px-7 font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-[#FDFCFB] hover:bg-[#FDFCFB] hover:text-[#0A0A0A]"
               >
                 Explore the Ritual
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1.5" strokeWidth={1.5} />
+                <ArrowRight
+                  className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1.5"
+                  strokeWidth={1.5}
+                />
               </Link>
             </motion.div>
           </div>
@@ -221,7 +380,9 @@ export default function HomePage() {
           className="absolute bottom-8 left-8 z-20"
           aria-hidden="true"
         >
-          <span className="font-heading text-[10px] font-medium tracking-[0.3em] text-[#8D8D8D]/50">001</span>
+          <span className="font-heading text-[10px] font-medium tracking-[0.3em] text-[#8D8D8D]/50">
+            001
+          </span>
           {/* Short horizontal rule after it */}
           <div className="mt-1 h-px w-16 bg-[#202020]" />
         </motion.div>
@@ -232,7 +393,7 @@ export default function HomePage() {
           className="absolute bottom-8 right-8 z-20 text-right"
           aria-hidden="true"
         >
-          {['Ancient.', 'Permanent.', 'Ritualistic.'].map((word, i) => (
+          {["Ancient.", "Permanent.", "Ritualistic."].map((word, i) => (
             <motion.p
               key={word}
               initial={{ opacity: 0, x: 8 }}
@@ -257,9 +418,14 @@ export default function HomePage() {
               <h2 className="font-heading text-[11px] font-semibold uppercase tracking-[0.3em] text-[#FDFCFB]">
                 Forged Today
               </h2>
-              <p className="mt-1 text-[11px] text-[#8D8D8D]">New arrivals crafted by the Ashen Ritual.</p>
+              <p className="mt-1 text-[11px] text-[#8D8D8D]">
+                New arrivals crafted by the Ashen Ritual.
+              </p>
             </div>
-            <Link href="/shop" className="font-heading text-[9px] font-medium uppercase tracking-[0.3em] text-[#8D8D8D] hover:text-[#FDFCFB] transition-colors duration-300">
+            <Link
+              href="/shop"
+              className="font-heading text-[9px] font-medium uppercase tracking-[0.3em] text-[#8D8D8D] hover:text-[#FDFCFB] transition-colors duration-300"
+            >
               View All
             </Link>
           </div>
@@ -271,7 +437,7 @@ export default function HomePage() {
                 key={p.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }}
+                viewport={{ once: true, margin: "-40px" }}
                 transition={{ ...MEDIUM, delay: i * 0.08 }}
               >
                 <Link href={`/products/${p.id}`} className="group block">
@@ -286,7 +452,9 @@ export default function HomePage() {
                     <div className="absolute inset-0 bg-black/0 transition-[background-color] duration-700 group-hover:bg-black/20" />
                   </div>
                   <div className="mt-3 space-y-1">
-                    <p className="text-[12px] font-medium text-[#FDFCFB]">{p.name}</p>
+                    <p className="text-[12px] font-medium text-[#FDFCFB]">
+                      {p.name}
+                    </p>
                     <p className="text-[11px] text-[#8D8D8D]">{p.price}</p>
                   </div>
                 </Link>
@@ -299,7 +467,10 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════════════════════════════
           EDITORIAL BANNER — Dark Stone Carved Banner
       ════════════════════════════════════════════════════════════════════ */}
-      <section ref={bannerRef} className="relative w-full border-t border-[rgba(255,255,255,0.08)] bg-black">
+      <section
+        ref={bannerRef}
+        className="relative w-full border-t border-[rgba(255,255,255,0.08)] bg-black"
+      >
         <motion.div
           style={{ opacity: bannerOp }}
           className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden md:aspect-[21/9]"
@@ -312,7 +483,7 @@ export default function HomePage() {
             className="object-cover brightness-75 opacity-90"
             priority={false}
           />
-          
+
           {/* High Contrast Quote */}
           <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-start justify-center p-8 px-12 md:px-24 text-left">
             <h2 className="max-w-3xl font-sans text-2xl font-medium leading-tight tracking-wide text-white sm:text-4xl md:text-5xl lg:text-5xl drop-shadow-md">
@@ -343,9 +514,24 @@ export default function HomePage() {
           {/* Principles + images — 3 cells */}
           <div className="grid grid-cols-1 gap-px bg-[#202020] sm:grid-cols-1 lg:grid-cols-3">
             {[
-              { n: '01', t: 'Intentional', d: 'We design with purpose. Nothing is accidental.', img: '/images/INTENTIONAL.jpg' },
-              { n: '02', t: 'Precise',     d: 'Every detail serves a function.',                img: '/images/PRECISE.jpg' },
-              { n: '03', t: 'Timeless',    d: 'Built to outlast trends. Made to endure.',       img: '/images/TIMELESS.jpg' },
+              {
+                n: "01",
+                t: "Intentional",
+                d: "We design with purpose. Nothing is accidental.",
+                img: "/images/INTENTIONAL.jpg",
+              },
+              {
+                n: "02",
+                t: "Precise",
+                d: "Every detail serves a function.",
+                img: "/images/PRECISE.jpg",
+              },
+              {
+                n: "03",
+                t: "Timeless",
+                d: "Built to outlast trends. Made to endure.",
+                img: "/images/TIMELESS.jpg",
+              },
             ].map(({ n, t, d, img }, i) => (
               <motion.div
                 key={n}
@@ -355,19 +541,25 @@ export default function HomePage() {
                 transition={{ ...MEDIUM, delay: i * 0.1 }}
                 className="relative flex flex-col justify-end aspect-[4/5] bg-card overflow-hidden group"
               >
-                <Image 
-                  src={img} 
-                  alt={t} 
-                  fill 
-                  sizes="(max-width: 1024px) 100vw, 33vw" 
-                  className="object-cover opacity-40 transition-all duration-[2000ms] group-hover:scale-105 group-hover:opacity-60" 
+                <Image
+                  src={img}
+                  alt={t}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                  className="object-cover opacity-40 transition-all duration-[2000ms] group-hover:scale-105 group-hover:opacity-60"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent" />
-                
+
                 <div className="relative z-10 p-10">
-                  <span className="font-display text-5xl font-light italic text-[#FDFCFB]/20 select-none transition-colors duration-700 group-hover:text-[#FDFCFB]/40">{n}</span>
-                  <h3 className="mt-4 font-heading text-[12px] font-semibold uppercase tracking-[0.3em] text-[#FDFCFB]">{t}</h3>
-                  <p className="mt-3 text-[13px] leading-relaxed text-[#8D8D8D] max-w-[280px]">{d}</p>
+                  <span className="font-display text-5xl font-light italic text-[#FDFCFB]/20 select-none transition-colors duration-700 group-hover:text-[#FDFCFB]/40">
+                    {n}
+                  </span>
+                  <h3 className="mt-4 font-heading text-[12px] font-semibold uppercase tracking-[0.3em] text-[#FDFCFB]">
+                    {t}
+                  </h3>
+                  <p className="mt-3 text-[13px] leading-relaxed text-[#8D8D8D] max-w-[280px]">
+                    {d}
+                  </p>
                 </div>
               </motion.div>
             ))}
@@ -390,7 +582,7 @@ export default function HomePage() {
             >
               <p
                 className="font-display font-light italic leading-snug text-[#FDFCFB]/90"
-                style={{ fontSize: 'clamp(1.6rem, 4vw, 3.5rem)' }}
+                style={{ fontSize: "clamp(1.6rem, 4vw, 3.5rem)" }}
               >
                 &lsquo;{quote.q}&rsquo;
               </p>
@@ -411,7 +603,7 @@ export default function HomePage() {
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
+              viewport={{ once: true, margin: "-60px" }}
               transition={SLOW}
               className="flex flex-col justify-center"
             >
@@ -422,32 +614,43 @@ export default function HomePage() {
                 Vesper
               </h2>
               <p className="mt-6 font-display text-xl font-light italic leading-relaxed text-[#FDFCFB]/45 md:text-2xl">
-                How does form express intent?<br />
+                How does form express intent?
+                <br />
                 Can a garment hold history?
               </p>
               <p className="mt-5 text-[12px] leading-relaxed text-[#8D8D8D]">
-                Vesper observes. Vesper analyses. Vesper refines.
-                Share your occasion — receive a wardrobe built on restraint.
+                Vesper observes. Vesper analyses. Vesper refines. Share your
+                occasion — receive a wardrobe built on restraint.
               </p>
               <div className="mt-8">
-                <Link href="/vesper" className="group inline-flex h-11 items-center gap-5 border border-[#FDFCFB]/20 px-7 font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-[#FDFCFB] hover:bg-[#FDFCFB] hover:text-[#0A0A0A]">
+                <Link
+                  href="/vesper"
+                  className="group inline-flex h-11 items-center gap-5 border border-[#FDFCFB]/20 px-7 font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-[#FDFCFB] hover:bg-[#FDFCFB] hover:text-[#0A0A0A]"
+                >
                   Consult Vesper
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1.5" strokeWidth={1.5} />
+                  <ArrowRight
+                    className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1.5"
+                    strokeWidth={1.5}
+                  />
                 </Link>
               </div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, scale: 0.97 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: '-60px' }}
+              viewport={{ once: true, margin: "-60px" }}
               transition={{ ...SLOW, delay: 0.2 }}
               className="relative flex items-center justify-center min-h-[400px] lg:min-h-[500px] group"
             >
-              <Link href="/vesper" className="absolute inset-0 z-30" aria-label="Consult Vesper" />
-              
+              <Link
+                href="/vesper"
+                className="absolute inset-0 z-30"
+                aria-label="Consult Vesper"
+              />
+
               {/* Subtle ambient glow behind lantern */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                 <div className="w-[80%] h-[80%] bg-[#FDFCFB]/5 blur-[80px] rounded-full transition-opacity duration-1000 group-hover:bg-[#FDFCFB]/15" />
+                <div className="w-[80%] h-[80%] bg-[#FDFCFB]/5 blur-[80px] rounded-full transition-opacity duration-1000 group-hover:bg-[#FDFCFB]/15" />
               </div>
 
               {/* Floating White Particles */}
@@ -458,7 +661,7 @@ export default function HomePage() {
                     {[...Array(150)].map((_, i) => {
                       const size = Math.random() * 4 + 1.5;
                       const angle = Math.random() * Math.PI * 2;
-                      const distance = Math.pow(Math.random(), 0.7) * 350; 
+                      const distance = Math.pow(Math.random(), 0.7) * 350;
                       const startX = Math.cos(angle) * distance;
                       const startY = Math.sin(angle) * distance;
                       const driftX = startX + (Math.random() * 60 - 30);
@@ -468,20 +671,35 @@ export default function HomePage() {
                         <motion.div
                           key={`b-${i}`}
                           className="absolute bg-[#FDFCFB] rounded-full"
-                          animate={{ y: [startY, driftY], x: [startX, driftX], opacity: [0, Math.random() * 0.5 + 0.3, 0], scale: [0, 1 + Math.random() * 0.5, 0] }}
-                          transition={{ duration: Math.random() * 3 + 3, repeat: Infinity, delay: Math.random() * 3, ease: "easeInOut" }}
-                          style={{ width: size, height: size, boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.4)`, filter: 'blur(0.5px)' }}
+                          animate={{
+                            y: [startY, driftY],
+                            x: [startX, driftX],
+                            opacity: [0, Math.random() * 0.5 + 0.3, 0],
+                            scale: [0, 1 + Math.random() * 0.5, 0],
+                          }}
+                          transition={{
+                            duration: Math.random() * 3 + 3,
+                            repeat: Infinity,
+                            delay: Math.random() * 3,
+                            ease: "easeInOut",
+                          }}
+                          style={{
+                            width: size,
+                            height: size,
+                            boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.4)`,
+                            filter: "blur(0.5px)",
+                          }}
                         />
                       );
                     })}
                   </div>
-                  
+
                   {/* Layer 2: In front of the image (z-30) */}
                   <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
                     {[...Array(80)].map((_, i) => {
                       const size = Math.random() * 3 + 1.0;
                       const angle = Math.random() * Math.PI * 2;
-                      const distance = Math.pow(Math.random(), 0.7) * 250; 
+                      const distance = Math.pow(Math.random(), 0.7) * 250;
                       const startX = Math.cos(angle) * distance;
                       const startY = Math.sin(angle) * distance;
                       const driftX = startX + (Math.random() * 40 - 20);
@@ -491,9 +709,24 @@ export default function HomePage() {
                         <motion.div
                           key={`f-${i}`}
                           className="absolute bg-[#FDFCFB] rounded-full"
-                          animate={{ y: [startY, driftY], x: [startX, driftX], opacity: [0, Math.random() * 0.4 + 0.2, 0], scale: [0, 1 + Math.random() * 0.3, 0] }}
-                          transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, delay: Math.random() * 3, ease: "easeInOut" }}
-                          style={{ width: size, height: size, boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.4)`, filter: 'blur(0.5px)' }}
+                          animate={{
+                            y: [startY, driftY],
+                            x: [startX, driftX],
+                            opacity: [0, Math.random() * 0.4 + 0.2, 0],
+                            scale: [0, 1 + Math.random() * 0.3, 0],
+                          }}
+                          transition={{
+                            duration: Math.random() * 3 + 2,
+                            repeat: Infinity,
+                            delay: Math.random() * 3,
+                            ease: "easeInOut",
+                          }}
+                          style={{
+                            width: size,
+                            height: size,
+                            boxShadow: `0 0 ${size * 3}px ${size * 0.5}px rgba(255,255,255,0.4)`,
+                            filter: "blur(0.5px)",
+                          }}
                         />
                       );
                     })}
@@ -504,16 +737,20 @@ export default function HomePage() {
               {/* Floating Lantern Image */}
               <motion.div
                 animate={{ y: [-20, 20, -20] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 className="relative z-20 w-full transition-transform duration-[1500ms] ease-out group-hover:scale-[1.08]"
-                style={{ height: '460px' }}
+                style={{ height: "460px" }}
               >
-                <Image 
-                  src="/images/vesper-lantern.png" 
-                  alt="Vesper — The Silent Curator" 
-                  fill 
-                  sizes="(max-width: 1024px) 80vw, 50vw" 
-                  className="object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]" 
+                <Image
+                  src="/images/vesper-lantern.png"
+                  alt="Vesper — The Silent Curator"
+                  fill
+                  sizes="(max-width: 1024px) 80vw, 50vw"
+                  className="object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]"
                 />
               </motion.div>
             </motion.div>
@@ -532,16 +769,32 @@ export default function HomePage() {
           <h2 className="mt-4 font-heading text-lg font-semibold uppercase tracking-[0.15em] text-[#FDFCFB]">
             Early access. Editorials. Intentions.
           </h2>
-          <form onSubmit={e => {
-            e.preventDefault();
-            const form = e.currentTarget;
-            const email = (form.elements.namedItem('email') as HTMLInputElement)?.value;
-            if (!email) return;
-            // Show success feedback
-            const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-            if (btn) { btn.textContent = '✓'; btn.disabled = true; }
-            setTimeout(() => { form.reset(); if (btn) { btn.innerHTML = ''; btn.disabled = false; } }, 2500);
-          }} className="mt-10 flex w-full max-w-sm">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = e.currentTarget;
+              const email = (
+                form.elements.namedItem("email") as HTMLInputElement
+              )?.value;
+              if (!email) return;
+              // Show success feedback
+              const btn = form.querySelector(
+                'button[type="submit"]',
+              ) as HTMLButtonElement;
+              if (btn) {
+                btn.textContent = "✓";
+                btn.disabled = true;
+              }
+              setTimeout(() => {
+                form.reset();
+                if (btn) {
+                  btn.innerHTML = "";
+                  btn.disabled = false;
+                }
+              }, 2500);
+            }}
+            className="mt-10 flex w-full max-w-sm"
+          >
             <input
               type="email"
               name="email"
