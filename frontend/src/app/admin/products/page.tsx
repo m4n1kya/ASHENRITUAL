@@ -1,24 +1,25 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Plus, Pencil, Trash2, Search } from 'lucide-react';
-import { useAuthStore } from '@/store/auth.store';
-import { api } from '@/lib/api';
-import { toast } from 'sonner';
-import type { Product } from '@/types';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { cn } from '@/lib/utils';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Plus, Pencil, Trash2, Search } from "lucide-react";
+import { useAuthStore } from "@/store/auth.store";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
+import type { Product } from "@/types";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { cn } from "@/lib/utils";
 
 export default function AdminProductsPage() {
   const { token } = useAuthStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    api.get<{ data: Product[] }>('/products?limit=100') // fetch more for admin view
+    api
+      .get<{ data: Product[] }>("/products?limit=100") // fetch more for admin view
       .then((res) => setProducts(res.data))
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
@@ -29,15 +30,15 @@ export default function AdminProductsPage() {
   );
 
   async function handleDelete(id: string) {
-    if (!token || !confirm('Delete this product?')) return;
+    if (!token || !confirm("Delete this product?")) return;
     try {
       await api.delete(`/admin/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProducts((prev) => prev.filter((p) => p.id !== id));
-      toast.success('Product deleted.');
+      toast.success("Product deleted.");
     } catch {
-      toast.error('Could not delete product.');
+      toast.error("Could not delete product.");
     }
   }
 
@@ -49,7 +50,8 @@ export default function AdminProductsPage() {
             Products
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {products.length} piece{products.length !== 1 ? 's' : ''} in inventory.
+            {products.length} piece{products.length !== 1 ? "s" : ""} in
+            inventory.
           </p>
         </div>
         <Link
@@ -125,12 +127,14 @@ export default function AdminProductsPage() {
                   {product.category?.name}
                 </span>
                 <span className="text-sm text-foreground">
-                  ₹{Number(product.price).toLocaleString('en-IN')}
+                  ₹{Number(product.price).toLocaleString("en-IN")}
                 </span>
-                <span className={cn(
-                  'text-sm',
-                  product.stock > 0 ? 'text-foreground' : 'text-red-500/70',
-                )}>
+                <span
+                  className={cn(
+                    "text-sm",
+                    product.stock > 0 ? "text-foreground" : "text-red-500/70",
+                  )}
+                >
                   {product.stock}
                 </span>
                 <div className="flex gap-2">
