@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module ShowroomsClient.tsx
+ */
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
