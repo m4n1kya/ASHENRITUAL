@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useAuthStore } from '@/store/auth.store';
-import { api } from '@/lib/api';
-import { TrendingUp, Package, Users, ShoppingBag } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useAuthStore } from "@/store/auth.store";
+import { api } from "@/lib/api";
+import { TrendingUp, Package, Users, ShoppingBag } from "lucide-react";
 
 interface Stats {
   totalRevenue: number;
@@ -13,10 +13,30 @@ interface Stats {
 }
 
 const STAT_CARDS = [
-  { key: 'totalRevenue',  label: 'Revenue',  icon: TrendingUp, format: (v: number) => `₹${v.toLocaleString('en-IN')}` },
-  { key: 'totalOrders',   label: 'Orders',   icon: ShoppingBag, format: (v: number) => v.toString() },
-  { key: 'totalUsers',    label: 'Customers', icon: Users, format: (v: number) => v.toString() },
-  { key: 'totalProducts', label: 'Products', icon: Package, format: (v: number) => v.toString() },
+  {
+    key: "totalRevenue",
+    label: "Revenue",
+    icon: TrendingUp,
+    format: (v: number) => `₹${v.toLocaleString("en-IN")}`,
+  },
+  {
+    key: "totalOrders",
+    label: "Orders",
+    icon: ShoppingBag,
+    format: (v: number) => v.toString(),
+  },
+  {
+    key: "totalUsers",
+    label: "Customers",
+    icon: Users,
+    format: (v: number) => v.toString(),
+  },
+  {
+    key: "totalProducts",
+    label: "Products",
+    icon: Package,
+    format: (v: number) => v.toString(),
+  },
 ] as const;
 
 export default function AdminDashboard() {
@@ -26,9 +46,19 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (!token) return;
-    api.get<Stats>('/admin/stats', { headers: { Authorization: `Bearer ${token}` } })
+    api
+      .get<Stats>("/admin/stats", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(setStats)
-      .catch(() => setStats({ totalRevenue: 0, totalOrders: 0, totalUsers: 0, totalProducts: 0 }))
+      .catch(() =>
+        setStats({
+          totalRevenue: 0,
+          totalOrders: 0,
+          totalUsers: 0,
+          totalProducts: 0,
+        }),
+      )
       .finally(() => setLoading(false));
   }, [token]);
 
@@ -59,7 +89,9 @@ export default function AdminDashboard() {
               <p className="mt-4 font-heading text-2xl font-extrabold text-[#FDFCFB] md:text-3xl">
                 {loading ? (
                   <span className="inline-block h-8 w-24 animate-pulse bg-[#1A1A1A]" />
-                ) : format(val)}
+                ) : (
+                  format(val)
+                )}
               </p>
             </div>
           );
@@ -73,10 +105,10 @@ export default function AdminDashboard() {
         </p>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {[
-            { label: 'Add Product',   href: '/admin/products/new' },
-            { label: 'View Orders',   href: '/admin/orders' },
-            { label: 'Customers',     href: '/admin/customers' },
-            { label: 'Vesper Config', href: '/admin/vesper' },
+            { label: "Add Product", href: "/admin/products/new" },
+            { label: "View Orders", href: "/admin/orders" },
+            { label: "Customers", href: "/admin/customers" },
+            { label: "Vesper Config", href: "/admin/vesper" },
           ].map(({ label, href }) => (
             <a
               key={href}
@@ -91,4 +123,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-
