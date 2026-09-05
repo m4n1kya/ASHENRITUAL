@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module Skeleton.tsx
+ */
 import { cn } from "@/lib/utils";
 
 /* ─── Base Skeleton ──────────────────────────────────────────────────────── */
