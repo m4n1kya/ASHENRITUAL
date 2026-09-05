@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module toggle-saved-ritual.dto.ts
+ */
 import { IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
