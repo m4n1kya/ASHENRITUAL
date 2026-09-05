@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module ForgeClient.tsx
+ */
 "use client";
 
 import { useRef } from "react";
