@@ -1,12 +1,13 @@
-import type { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { ScrollReveal } from '@/components/ui/ScrollReveal';
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export const metadata: Metadata = {
-  title: 'Chapters — ASHENRITUAL',
-  description: 'Curated poetic collections by ASHENRITUAL. Each chapter tells a story of intentional design.',
+  title: "Chapters — ASHENRITUAL",
+  description:
+    "Curated poetic collections by ASHENRITUAL. Each chapter tells a story of intentional design.",
 };
 
 interface Chapter {
@@ -21,9 +22,10 @@ interface Chapter {
 }
 
 async function getChapters(): Promise<Chapter[]> {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api';
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
   try {
-    const res = await fetch(`${API_URL}/chapters`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/chapters`, { cache: "no-store" });
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : [];
@@ -46,7 +48,8 @@ export default async function ChaptersPage() {
           Chapters
         </h1>
         <p className="mt-3 max-w-md text-[13px] leading-relaxed text-[#8D8D8D] mx-auto md:mx-0">
-          The seasons, translated into fabric. A poetic exploration of silhouettes shaped by the passing of time.
+          The seasons, translated into fabric. A poetic exploration of
+          silhouettes shaped by the passing of time.
         </p>
       </div>
 
@@ -55,7 +58,7 @@ export default async function ChaptersPage() {
         {chapters.map((chapter, i) => {
           const isEven = i % 2 === 0;
           const count = chapter._count?.products || 0;
-          
+
           return (
             <ScrollReveal key={chapter.id} delay={isEven ? 0 : 0.1}>
               <Link
@@ -63,9 +66,11 @@ export default async function ChaptersPage() {
                 className="group mb-8 flex flex-col border border-[#202020] transition-colors duration-500 hover:border-[#E8E8E8]/20 md:grid md:grid-cols-2"
               >
                 {/* Image — alternates position */}
-                <div className={`relative aspect-[16/9] overflow-hidden bg-card md:aspect-auto md:min-h-[480px] ${!isEven ? 'md:order-2' : ''}`}>
+                <div
+                  className={`relative aspect-[16/9] overflow-hidden bg-card md:aspect-auto md:min-h-[480px] ${!isEven ? "md:order-2" : ""}`}
+                >
                   <Image
-                    src={chapter.image || '/images/hero.png'}
+                    src={chapter.image || "/images/hero.png"}
                     alt={chapter.name}
                     fill
                     className="object-cover transition-transform duration-[2000ms] group-hover:scale-[1.03]"
@@ -75,10 +80,13 @@ export default async function ChaptersPage() {
                 </div>
 
                 {/* Content */}
-                <div className={`flex flex-col justify-between p-10 lg:p-14 ${!isEven ? 'md:order-1' : ''}`}>
+                <div
+                  className={`flex flex-col justify-between p-10 lg:p-14 ${!isEven ? "md:order-1" : ""}`}
+                >
                   <div>
                     <p className="font-heading text-[9px] font-medium uppercase tracking-[0.4em] text-[#8D8D8D]">
-                      Chapter {String(i + 1).padStart(3, '0')} — {count} piece{count !== 1 ? 's' : ''}
+                      Chapter {String(i + 1).padStart(3, "0")} — {count} piece
+                      {count !== 1 ? "s" : ""}
                     </p>
                     <h2 className="mt-4 font-heading text-4xl font-semibold uppercase tracking-[0.06em] text-[#E8E8E8] md:text-5xl leading-tight">
                       {chapter.name}
