@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module roles.decorator.ts
+ */
 import { SetMetadata } from '@nestjs/common';
 
 /** Metadata key used by RolesGuard to read required roles. */
