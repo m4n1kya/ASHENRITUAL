@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module EmptyState.tsx
+ */
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import type { ReactNode } from 'react';
