@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module create-archive.dto.ts
+ */
 import {
   IsArray,
   IsString,
