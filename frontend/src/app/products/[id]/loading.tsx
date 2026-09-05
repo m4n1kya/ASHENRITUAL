@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module loading.tsx
+ */
 import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function ProductLoading() {
