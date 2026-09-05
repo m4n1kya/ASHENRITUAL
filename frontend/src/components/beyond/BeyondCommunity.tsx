@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module BeyondCommunity.tsx
+ */
 'use client';
 
 import { useRef } from 'react';
