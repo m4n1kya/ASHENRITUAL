@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module chapters.controller.ts
+ */
 import { Controller, Get, Param } from '@nestjs/common';
 import { ChaptersService } from './chapters.service';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
