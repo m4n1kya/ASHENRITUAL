@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { RefreshCw } from 'lucide-react';
+import { useEffect } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { RefreshCw } from "lucide-react";
 
 export default function Error({
   error,
@@ -30,7 +30,8 @@ export default function Error({
           Something Broke
         </h1>
         <p className="mx-auto mt-6 max-w-sm font-sans text-base text-muted-foreground">
-          An error occurred. ASHENRITUAL demands precision — this moment fell short.
+          An error occurred. ASHENRITUAL demands precision — this moment fell
+          short.
         </p>
         <div className="mt-10 flex justify-center gap-6">
           <button
