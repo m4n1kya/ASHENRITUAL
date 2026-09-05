@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module BeyondPress.tsx
+ */
 'use client';
 
 const PRESS = [
