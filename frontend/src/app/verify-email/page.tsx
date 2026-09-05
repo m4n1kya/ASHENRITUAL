@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module page.tsx
+ */
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
