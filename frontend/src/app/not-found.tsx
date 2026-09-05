@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export default function NotFound() {
   return (
@@ -9,10 +9,11 @@ export default function NotFound() {
         <span
           className="font-heading text-[16rem] font-semibold leading-none tracking-tight md:text-[22rem]"
           style={{
-            color: 'transparent',
-            backgroundImage: 'linear-gradient(180deg, rgba(50,45,40,0.5) 0%, rgba(20,18,15,0.2) 100%)',
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
+            color: "transparent",
+            backgroundImage:
+              "linear-gradient(180deg, rgba(50,45,40,0.5) 0%, rgba(20,18,15,0.2) 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
           }}
           aria-hidden="true"
         >
