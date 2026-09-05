@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module ScrollReveal.tsx
+ */
 'use client';
 
 import { motion } from 'framer-motion';
