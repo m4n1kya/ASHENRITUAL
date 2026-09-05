@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module CreatorProfileClient.tsx
+ */
 "use client";
 
 import { useRef } from "react";
