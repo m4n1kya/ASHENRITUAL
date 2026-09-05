@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module cart.controller.ts
+ */
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { ValidateCartDto } from './dto/validate-cart.dto';
