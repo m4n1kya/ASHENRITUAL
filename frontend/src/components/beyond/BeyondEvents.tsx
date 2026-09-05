@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module BeyondEvents.tsx
+ */
 'use client';
 
 export function BeyondEvents() {
