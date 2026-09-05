@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module auth.controller.ts
+ */
 import {
   Controller,
   Post,
