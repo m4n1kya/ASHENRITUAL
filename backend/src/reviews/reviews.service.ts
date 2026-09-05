@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module reviews.service.ts
+ */
 import {
   Injectable,
   NotFoundException,
