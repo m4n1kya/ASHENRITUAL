@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module archives.service.ts
+ */
 import {
   Injectable,
   BadRequestException,
