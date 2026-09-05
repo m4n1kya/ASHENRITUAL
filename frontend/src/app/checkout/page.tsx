@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useCartStore } from '@/store/cart.store';
-import { useAuthStore } from '@/store/auth.store';
-import { api } from '@/lib/api';
-import { toast } from 'sonner';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowLeft, Loader2 } from 'lucide-react';
-import { PageTransition } from '@/components/ui/PageTransition';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useCartStore } from "@/store/cart.store";
+import { useAuthStore } from "@/store/auth.store";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { PageTransition } from "@/components/ui/PageTransition";
+import { cn } from "@/lib/utils";
 
 const checkoutSchema = z.object({
-  street: z.string().min(5, 'Please enter a valid street address'),
-  city: z.string().min(2, 'Please enter a city'),
-  zip: z.string().min(4, 'Please enter a valid postal code'),
-  country: z.string().min(2, 'Please enter a country'),
+  street: z.string().min(5, "Please enter a valid street address"),
+  city: z.string().min(2, "Please enter a city"),
+  zip: z.string().min(4, "Please enter a valid postal code"),
+  country: z.string().min(2, "Please enter a country"),
 });
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
@@ -36,9 +36,9 @@ export default function CheckoutPage() {
     formState: { errors },
   } = useForm<CheckoutFormData>({ resolver: zodResolver(checkoutSchema) });
 
-  const formattedTotal = new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
+  const formattedTotal = new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
     maximumFractionDigits: 0,
   }).format(totalPrice());
 
@@ -49,7 +49,10 @@ export default function CheckoutPage() {
           <p className="font-heading text-3xl uppercase tracking-widest text-muted-foreground">
             Your cart is empty.
           </p>
-          <Link href="/shop" className="mt-4 inline-block text-xs uppercase tracking-widest text-foreground hover:text-muted-foreground transition-colors">
+          <Link
+            href="/shop"
+            className="mt-4 inline-block text-xs uppercase tracking-widest text-foreground hover:text-muted-foreground transition-colors"
+          >
             Return to Shop
           </Link>
         </div>
@@ -64,7 +67,10 @@ export default function CheckoutPage() {
           <p className="font-heading text-3xl uppercase tracking-widest text-muted-foreground">
             Sign in to continue.
           </p>
-          <Link href="/login?redirect=/checkout" className="mt-4 inline-block text-xs uppercase tracking-widest text-foreground hover:text-muted-foreground transition-colors">
+          <Link
+            href="/login?redirect=/checkout"
+            className="mt-4 inline-block text-xs uppercase tracking-widest text-foreground hover:text-muted-foreground transition-colors"
+          >
             Sign In
           </Link>
         </div>
@@ -77,15 +83,13 @@ export default function CheckoutPage() {
     setSubmitting(true);
     try {
       // First create address
-      const address = await api.post<{ id: string }>(
-        '/addresses',
-        data,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const address = await api.post<{ id: string }>("/addresses", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       // Then create archive (order)
       const order = await api.post<{ id: string }>(
-        '/archives',
+        "/archives",
         {
           items: items.map(({ product, quantity }) => ({
             productId: product.id,
@@ -97,11 +101,13 @@ export default function CheckoutPage() {
       );
 
       clearCart();
-      toast.success('Order placed.', { description: 'Your ritual is confirmed.' });
+      toast.success("Order placed.", {
+        description: "Your ritual is confirmed.",
+      });
       router.push(`/archive/${order.id}`);
     } catch (err) {
-      toast.error('Could not place order.', {
-        description: 'Please check your details and try again.',
+      toast.error("Could not place order.", {
+        description: "Please check your details and try again.",
       });
     } finally {
       setSubmitting(false);
@@ -126,20 +132,35 @@ export default function CheckoutPage() {
 
           <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_380px]">
             {/* Form */}
-            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-8">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              noValidate
+              className="space-y-8"
+            >
               <div>
                 <h2 className="mb-6 font-heading text-2xl uppercase tracking-widest text-foreground">
                   Shipping Address
                 </h2>
                 <div className="space-y-4">
                   {[
-                    { name: 'street', label: 'Street Address', placeholder: '123 Architrave Way' },
-                    { name: 'city', label: 'City', placeholder: 'Mumbai' },
-                    { name: 'zip', label: 'Postal Code', placeholder: '400001' },
-                    { name: 'country', label: 'Country', placeholder: 'India' },
+                    {
+                      name: "street",
+                      label: "Street Address",
+                      placeholder: "123 Architrave Way",
+                    },
+                    { name: "city", label: "City", placeholder: "Mumbai" },
+                    {
+                      name: "zip",
+                      label: "Postal Code",
+                      placeholder: "400001",
+                    },
+                    { name: "country", label: "Country", placeholder: "India" },
                   ].map(({ name, label, placeholder }) => (
                     <div key={name}>
-                      <label htmlFor={name} className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground">
+                      <label
+                        htmlFor={name}
+                        className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground"
+                      >
                         {label}
                       </label>
                       <input
@@ -147,10 +168,10 @@ export default function CheckoutPage() {
                         {...register(name as keyof CheckoutFormData)}
                         placeholder={placeholder}
                         className={cn(
-                          'w-full border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1',
+                          "w-full border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1",
                           errors[name as keyof CheckoutFormData]
-                            ? 'border-red-800 focus:ring-red-800'
-                            : 'border-border focus:ring-foreground',
+                            ? "border-red-800 focus:ring-red-800"
+                            : "border-border focus:ring-foreground",
                         )}
                       />
                       {errors[name as keyof CheckoutFormData] && (
@@ -175,17 +196,35 @@ export default function CheckoutPage() {
                     </p>
                     <div className="space-y-4 opacity-50">
                       <div>
-                        <label className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground">Card Number</label>
-                        <input disabled value="**** **** **** 4242" className="w-full border border-border bg-transparent px-4 py-3 text-sm text-foreground focus:outline-none" />
+                        <label className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground">
+                          Card Number
+                        </label>
+                        <input
+                          disabled
+                          value="**** **** **** 4242"
+                          className="w-full border border-border bg-transparent px-4 py-3 text-sm text-foreground focus:outline-none"
+                        />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground">Expiry</label>
-                          <input disabled value="12/28" className="w-full border border-border bg-transparent px-4 py-3 text-sm text-foreground focus:outline-none" />
+                          <label className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground">
+                            Expiry
+                          </label>
+                          <input
+                            disabled
+                            value="12/28"
+                            className="w-full border border-border bg-transparent px-4 py-3 text-sm text-foreground focus:outline-none"
+                          />
                         </div>
                         <div>
-                          <label className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground">CVC</label>
-                          <input disabled value="***" className="w-full border border-border bg-transparent px-4 py-3 text-sm text-foreground focus:outline-none" />
+                          <label className="mb-1.5 block text-xs uppercase tracking-widest text-muted-foreground">
+                            CVC
+                          </label>
+                          <input
+                            disabled
+                            value="***"
+                            className="w-full border border-border bg-transparent px-4 py-3 text-sm text-foreground focus:outline-none"
+                          />
                         </div>
                       </div>
                     </div>
@@ -204,7 +243,7 @@ export default function CheckoutPage() {
                     Processing Payment...
                   </>
                 ) : (
-                  'Pay & Confirm Order'
+                  "Pay & Confirm Order"
                 )}
               </button>
             </form>
@@ -220,18 +259,31 @@ export default function CheckoutPage() {
                     <div key={product.id} className="flex items-center gap-4">
                       <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-muted">
                         {product.images?.[0] && (
-                          <Image src={product.images[0]} alt={product.name} fill className="object-cover" sizes="48px" />
+                          <Image
+                            src={product.images[0]}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                            sizes="48px"
+                          />
                         )}
                         <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center bg-foreground text-[9px] text-background">
                           {quantity}
                         </span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="truncate text-sm text-foreground">{product.name}</p>
-                        <p className="text-xs text-muted-foreground">{product.category?.name}</p>
+                        <p className="truncate text-sm text-foreground">
+                          {product.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {product.category?.name}
+                        </p>
                       </div>
                       <span className="text-sm text-foreground">
-                        ₹{(Number(product.price) * quantity).toLocaleString('en-IN')}
+                        ₹
+                        {(Number(product.price) * quantity).toLocaleString(
+                          "en-IN",
+                        )}
                       </span>
                     </div>
                   ))}
