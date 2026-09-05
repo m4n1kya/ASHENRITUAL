@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module saved-rituals.controller.ts
+ */
 import {
   Controller,
   Post,
