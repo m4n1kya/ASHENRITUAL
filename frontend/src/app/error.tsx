@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module error.tsx
+ */
 "use client";
 
 import { useEffect } from "react";
