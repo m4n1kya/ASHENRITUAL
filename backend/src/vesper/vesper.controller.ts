@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module vesper.controller.ts
+ */
 import {
   Controller,
   Post,
