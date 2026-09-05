@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module WebIcon.tsx
+ */
 import { SVGProps } from 'react';
 
 export function WebIcon({ strokeWidth = 1.5, className, ...props }: SVGProps<SVGSVGElement> & { strokeWidth?: number }) {
