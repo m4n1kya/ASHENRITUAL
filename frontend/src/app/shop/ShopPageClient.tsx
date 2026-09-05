@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module ShopPageClient.tsx
+ */
 "use client";
 
 import { useState, useEffect, useCallback, useRef, useTransition } from "react";
