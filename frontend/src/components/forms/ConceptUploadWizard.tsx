@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module ConceptUploadWizard.tsx
+ */
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
