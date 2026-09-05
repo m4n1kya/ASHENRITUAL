@@ -1,16 +1,9 @@
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 /* ─── Base Skeleton ──────────────────────────────────────────────────────── */
 
 export function Skeleton({ className }: { className?: string }) {
-  return (
-    <div
-      className={cn(
-        'animate-pulse bg-[#141414]',
-        className,
-      )}
-    />
-  );
+  return <div className={cn("animate-pulse bg-[#141414]", className)} />;
 }
 
 /* ─── Product Card Skeleton ──────────────────────────────────────────────── */
@@ -36,7 +29,7 @@ export function TextSkeleton({ lines = 3 }: { lines?: number }) {
       {Array.from({ length: lines }).map((_, i) => (
         <Skeleton
           key={i}
-          className={cn('h-3', i === lines - 1 ? 'w-1/2' : 'w-full')}
+          className={cn("h-3", i === lines - 1 ? "w-1/2" : "w-full")}
         />
       ))}
     </div>

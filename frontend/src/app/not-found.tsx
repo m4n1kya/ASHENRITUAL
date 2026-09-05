@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module not-found.tsx
+ */
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
