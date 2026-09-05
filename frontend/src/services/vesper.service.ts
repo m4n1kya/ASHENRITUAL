@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module vesper.service.ts
+ */
 import { API_URL, api } from '../lib/api';
 import { useAuthStore } from '../store/auth.store';
 
