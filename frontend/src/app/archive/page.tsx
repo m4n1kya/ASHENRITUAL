@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { useAuthStore } from '@/store/auth.store';
-import { api } from '@/lib/api';
-import type { Archive } from '@/types';
-import { PackageOpen, LogOut, ArrowRight } from 'lucide-react';
-import { PageTransition } from '@/components/ui/PageTransition';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { useAuthStore } from "@/store/auth.store";
+import { api } from "@/lib/api";
+import type { Archive } from "@/types";
+import { PackageOpen, LogOut, ArrowRight } from "lucide-react";
+import { PageTransition } from "@/components/ui/PageTransition";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 const statusColors: Record<string, string> = {
-  PENDING: 'text-muted-foreground',
-  PROCESSING: 'text-foreground',
-  SHIPPED: 'text-foreground',
-  DELIVERED: 'text-foreground',
-  CANCELLED: 'text-red-500/70',
+  PENDING: "text-muted-foreground",
+  PROCESSING: "text-foreground",
+  SHIPPED: "text-foreground",
+  DELIVERED: "text-foreground",
+  CANCELLED: "text-red-500/70",
 };
 
 export default function ArchivePage() {
@@ -31,8 +31,14 @@ export default function ArchivePage() {
 
   useEffect(() => {
     if (!_hasHydrated) return;
-    if (!token) { router.push('/login?redirect=/archive'); return; }
-    api.get<Archive[]>('/archives', { headers: { Authorization: `Bearer ${token}` } })
+    if (!token) {
+      router.push("/login?redirect=/archive");
+      return;
+    }
+    api
+      .get<Archive[]>("/archives", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(setOrders)
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));
@@ -40,8 +46,8 @@ export default function ArchivePage() {
 
   function handleLogout() {
     logout();
-    toast.success('Signed out.');
-    router.push('/');
+    toast.success("Signed out.");
+    router.push("/");
   }
 
   return (
@@ -54,7 +60,9 @@ export default function ArchivePage() {
               <h1 className="font-heading text-4xl uppercase tracking-tight text-foreground lg:text-5xl">
                 Archive
               </h1>
-              <p className="mt-2 text-sm text-muted-foreground">{user?.email}</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {user?.email}
+              </p>
             </div>
             <div className="flex gap-3">
               <Link
@@ -85,7 +93,7 @@ export default function ArchivePage() {
               icon={<PackageOpen className="h-8 w-8" />}
               title="No Orders Yet"
               description="Your archive is empty. Begin your ritual."
-              action={{ label: 'Shop Now', href: '/shop' }}
+              action={{ label: "Shop Now", href: "/shop" }}
             />
           ) : (
             <div className="space-y-4">
@@ -102,19 +110,24 @@ export default function ArchivePage() {
                         #{order.id.slice(0, 8).toUpperCase()}
                       </p>
                       <p className="text-sm text-foreground">
-                        {new Date(order.createdAt).toLocaleDateString('en-IN', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
+                        {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
                         })}
                       </p>
                     </div>
                     <div className="flex items-center gap-6">
-                      <span className={cn('text-xs uppercase tracking-widest', statusColors[order.status] || 'text-muted-foreground')}>
+                      <span
+                        className={cn(
+                          "text-xs uppercase tracking-widest",
+                          statusColors[order.status] || "text-muted-foreground",
+                        )}
+                      >
                         {order.status}
                       </span>
                       <span className="font-medium text-foreground">
-                        ₹{Number(order.total).toLocaleString('en-IN')}
+                        ₹{Number(order.total).toLocaleString("en-IN")}
                       </span>
                       <Link
                         href={`/archive/${order.id}`}
@@ -129,7 +142,10 @@ export default function ArchivePage() {
                   {order.items && order.items.length > 0 && (
                     <div className="mt-4 flex gap-2">
                       {order.items.slice(0, 4).map((item) => (
-                        <div key={item.id} className="relative h-14 w-10 overflow-hidden bg-muted">
+                        <div
+                          key={item.id}
+                          className="relative h-14 w-10 overflow-hidden bg-muted"
+                        >
                           {item.product?.images?.[0] && (
                             <Image
                               src={item.product.images[0]}
@@ -143,7 +159,9 @@ export default function ArchivePage() {
                       ))}
                       {order.items.length > 4 && (
                         <div className="flex h-14 w-10 items-center justify-center border border-border">
-                          <span className="text-xs text-muted-foreground">+{order.items.length - 4}</span>
+                          <span className="text-xs text-muted-foreground">
+                            +{order.items.length - 4}
+                          </span>
                         </div>
                       )}
                     </div>
