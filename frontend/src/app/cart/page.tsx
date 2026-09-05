@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Minus, Plus, X, ArrowRight } from 'lucide-react';
-import { useCartStore } from '@/store/cart.store';
-import { PageTransition } from '@/components/ui/PageTransition';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { Minus, Plus, X, ArrowRight } from "lucide-react";
+import { useCartStore } from "@/store/cart.store";
+import { PageTransition } from "@/components/ui/PageTransition";
 
 const EASE = [0.4, 0, 0.2, 1] as const;
 
@@ -14,11 +14,12 @@ const EASE = [0.4, 0, 0.2, 1] as const;
    summary panel right, thin borders throughout */
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, totalPrice, totalItems } = useCartStore();
+  const { items, removeItem, updateQuantity, totalPrice, totalItems } =
+    useCartStore();
 
-  const formatted = new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
+  const formatted = new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
     maximumFractionDigits: 0,
   }).format(totalPrice());
 
@@ -75,14 +76,17 @@ export default function CartPage() {
                     key={product.id}
                     layout
                     initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0, overflow: 'hidden' }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0, overflow: "hidden" }}
                     transition={{ duration: 0.4, ease: EASE }}
                     className="border-b border-[#202020] py-6 first:border-t"
                   >
                     <div className="flex gap-6">
                       {/* Product image */}
-                      <Link href={`/products/${product.id}`} className="relative h-28 w-20 shrink-0 overflow-hidden bg-card">
+                      <Link
+                        href={`/products/${product.id}`}
+                        className="relative h-28 w-20 shrink-0 overflow-hidden bg-card"
+                      >
                         {product.images?.[0] && (
                           <Image
                             src={product.images[0]}
@@ -108,7 +112,10 @@ export default function CartPage() {
                             </p>
                           </div>
                           <p className="text-[13px] font-medium text-[#E8E8E8]">
-                            ₹{(Number(product.price) * quantity).toLocaleString('en-IN')}
+                            ₹
+                            {(Number(product.price) * quantity).toLocaleString(
+                              "en-IN",
+                            )}
                           </p>
                         </div>
 
@@ -116,7 +123,9 @@ export default function CartPage() {
                           {/* Qty stepper — thin, minimal */}
                           <div className="flex items-center border border-[#202020]">
                             <button
-                              onClick={() => updateQuantity(product.id, quantity - 1)}
+                              onClick={() =>
+                                updateQuantity(product.id, quantity - 1)
+                              }
                               className="flex h-8 w-8 items-center justify-center text-[#8D8D8D] transition-colors hover:text-[#E8E8E8]"
                               aria-label="Decrease"
                             >
@@ -126,7 +135,9 @@ export default function CartPage() {
                               {quantity}
                             </span>
                             <button
-                              onClick={() => updateQuantity(product.id, quantity + 1)}
+                              onClick={() =>
+                                updateQuantity(product.id, quantity + 1)
+                              }
                               className="flex h-8 w-8 items-center justify-center text-[#8D8D8D] transition-colors hover:text-[#E8E8E8]"
                               aria-label="Increase"
                             >
@@ -160,17 +171,25 @@ export default function CartPage() {
                 <div className="mt-8 space-y-3 border-b border-[#202020] pb-6">
                   <div className="flex justify-between">
                     <span className="text-[12px] text-[#8D8D8D]">Subtotal</span>
-                    <span className="text-[12px] text-[#E8E8E8]">{formatted}</span>
+                    <span className="text-[12px] text-[#E8E8E8]">
+                      {formatted}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[12px] text-[#8D8D8D]">Shipping</span>
-                    <span className="text-[12px] text-[#8D8D8D]">Calculated at checkout</span>
+                    <span className="text-[12px] text-[#8D8D8D]">
+                      Calculated at checkout
+                    </span>
                   </div>
                 </div>
 
                 <div className="mt-6 flex justify-between">
-                  <span className="text-[13px] font-medium text-[#E8E8E8]">Total</span>
-                  <span className="text-[13px] font-medium text-[#E8E8E8]">{formatted}</span>
+                  <span className="text-[13px] font-medium text-[#E8E8E8]">
+                    Total
+                  </span>
+                  <span className="text-[13px] font-medium text-[#E8E8E8]">
+                    {formatted}
+                  </span>
                 </div>
 
                 {/* Proceed to checkout — primary button from reference */}
@@ -184,7 +203,10 @@ export default function CartPage() {
 
                 {/* Save Ritual link */}
                 <p className="mt-4 text-center text-[10px] text-[#8D8D8D]">
-                  <Link href="/saved-rituals" className="hover:text-[#E8E8E8] transition-colors duration-300 uppercase tracking-[0.2em]">
+                  <Link
+                    href="/saved-rituals"
+                    className="hover:text-[#E8E8E8] transition-colors duration-300 uppercase tracking-[0.2em]"
+                  >
                     ◈ Save Ritual
                   </Link>
                 </p>
