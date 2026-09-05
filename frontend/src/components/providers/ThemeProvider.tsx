@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module ThemeProvider.tsx
+ */
 'use client';
 
 import { useEffect } from 'react';
