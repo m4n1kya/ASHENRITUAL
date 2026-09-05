@@ -1,28 +1,29 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { Search, X, ArrowRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import { api } from '@/lib/api';
-import type { Product } from '@/types';
-import { ProductCard } from '@/components/ui/ProductCard';
-import { ProductCardSkeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Search, X, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { api } from "@/lib/api";
+import type { Product } from "@/types";
+import { ProductCard } from "@/components/ui/ProductCard";
+import { ProductCardSkeleton } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export default function SearchPage() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [featured, setFeatured] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Fetch featured / recommendations
   useEffect(() => {
-    api.get<{ data: Product[] }>('/products?limit=4')
+    api
+      .get<{ data: Product[] }>("/products?limit=4")
       .then((res) => setFeatured(res.data))
       .catch(() => setFeatured([]));
   }, []);
@@ -45,11 +46,21 @@ export default function SearchPage() {
     let cancelled = false;
     setLoading(true);
     api
-      .get<{ data: Product[] }>(`/products?q=${encodeURIComponent(debouncedQuery)}`)
-      .then((res) => { if (!cancelled) setProducts(res.data); })
-      .catch(() => { if (!cancelled) setProducts([]); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .get<{ data: Product[] }>(
+        `/products?q=${encodeURIComponent(debouncedQuery)}`,
+      )
+      .then((res) => {
+        if (!cancelled) setProducts(res.data);
+      })
+      .catch(() => {
+        if (!cancelled) setProducts([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [debouncedQuery]);
 
   return (
@@ -63,7 +74,7 @@ export default function SearchPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && query.trim()) {
+              if (e.key === "Enter" && query.trim()) {
                 router.push(`/shop?q=${encodeURIComponent(query.trim())}`);
               }
             }}
@@ -77,7 +88,7 @@ export default function SearchPage() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                onClick={() => setQuery('')}
+                onClick={() => setQuery("")}
                 className="text-muted-foreground hover:text-foreground"
                 aria-label="Clear search"
               >
@@ -100,7 +111,7 @@ export default function SearchPage() {
                 Every piece in ASHENRITUAL awaits discovery.
               </p>
             </div>
-            
+
             {featured.length > 0 && (
               <div className="mt-8">
                 <div className="mb-8 flex items-center justify-between">
@@ -116,29 +127,36 @@ export default function SearchPage() {
                   </Link>
                 </div>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
-                  {featured.map((p) => <ProductCard key={p.id} product={p} />)}
+                  {featured.map((p) => (
+                    <ProductCard key={p.id} product={p} />
+                  ))}
                 </div>
               </div>
             )}
           </div>
         ) : loading ? (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
-            {Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)}
+            {Array.from({ length: 8 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
           </div>
         ) : products.length === 0 ? (
           <EmptyState
             icon={<Search className="h-8 w-8" />}
             title="No Results Found"
             description={`No pieces match "${debouncedQuery}". Try a different term.`}
-            action={{ label: 'Browse All', href: '/shop' }}
+            action={{ label: "Browse All", href: "/shop" }}
           />
         ) : (
           <>
             <p className="mb-8 text-xs uppercase tracking-widest text-muted-foreground">
-              {products.length} result{products.length !== 1 ? 's' : ''} for &ldquo;{debouncedQuery}&rdquo;
+              {products.length} result{products.length !== 1 ? "s" : ""} for
+              &ldquo;{debouncedQuery}&rdquo;
             </p>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
-              {products.map((p) => <ProductCard key={p.id} product={p} />)}
+              {products.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
             </div>
           </>
         )}
