@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module template.tsx
+ */
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
