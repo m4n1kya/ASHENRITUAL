@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module calculating-burst.tsx
+ */
 'use client';
 
 import { motion } from 'framer-motion';
