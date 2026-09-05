@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module cloudinary.ts
+ */
 import { api } from './api';
 
 export async function uploadToCloudinary(file: File, folder: string = 'misc'): Promise<string> {
