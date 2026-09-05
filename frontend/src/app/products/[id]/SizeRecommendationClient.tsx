@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module SizeRecommendationClient.tsx
+ */
 "use client";
 
 import { useSizeStore } from "@/store/size.store";
