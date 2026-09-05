@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
-import type { Product } from '@/types';
-import { ProductCard } from '@/components/ui/ProductCard';
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import type { Product } from "@/types";
+import { ProductCard } from "@/components/ui/ProductCard";
 
 interface Chapter {
   id: string;
@@ -20,11 +20,13 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-
 async function getChapter(slug: string): Promise<Chapter | null> {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
   try {
-    const res = await fetch(`${API_URL}/chapters/${slug}`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/chapters/${slug}`, {
+      cache: "no-store",
+    });
     if (!res.ok) return null;
     return res.json();
   } catch {
@@ -32,17 +34,19 @@ async function getChapter(slug: string): Promise<Chapter | null> {
   }
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const chapter = await getChapter(slug);
-  
+
   if (!chapter) {
-    return { title: 'Chapter Not Found — ASHENRITUAL' };
+    return { title: "Chapter Not Found — ASHENRITUAL" };
   }
-  
+
   return {
     title: `${chapter.name} — ASHENRITUAL`,
-    description: chapter.description || 'A poetic season by ASHENRITUAL.',
+    description: chapter.description || "A poetic season by ASHENRITUAL.",
   };
 }
 
@@ -59,7 +63,7 @@ export default async function ChapterPage({ params }: PageProps) {
       {/* Hero Section — Cinematic & Poetic */}
       <section className="relative h-[80vh] min-h-[600px] w-full bg-card overflow-hidden">
         <Image
-          src={chapter.image || '/images/hero.png'}
+          src={chapter.image || "/images/hero.png"}
           alt={chapter.name}
           fill
           className="object-cover"
@@ -69,17 +73,20 @@ export default async function ChapterPage({ params }: PageProps) {
         <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-transparent to-transparent" />
-        
+
         <div className="absolute inset-0 flex flex-col justify-center px-8 lg:px-12 max-w-screen-xl mx-auto">
-          <Link href="/chapters" className="group mb-12 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-[#8D8D8D] hover:text-[#E8E8E8] transition-colors">
+          <Link
+            href="/chapters"
+            className="group mb-12 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-[#8D8D8D] hover:text-[#E8E8E8] transition-colors"
+          >
             <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
             All Chapters
           </Link>
-          
+
           <h1 className="font-heading text-5xl font-semibold uppercase tracking-[0.06em] text-[#FDFCFB] md:text-7xl lg:text-8xl max-w-3xl leading-tight">
             {chapter.name}
           </h1>
-          
+
           {chapter.quote && (
             <div className="mt-12 max-w-2xl border-l border-[#8D8D8D]/30 pl-6 md:pl-10">
               <p className="font-serif text-xl italic text-[#E8E8E8] md:text-2xl lg:text-3xl leading-relaxed">
@@ -124,7 +131,9 @@ export default async function ChapterPage({ params }: PageProps) {
             </div>
           ) : (
             <div className="py-20 text-center">
-              <p className="text-sm text-[#8D8D8D]">No pieces have been discovered in this season yet.</p>
+              <p className="text-sm text-[#8D8D8D]">
+                No pieces have been discovered in this season yet.
+              </p>
             </div>
           )}
         </div>
