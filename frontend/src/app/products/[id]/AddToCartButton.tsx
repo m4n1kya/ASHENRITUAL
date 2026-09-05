@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module AddToCartButton.tsx
+ */
 "use client";
 
 import { useState } from "react";
