@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module reviews.controller.ts
+ */
 import {
   Controller,
   Post,
