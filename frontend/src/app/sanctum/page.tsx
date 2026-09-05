@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module page.tsx
+ */
 import type { Metadata } from "next";
 import { SanctumClient } from "./SanctumClient";
 
