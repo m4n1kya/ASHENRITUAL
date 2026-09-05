@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module chapters.module.ts
+ */
 import { Module } from '@nestjs/common';
 import { ChaptersController } from './chapters.controller';
 import { ChaptersService } from './chapters.service';
