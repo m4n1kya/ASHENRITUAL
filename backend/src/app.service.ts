@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module app.service.ts
+ */
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
