@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module cart.store.ts
+ */
 'use client';
 
 import { create } from 'zustand';
