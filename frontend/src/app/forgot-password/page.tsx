@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { motion } from 'framer-motion';
-import { api } from '@/lib/api';
-import { toast } from 'sonner';
-import { ArrowRight, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { motion } from "framer-motion";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
+import { ArrowRight, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const schema = z.object({
-  email: z.string().email('Enter a valid email address'),
+  email: z.string().email("Enter a valid email address"),
 });
 
 type Form = z.infer<typeof schema>;
@@ -32,13 +32,13 @@ export default function ForgotPasswordPage() {
   async function onSubmit(data: Form) {
     setLoading(true);
     try {
-      await api.post('/auth/forgot-password', data);
+      await api.post("/auth/forgot-password", data);
       setSuccess(true);
-      toast.success('Recovery email sent.');
+      toast.success("Recovery email sent.");
     } catch {
       // Don't leak user existence
       setSuccess(true);
-      toast.success('Recovery email sent.');
+      toast.success("Recovery email sent.");
     } finally {
       setLoading(false);
     }
@@ -53,7 +53,10 @@ export default function ForgotPasswordPage() {
         className="w-full max-w-[360px]"
       >
         <div className="mb-12 text-center">
-          <Link href="/" className="font-heading text-[13px] font-semibold tracking-[0.3em] text-[#E8E8E8] transition-opacity hover:opacity-60">
+          <Link
+            href="/"
+            className="font-heading text-[13px] font-semibold tracking-[0.3em] text-[#E8E8E8] transition-opacity hover:opacity-60"
+          >
             ASHENRITUAL
           </Link>
           <h1 className="mt-8 font-heading text-3xl font-semibold uppercase tracking-[0.1em] text-[#E8E8E8]">
@@ -67,7 +70,8 @@ export default function ForgotPasswordPage() {
         {success ? (
           <div className="text-center space-y-6">
             <p className="text-[13px] text-[#E8E8E8]">
-              If an account exists for that email, we have sent instructions to reset your password.
+              If an account exists for that email, we have sent instructions to
+              reset your password.
             </p>
             <Link
               href="/login"
@@ -84,15 +88,15 @@ export default function ForgotPasswordPage() {
               </label>
               <input
                 type="email"
-                {...register('email')}
+                {...register("email")}
                 placeholder="you@example.com"
                 autoComplete="email"
                 className={cn(
-                  'w-full border bg-transparent px-4 py-3 text-[13px] text-[#E8E8E8] placeholder:text-[#8D8D8D]/30',
-                  'focus:outline-none transition-colors duration-300',
+                  "w-full border bg-transparent px-4 py-3 text-[13px] text-[#E8E8E8] placeholder:text-[#8D8D8D]/30",
+                  "focus:outline-none transition-colors duration-300",
                   errors.email
-                    ? 'border-red-900/60 focus:border-red-700'
-                    : 'border-[#202020] focus:border-[#E8E8E8]/30',
+                    ? "border-red-900/60 focus:border-red-700"
+                    : "border-[#202020] focus:border-[#E8E8E8]/30",
                 )}
               />
               {errors.email && (
@@ -121,8 +125,11 @@ export default function ForgotPasswordPage() {
 
         {!success && (
           <p className="mt-10 text-center text-[11px] text-[#8D8D8D]">
-            Remember your password?{' '}
-            <Link href="/login" className="text-[#E8E8E8] transition-colors hover:text-[#8D8D8D]">
+            Remember your password?{" "}
+            <Link
+              href="/login"
+              className="text-[#E8E8E8] transition-colors hover:text-[#8D8D8D]"
+            >
               Sign in
             </Link>
           </p>
