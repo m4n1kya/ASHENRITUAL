@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module categories.controller.ts
+ */
 import { Controller, Get, Param } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
