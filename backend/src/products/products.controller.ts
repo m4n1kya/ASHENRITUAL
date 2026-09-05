@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module products.controller.ts
+ */
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import {
