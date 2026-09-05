@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module ui.store.ts
+ */
 import { create } from 'zustand';
 
 interface UIState {
