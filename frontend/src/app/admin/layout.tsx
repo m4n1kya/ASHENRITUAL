@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/auth.store';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/auth.store";
 import {
   LayoutDashboard,
   Package,
@@ -13,25 +13,29 @@ import {
   Star,
   Tag,
   Cpu,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 /* ════════════════════════════════════════════════════════════════════════════
    ADMIN LAYOUT — dark sidebar panel, matching reference dark system
    ════════════════════════════════════════════════════════════════════════════ */
 
 const NAV_ITEMS = [
-  { label: 'Dashboard',  href: '/admin',              icon: LayoutDashboard },
-  { label: 'Products',   href: '/admin/products',     icon: Package },
-  { label: 'Chapters',   href: '/admin/chapters',     icon: Layers },
-  { label: 'Orders',     href: '/admin/orders',       icon: ShoppingCart },
-  { label: 'Customers',  href: '/admin/customers',    icon: Users },
-  { label: 'Reviews',    href: '/admin/reviews',      icon: Star },
-  { label: 'Coupons',    href: '/admin/coupons',      icon: Tag },
-  { label: 'Vesper',     href: '/admin/vesper',        icon: Cpu },
+  { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Chapters", href: "/admin/chapters", icon: Layers },
+  { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { label: "Customers", href: "/admin/customers", icon: Users },
+  { label: "Reviews", href: "/admin/reviews", icon: Star },
+  { label: "Coupons", href: "/admin/coupons", icon: Tag },
+  { label: "Vesper", href: "/admin/vesper", icon: Cpu },
 ] as const;
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const { user } = useAuthStore();
   const [mounted, setMounted] = useState(false);
@@ -39,12 +43,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     setMounted(true);
-    if (user && user.role !== 'ADMIN') {
-      router.replace('/');
+    if (user && user.role !== "ADMIN") {
+      router.replace("/");
     }
   }, [user, router]);
 
-  if (!mounted || (user && user.role !== 'ADMIN')) return null;
+  if (!mounted || (user && user.role !== "ADMIN")) return null;
 
   return (
     <div className="flex min-h-screen bg-background pt-[52px]">
@@ -67,11 +71,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   key={href}
                   href={href}
                   className={cn(
-                    'flex items-center gap-3 px-3 py-2.5 transition-all duration-300',
-                    'font-heading text-[10px] font-medium uppercase tracking-[0.2em]',
+                    "flex items-center gap-3 px-3 py-2.5 transition-all duration-300",
+                    "font-heading text-[10px] font-medium uppercase tracking-[0.2em]",
                     active
-                      ? 'bg-[#1A1A1A] text-[#FDFCFB]'
-                      : 'text-[#8D8D8D] hover:bg-[#141414] hover:text-[#FDFCFB]',
+                      ? "bg-[#1A1A1A] text-[#FDFCFB]"
+                      : "text-[#8D8D8D] hover:bg-[#141414] hover:text-[#FDFCFB]",
                   )}
                 >
                   <Icon className="h-[14px] w-[14px]" strokeWidth={1.5} />
@@ -102,4 +106,3 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
-
