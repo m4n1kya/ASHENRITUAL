@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module Footer.tsx
+ */
 'use client';
 
 import Link from 'next/link';
