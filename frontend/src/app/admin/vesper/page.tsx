@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 const DEFAULT_PROMPT = `You are VESPER, AshenRitual's proprietary Wardrobe Intelligence.
 You are an invisible creative director with exceptional taste in tailoring, silhouettes, proportions, and timeless menswear.
@@ -16,8 +16,12 @@ export default function AdminVesperPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-heading text-3xl uppercase tracking-widest text-foreground">VESPER Configuration</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Manage the VESPER Wardrobe Intelligence system prompt.</p>
+        <h1 className="font-heading text-3xl uppercase tracking-widest text-foreground">
+          VESPER Configuration
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Manage the VESPER Wardrobe Intelligence system prompt.
+        </p>
       </div>
 
       <div className="max-w-2xl">
@@ -45,4 +49,3 @@ export default function AdminVesperPage() {
     </div>
   );
 }
-
