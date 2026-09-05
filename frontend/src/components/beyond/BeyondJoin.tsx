@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module BeyondJoin.tsx
+ */
 'use client';
 
 import Link from 'next/link';
