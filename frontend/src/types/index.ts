@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module index.ts
+ */
 // ─── Product Domain ────────────────────────────────────────────────────────────
 
 export interface Category {
