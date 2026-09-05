@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond, Manrope, Geist_Mono, League_Gothic, Chakra_Petch } from "next/font/google";
+import {
+  Inter,
+  Cormorant_Garamond,
+  Manrope,
+  Geist_Mono,
+  League_Gothic,
+  Chakra_Petch,
+} from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
@@ -8,9 +15,21 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { StartupAnimation } from "@/components/layout/StartupAnimation";
 import dynamic from "next/dynamic";
 
-const ConditionalFooter = dynamic(() => import("@/components/layout/ConditionalFooter").then(mod => mod.ConditionalFooter), { ssr: true });
-const SettingsDrawer = dynamic(() => import("@/components/layout/SettingsDrawer"));
-const ConceptUploadWizard = dynamic(() => import("@/components/forms/ConceptUploadWizard").then(mod => mod.ConceptUploadWizard));
+const ConditionalFooter = dynamic(
+  () =>
+    import("@/components/layout/ConditionalFooter").then(
+      (mod) => mod.ConditionalFooter,
+    ),
+  { ssr: true },
+);
+const SettingsDrawer = dynamic(
+  () => import("@/components/layout/SettingsDrawer"),
+);
+const ConceptUploadWizard = dynamic(() =>
+  import("@/components/forms/ConceptUploadWizard").then(
+    (mod) => mod.ConceptUploadWizard,
+  ),
+);
 
 /* ════════════════════════════════════════════════════════════════════════════
    TYPOGRAPHY — matches reference design tokens exactly
@@ -110,7 +129,11 @@ export default function RootLayout({
         <link rel="preload" href="/images/lantern-logo.png" as="image" />
         <link rel="preload" href="/images/shop-hero-new.jpg" as="image" />
         <link rel="preload" href="/images/forge-hero.jpg" as="image" />
-        <link rel="preload" href="/images/showrooms/showroom-hero.jpg" as="image" />
+        <link
+          rel="preload"
+          href="/images/showrooms/showroom-hero.jpg"
+          as="image"
+        />
         <link rel="preload" href="/images/vesper-lantern.png" as="image" />
       </head>
       <body
@@ -145,7 +168,9 @@ export default function RootLayout({
         <SettingsDrawer />
         <ConceptUploadWizard />
         <Navbar />
-        <main id="main-content" role="main">{children}</main>
+        <main id="main-content" role="main">
+          {children}
+        </main>
         <ConditionalFooter />
       </body>
     </html>
