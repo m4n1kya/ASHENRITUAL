@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module BeyondFilms.tsx
+ */
 'use client';
 
 export function BeyondFilms() {
