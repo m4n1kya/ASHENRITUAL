@@ -1,4 +1,4 @@
-import { Skeleton, ProductCardSkeleton } from '@/components/ui/Skeleton';
+import { Skeleton, ProductCardSkeleton } from "@/components/ui/Skeleton";
 
 export default function ShopLoading() {
   return (
