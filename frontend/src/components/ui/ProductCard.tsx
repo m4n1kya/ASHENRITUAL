@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module ProductCard.tsx
+ */
 'use client';
 
 import Image from 'next/image';
