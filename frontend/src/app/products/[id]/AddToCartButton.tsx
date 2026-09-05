@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { ShoppingBag, ArrowRight } from 'lucide-react';
-import { useCartStore } from '@/store/cart.store';
-import { toast } from 'sonner';
-import type { Product } from '@/types';
-import { cn } from '@/lib/utils';
-import { SaveRitualButton } from '@/components/ui/SaveRitualButton';
+import { useState } from "react";
+import { ShoppingBag, ArrowRight } from "lucide-react";
+import { useCartStore } from "@/store/cart.store";
+import { toast } from "sonner";
+import type { Product } from "@/types";
+import { cn } from "@/lib/utils";
+import { SaveRitualButton } from "@/components/ui/SaveRitualButton";
 
 /* Reference: "MOVE TO REVEAL" / "ADD TO CART" primary CTA button style */
 
@@ -16,12 +16,14 @@ export function AddToCartButtonServer({ product }: { product: Product }) {
   const addItem = useCartStore((s) => s.addItem);
   const outOfStock = product.stock === 0;
 
-  const SIZES = ['S', 'M', 'L', 'XL'];
+  const SIZES = ["S", "M", "L", "XL"];
 
   async function handle() {
     if (outOfStock) return;
     if (!selectedSize) {
-      toast.error('Select a size', { description: 'Please specify your size before adding to ritual.' });
+      toast.error("Select a size", {
+        description: "Please specify your size before adding to ritual.",
+      });
       return;
     }
     setAdded(true);
@@ -46,7 +48,7 @@ export function AddToCartButtonServer({ product }: { product: Product }) {
             </button>
           </div>
           <div className="grid grid-cols-4 gap-2">
-            {SIZES.map(size => (
+            {SIZES.map((size) => (
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
@@ -54,7 +56,7 @@ export function AddToCartButtonServer({ product }: { product: Product }) {
                   "border py-3 text-[10px] font-medium transition-all duration-300",
                   selectedSize === size
                     ? "border-[#E8E8E8] bg-[#E8E8E8] text-[#0A0A0A]"
-                    : "border-[#202020] text-[#8D8D8D] hover:border-[#E8E8E8]/50 hover:text-[#E8E8E8]"
+                    : "border-[#202020] text-[#8D8D8D] hover:border-[#E8E8E8]/50 hover:text-[#E8E8E8]",
                 )}
               >
                 {size}
@@ -65,25 +67,29 @@ export function AddToCartButtonServer({ product }: { product: Product }) {
       )}
 
       <div className="flex items-center gap-4">
-        <SaveRitualButton productId={product.id} variant="full" className="flex-[0.5] h-14 px-4" />
+        <SaveRitualButton
+          productId={product.id}
+          variant="full"
+          className="flex-[0.5] h-14 px-4"
+        />
         <button
           onClick={handle}
           disabled={outOfStock}
-          aria-label={outOfStock ? 'Sold out' : `Add ${product.name} to cart`}
+          aria-label={outOfStock ? "Sold out" : `Add ${product.name} to cart`}
           className={cn(
-            'group flex h-14 flex-1 items-center justify-center gap-4 transition-all duration-500',
-            'text-[10px] font-medium uppercase tracking-[0.3em]',
+            "group flex h-14 flex-1 items-center justify-center gap-4 transition-all duration-500",
+            "text-[10px] font-medium uppercase tracking-[0.3em]",
             outOfStock
-              ? 'border border-[#202020] text-[#8D8D8D] cursor-not-allowed'
+              ? "border border-[#202020] text-[#8D8D8D] cursor-not-allowed"
               : added
-              ? 'bg-[#E8E8E8] text-[#0A0A0A]'
-              : 'border border-[#E8E8E8]/30 text-[#E8E8E8] hover:bg-[#E8E8E8] hover:text-[#0A0A0A]',
+                ? "bg-[#E8E8E8] text-[#0A0A0A]"
+                : "border border-[#E8E8E8]/30 text-[#E8E8E8] hover:bg-[#E8E8E8] hover:text-[#0A0A0A]",
           )}
         >
           {added ? (
-            'Added to Ritual'
+            "Added to Ritual"
           ) : outOfStock ? (
-            'Sold Out'
+            "Sold Out"
           ) : (
             <>
               Add to Ritual
