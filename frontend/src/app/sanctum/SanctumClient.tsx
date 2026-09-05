@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module SanctumClient.tsx
+ */
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
