@@ -1,10 +1,11 @@
-import { Suspense } from 'react';
-import type { Metadata } from 'next';
-import { ForgeClient } from './ForgeClient';
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import { ForgeClient } from "./ForgeClient";
 
 export const metadata: Metadata = {
-  title: 'FORGE — ASHENRITUAL',
-  description: 'Explore the Forge, where every ASHENRITUAL collection begins through thoughtful material selection, architectural design, and timeless craftsmanship.',
+  title: "FORGE — ASHENRITUAL",
+  description:
+    "Explore the Forge, where every ASHENRITUAL collection begins through thoughtful material selection, architectural design, and timeless craftsmanship.",
 };
 
 export default function ForgePage() {
