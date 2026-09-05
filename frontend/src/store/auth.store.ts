@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module auth.store.ts
+ */
 'use client';
 
 import { create } from 'zustand';
