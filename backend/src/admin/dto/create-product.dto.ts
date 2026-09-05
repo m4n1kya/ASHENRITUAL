@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module create-product.dto.ts
+ */
 import {
   IsString,
   IsNotEmpty,
