@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { api } from '@/lib/api';
-import { Skeleton } from '@/components/ui/Skeleton';
-import type { User } from '@/types';
+import { useState, useEffect } from "react";
+import { api } from "@/lib/api";
+import { Skeleton } from "@/components/ui/Skeleton";
+import type { User } from "@/types";
 
 export default function AdminCustomersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -19,13 +19,19 @@ export default function AdminCustomersPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-heading text-3xl uppercase tracking-widest text-foreground">Customers</h1>
-        <p className="mt-1 text-sm text-muted-foreground">User management and analytics.</p>
+        <h1 className="font-heading text-3xl uppercase tracking-widest text-foreground">
+          Customers
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          User management and analytics.
+        </p>
       </div>
 
       {loading ? (
         <div className="space-y-2">
-          {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-14 w-full" />)}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-14 w-full" />
+          ))}
         </div>
       ) : (
         <div className="border border-border bg-card">
@@ -36,7 +42,8 @@ export default function AdminCustomersPage() {
           </div>
           {users.length === 0 ? (
             <div className="px-6 py-12 text-center text-sm text-muted-foreground">
-              Customer data will populate once the database is connected and users register.
+              Customer data will populate once the database is connected and
+              users register.
             </div>
           ) : (
             users.map((user) => (
@@ -49,7 +56,9 @@ export default function AdminCustomersPage() {
                   {user.role}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN') : '—'}
+                  {user.createdAt
+                    ? new Date(user.createdAt).toLocaleDateString("en-IN")
+                    : "—"}
                 </span>
               </div>
             ))
