@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from 'react';
-import { PoseLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
+import { useEffect, useState, useRef } from "react";
+import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 export function useMediaPipe() {
   const [landmarker, setLandmarker] = useState<PoseLandmarker | null>(null);
@@ -14,22 +14,23 @@ export function useMediaPipe() {
     async function initialize() {
       try {
         const vision = await FilesetResolver.forVisionTasks(
-          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
         );
 
         const poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
           baseOptions: {
-            modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
-            delegate: 'GPU',
+            modelAssetPath:
+              "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
+            delegate: "GPU",
           },
-          runningMode: 'VIDEO',
+          runningMode: "VIDEO",
           numPoses: 1,
         });
 
         setLandmarker(poseLandmarker);
       } catch (err) {
-        console.error('MediaPipe initialization failed:', err);
-        setError('Failed to load Size Intelligence vision models.');
+        console.error("MediaPipe initialization failed:", err);
+        setError("Failed to load Size Intelligence vision models.");
       } finally {
         setIsInitializing(false);
       }
