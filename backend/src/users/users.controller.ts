@@ -1,3 +1,7 @@
+/**
+ * @fileoverview ASHENRITUAL Architecture
+ * @module users.controller.ts
+ */
 import {
   Controller,
   Get,
