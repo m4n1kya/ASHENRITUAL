@@ -57,7 +57,7 @@ export function UniversalProfileForm() {
         city: data.city || '',
       });
       setUsername(data.username || '');
-    } catch (_err) {
+    } catch {
       toast.error('Failed to load profile');
     } finally {
       setLoading(false);
