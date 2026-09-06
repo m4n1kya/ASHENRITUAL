@@ -26,7 +26,7 @@ async function getConcept(slug: string) {
     });
     if (!res.ok) return null;
     return res.json();
-  } catch (error) {
+  } catch {
     return null;
   }
 }
