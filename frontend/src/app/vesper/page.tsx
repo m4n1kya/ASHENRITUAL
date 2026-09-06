@@ -6,7 +6,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Loader2, RotateCcw, Zap, LogIn } from "lucide-react";
+import { Send, Loader2, Zap, LogIn } from "lucide-react";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth.store";
 import { useVesperStore } from "@/store/vesper.store";
