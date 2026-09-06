@@ -109,7 +109,7 @@ export default function CheckoutPage() {
         description: "Your ritual is confirmed.",
       });
       router.push(`/archive/${order.id}`);
-    } catch (err) {
+    } catch {
       toast.error("Could not place order.", {
         description: "Please check your details and try again.",
       });
