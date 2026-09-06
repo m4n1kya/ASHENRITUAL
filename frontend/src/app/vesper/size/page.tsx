@@ -13,7 +13,7 @@ import {
   BodyMeasurements,
 } from "@/store/size.store";
 import { api } from "@/lib/api";
-import { Camera, Ruler, RefreshCw, ArrowRight } from "lucide-react";
+import { Camera, RefreshCw, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function SizeIntelligencePage() {
