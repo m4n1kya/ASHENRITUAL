@@ -11,7 +11,7 @@ import { MapPin, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export function CreatorProfileClient({
-  creatorId: _creatorId,
+  creatorId: creatorId,
 }: {
   creatorId: string;
 }) {
