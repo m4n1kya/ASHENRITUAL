@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ShopPageClient } from "./ShopPageClient";
 import { ProductCardSkeleton } from "@/components/ui/Skeleton";
-import type { Product, Category } from "@/types";
+import type { Category } from "@/types";
 
 export const metadata: Metadata = {
   title: "Shop — ASHENRITUAL",
