@@ -35,7 +35,7 @@ function VerifyEmailContent() {
         setTimeout(() => {
           router.push("/login");
         }, 3000);
-      } catch (err) {
+      } catch {
         setStatus("error");
         toast.error("Verification failed. Token may be invalid or expired.");
       }
