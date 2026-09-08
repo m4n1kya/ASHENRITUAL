@@ -201,7 +201,7 @@ html[data-theme="light"] .home-tier1 {
   /* Lapis mode — deep midnight navy with vivid metallic shine & black void shadows (Darkened) */
   html[data-theme="light"] {
     background-color: #010204;
-    background-image: url('/images/lapis-bg.jpg');
+    background-image: url('/images/lapis-bg-natural.jpg');
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
