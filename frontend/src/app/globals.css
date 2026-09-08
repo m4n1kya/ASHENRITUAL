@@ -202,12 +202,12 @@ html[data-theme="light"] .home-tier1 {
   html[data-theme="light"] {
     background-color: #010204;
     background-image:
-      linear-gradient(to bottom, rgba(5, 10, 20, 0.90), rgba(1, 2, 5, 0.98)),
+      linear-gradient(to bottom, rgba(3, 8, 16, 0.65), rgba(1, 2, 5, 0.85)),
       url('/images/lapis-bg.jpg');
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
-    background-blend-mode: overlay, normal;
+    background-blend-mode: normal, normal;
     color-scheme: light;
   }
 
