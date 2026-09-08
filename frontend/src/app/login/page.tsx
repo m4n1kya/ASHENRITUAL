@@ -76,7 +76,7 @@ function LoginForm() {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-      className="w-full max-w-[320px]"
+      className="w-full max-w-[280px]"
     >
       {/* Header */}
       <div className="mb-10 text-center">
@@ -273,7 +273,7 @@ export default function LoginPage() {
       <div className="flex w-full flex-col items-center justify-center px-8 py-16 lg:w-1/2">
         <Suspense
           fallback={
-            <div className="w-full max-w-[320px] animate-pulse space-y-6">
+            <div className="w-full max-w-[280px] animate-pulse space-y-6">
               <div className="mx-auto h-4 w-32 bg-[#202020]" />
               <div className="mx-auto h-8 w-48 bg-[#202020]" />
               <div className="h-12 w-full bg-[#202020]" />
@@ -292,7 +292,7 @@ export default function LoginPage() {
           src="/images/lantern.png"
           alt="Lantern"
           fill
-          className="scale-125 object-contain object-center opacity-40 mix-blend-screen"
+          className="scale-90 object-contain object-center opacity-40 mix-blend-screen"
           unoptimized
         />
 
