@@ -80,12 +80,6 @@ function LoginForm() {
     >
       {/* Header */}
       <div className="mb-10 text-center">
-        <Link
-          href="/"
-          className="font-heading text-[13px] font-semibold tracking-[0.3em] text-[#E8E8E8] transition-opacity hover:opacity-60"
-        >
-          ASHENRITUAL
-        </Link>
         <h1 className="mt-8 font-heading text-2xl font-semibold uppercase tracking-[0.1em] text-[#E8E8E8]">
           Sign In
         </h1>
@@ -293,7 +287,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side: Lantern & Particles (Hidden on Mobile) */}
-      <div className="relative hidden w-1/2 items-center justify-center overflow-hidden border-l border-[#202020] bg-[#030303] lg:flex">
+      <div className="relative hidden w-1/2 items-center justify-center overflow-hidden lg:flex">
         <Image
           src="/images/lantern.png"
           alt="Lantern"
