@@ -8,11 +8,12 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ShoppingBag, User, X, ArrowRight, LogIn, LayoutDashboard, Package, LogOut, Settings } from 'lucide-react';
+import { Search, ShoppingBag, User, X, ArrowRight, LogIn, LayoutDashboard, Package, LogOut, Settings, Moon, Sun } from 'lucide-react';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useUIStore } from '@/store/ui.store';
+import { useThemeStore } from '@/store/theme.store';
 import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import type { Product } from '@/types';
@@ -62,6 +63,7 @@ function UserDropdown({ isAuthed, iconCls }: { isAuthed: boolean; iconCls: strin
   const ref = useRef<HTMLDivElement>(null);
   const { logout } = useAuthStore();
   const { openSettings } = useUIStore();
+  const { theme, toggleTheme } = useThemeStore();
   const router = useRouter();
 
   // Close on outside click
@@ -144,6 +146,13 @@ function UserDropdown({ isAuthed, iconCls }: { isAuthed: boolean; iconCls: strin
                 </div>
                 <div className="border-t border-[rgba(255,255,255,0.06)]">
                   <button
+                    onClick={(e) => { e.stopPropagation(); toggleTheme(); }}
+                    className="flex w-full items-center gap-3 px-4 py-3 font-heading text-[10px] uppercase tracking-[0.2em] text-[#8D8D8D] transition-colors hover:bg-[#1A1A1A] hover:text-[#FDFCFB]"
+                  >
+                    {theme === 'dark' ? <Moon className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} /> : <Sun className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} />}
+                    {theme === 'dark' ? 'Dark Mode' : 'Nox Mode'}
+                  </button>
+                  <button
                     onClick={handleLogout}
                     className="flex w-full items-center gap-3 px-4 py-3 font-heading text-[10px] uppercase tracking-[0.2em] text-[#8D8D8D] transition-colors hover:bg-[#1A1A1A] hover:text-[#FDFCFB]"
                   >
@@ -172,6 +181,15 @@ function UserDropdown({ isAuthed, iconCls }: { isAuthed: boolean; iconCls: strin
                     <LayoutDashboard className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} />
                     Create Account
                   </Link>
+                </div>
+                <div className="border-t border-[rgba(255,255,255,0.06)]">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleTheme(); }}
+                    className="flex w-full items-center gap-3 px-4 py-3 font-heading text-[10px] uppercase tracking-[0.2em] text-[#8D8D8D] transition-colors hover:bg-[#1A1A1A] hover:text-[#FDFCFB]"
+                  >
+                    {theme === 'dark' ? <Moon className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} /> : <Sun className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} />}
+                    {theme === 'dark' ? 'Dark Mode' : 'Nox Mode'}
+                  </button>
                 </div>
               </>
             )}

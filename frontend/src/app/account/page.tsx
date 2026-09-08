@@ -356,7 +356,7 @@ export default function AccountPage() {
                     <p className="text-xs text-muted-foreground">
                       {theme === "dark"
                         ? "Dark mode is active"
-                        : "Lapis mode is active"}
+                        : "Nox mode is active"}
                     </p>
                   </div>
                 </div>

@@ -132,7 +132,7 @@ button:focus {
    LIGHT MODE TOKENS
    ════════════════════════════════════════════════════════════════════════════ */
 [data-theme="light"] {
-  /* Surfaces — transparent so the html lapis gradient shows through */
+  /* Surfaces — transparent so the html nox gradient shows through */
   --background:         transparent;
   --secondary:          rgba(18, 24, 36, 0.60);
   --card:               rgba(38, 48, 66, 0.55);
@@ -198,7 +198,7 @@ html[data-theme="light"] .home-tier1 {
     transition: background-color 600ms ease, color 600ms ease;
   }
 
-  /* Lapis mode — deep midnight navy with vivid metallic shine & black void shadows (Darkened) */
+  /* Nox mode — deep midnight navy with vivid metallic shine & black void shadows (Darkened) */
   html[data-theme="light"] {
     background-color: #010204;
     background-image:
@@ -364,7 +364,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #4A6A9A; 
   outline-offset: 2px;
 }
 
-/* Product cards — semi-transparent in Lapis mode so bg gradient shows through */
+/* Product cards — semi-transparent in Nox mode so bg gradient shows through */
 /* Removed as per user request to eliminate the bluish glass overlay */
 
 /* Selection */
