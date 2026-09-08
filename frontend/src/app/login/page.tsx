@@ -76,14 +76,14 @@ function LoginForm() {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-      className="w-full max-w-[280px]"
+      className="w-full max-w-[360px]"
     >
       {/* Header */}
-      <div className="mb-10 text-center">
-        <h1 className="mt-8 font-heading text-2xl font-semibold uppercase tracking-[0.1em] text-[#E8E8E8]">
+      <div className="mb-6 text-center">
+        <h1 className="font-heading text-2xl font-semibold uppercase tracking-[0.1em] text-[#E8E8E8]">
           Sign In
         </h1>
-        <p className="mt-2 text-[11px] text-[#8D8D8D]">Your wardrobe awaits.</p>
+        <p className="mt-1 text-[11px] text-[#8D8D8D]">Your wardrobe awaits.</p>
       </div>
 
       {/* Guest Demo (Moved to top) */}
@@ -109,7 +109,7 @@ function LoginForm() {
             setGuestLoading(false);
           }
         }}
-        className="group mb-6 flex h-10 w-full items-center justify-center gap-4 border border-[#E8E8E8] bg-[#E8E8E8] text-[10px] font-medium uppercase tracking-[0.3em] text-[#0A0A0A] transition-all duration-500 hover:bg-transparent hover:text-[#E8E8E8] disabled:opacity-40"
+        className="group mb-4 flex h-9 w-full items-center justify-center gap-4 border border-[#E8E8E8] bg-[#E8E8E8] text-[10px] font-medium uppercase tracking-[0.3em] text-[#0A0A0A] transition-all duration-500 hover:bg-transparent hover:text-[#E8E8E8] disabled:opacity-40"
       >
         {guestLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -122,7 +122,7 @@ function LoginForm() {
       </button>
 
       {/* Divider */}
-      <div className="relative mb-6">
+      <div className="relative mb-4">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-[#202020]"></div>
         </div>
@@ -134,7 +134,7 @@ function LoginForm() {
       </div>
 
       {/* Form (Primary) */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {[
           {
             name: "email",
@@ -190,7 +190,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="group mt-2 flex h-10 w-full items-center justify-center gap-4 border border-[#E8E8E8]/20 bg-transparent text-[10px] font-medium uppercase tracking-[0.3em] text-[#E8E8E8] transition-all duration-500 hover:bg-[#E8E8E8] hover:text-[#0A0A0A] disabled:opacity-40"
+          className="group mt-2 flex h-9 w-full items-center justify-center gap-4 border border-[#E8E8E8]/20 bg-transparent text-[10px] font-medium uppercase tracking-[0.3em] text-[#E8E8E8] transition-all duration-500 hover:bg-[#E8E8E8] hover:text-[#0A0A0A] disabled:opacity-40"
         >
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -204,7 +204,7 @@ function LoginForm() {
       </form>
 
       {/* Divider */}
-      <div className="relative my-6">
+      <div className="relative my-5">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-[#202020]"></div>
         </div>
@@ -228,7 +228,7 @@ function LoginForm() {
           localStorage.setItem("ashen_redirect_url", redirect);
           window.location.href = `${API_URL}/auth/google`;
         }}
-        className="group flex h-10 w-full items-center justify-center gap-4 border border-[#202020] bg-transparent text-[10px] font-medium uppercase tracking-[0.3em] text-[#8D8D8D] transition-all duration-500 hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8] disabled:opacity-40"
+        className="group flex h-9 w-full items-center justify-center gap-4 border border-[#202020] bg-transparent text-[10px] font-medium uppercase tracking-[0.3em] text-[#8D8D8D] transition-all duration-500 hover:border-[#E8E8E8]/30 hover:text-[#E8E8E8] disabled:opacity-40"
       >
         <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
           <path
@@ -252,7 +252,7 @@ function LoginForm() {
       </button>
 
       {/* Footer */}
-      <p className="mt-10 text-center text-[11px] text-[#8D8D8D]">
+      <p className="mt-6 text-center text-[11px] text-[#8D8D8D]">
         New to ASHENRITUAL?{" "}
         <Link
           href="/register"
@@ -273,12 +273,12 @@ export default function LoginPage() {
       <div className="flex w-full flex-col items-center justify-center px-8 py-16 lg:w-1/2">
         <Suspense
           fallback={
-            <div className="w-full max-w-[280px] animate-pulse space-y-6">
+            <div className="w-full max-w-[360px] animate-pulse space-y-4">
               <div className="mx-auto h-4 w-32 bg-[#202020]" />
               <div className="mx-auto h-8 w-48 bg-[#202020]" />
-              <div className="h-12 w-full bg-[#202020]" />
-              <div className="h-12 w-full bg-[#202020]" />
-              <div className="h-11 w-full bg-[#202020]" />
+              <div className="h-10 w-full bg-[#202020]" />
+              <div className="h-10 w-full bg-[#202020]" />
+              <div className="h-9 w-full bg-[#202020]" />
             </div>
           }
         >
