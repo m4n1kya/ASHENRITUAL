@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -72,10 +73,10 @@ function LoginForm() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-      className="w-full max-w-[360px]"
+      className="w-full max-w-[320px]"
     >
       {/* Header */}
       <div className="mb-10 text-center">
@@ -273,20 +274,68 @@ function LoginForm() {
 /* ── Page — wraps form in Suspense (required by Next.js for useSearchParams) ── */
 export default function LoginPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center bg-background px-8 pb-16 pt-[160px] texture-grain">
-      <Suspense
-        fallback={
-          <div className="w-full max-w-[360px] animate-pulse space-y-6">
-            <div className="mx-auto h-4 w-32 bg-[#202020]" />
-            <div className="h-8 w-48 mx-auto bg-[#202020]" />
-            <div className="h-12 w-full bg-[#202020]" />
-            <div className="h-12 w-full bg-[#202020]" />
-            <div className="h-11 w-full bg-[#202020]" />
-          </div>
-        }
-      >
-        <LoginForm />
-      </Suspense>
+    <main className="flex min-h-screen w-full bg-background texture-grain">
+      {/* Left Side: Form */}
+      <div className="flex w-full flex-col items-center justify-center px-8 py-16 lg:w-1/2">
+        <Suspense
+          fallback={
+            <div className="w-full max-w-[320px] animate-pulse space-y-6">
+              <div className="mx-auto h-4 w-32 bg-[#202020]" />
+              <div className="mx-auto h-8 w-48 bg-[#202020]" />
+              <div className="h-12 w-full bg-[#202020]" />
+              <div className="h-12 w-full bg-[#202020]" />
+              <div className="h-11 w-full bg-[#202020]" />
+            </div>
+          }
+        >
+          <LoginForm />
+        </Suspense>
+      </div>
+
+      {/* Right Side: Lantern & Particles (Hidden on Mobile) */}
+      <div className="relative hidden w-1/2 items-center justify-center overflow-hidden border-l border-[#202020] bg-[#030303] lg:flex">
+        <Image
+          src="/images/lantern.png"
+          alt="Lantern"
+          fill
+          className="scale-125 object-contain object-center opacity-40 mix-blend-screen"
+          unoptimized
+        />
+
+        {/* Glowing Ash Particles around the lantern */}
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          {[...Array(50)].map((_, i) => {
+            const size = Math.random() * 4 + 1.5;
+            const startX = (Math.random() - 0.5) * 400;
+            const startY = (Math.random() - 0.5) * 500 + 100;
+
+            return (
+              <motion.div
+                key={`ash-${i}`}
+                className="absolute rounded-full bg-[#E8E8E8]"
+                style={{
+                  width: size,
+                  height: size,
+                  boxShadow: "0 0 10px 2px rgba(255, 255, 255, 0.4)",
+                  filter: "blur(0.5px)",
+                }}
+                animate={{
+                  opacity: [0, Math.random() * 0.7 + 0.3, 0],
+                  y: [startY, startY - (Math.random() * 200 + 100)],
+                  x: [startX, startX + (Math.random() * 50 - 25)],
+                  scale: [0, 1.5, 0.5],
+                }}
+                transition={{
+                  duration: Math.random() * 2 + 3,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                  delay: Math.random() * 2.5,
+                }}
+              />
+            );
+          })}
+        </div>
+      </div>
     </main>
   );
 }
