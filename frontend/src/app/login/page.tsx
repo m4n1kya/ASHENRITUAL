@@ -270,7 +270,7 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen w-full bg-background texture-grain">
       {/* Left Side: Form */}
-      <div className="flex w-full flex-col items-center justify-center px-8 py-16 lg:w-1/2">
+      <div className="flex w-full flex-col items-center justify-center px-8 py-16 lg:w-1/2 lg:pl-32 lg:pr-8">
         <Suspense
           fallback={
             <div className="w-full max-w-[360px] animate-pulse space-y-4 mt-16">
