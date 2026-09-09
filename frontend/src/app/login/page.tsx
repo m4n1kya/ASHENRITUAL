@@ -273,7 +273,7 @@ export default function LoginPage() {
       <div className="flex w-full flex-col items-center justify-center px-8 py-16 lg:w-1/2">
         <Suspense
           fallback={
-            <div className="w-full max-w-[360px] animate-pulse space-y-4">
+            <div className="w-full max-w-[360px] animate-pulse space-y-4 mt-16">
               <div className="mx-auto h-4 w-32 bg-[#202020]" />
               <div className="mx-auto h-8 w-48 bg-[#202020]" />
               <div className="h-10 w-full bg-[#202020]" />
@@ -282,7 +282,9 @@ export default function LoginPage() {
             </div>
           }
         >
-          <LoginForm />
+          <div className="mt-16 w-full flex justify-center">
+            <LoginForm />
+          </div>
         </Suspense>
       </div>
 
@@ -292,7 +294,7 @@ export default function LoginPage() {
           src="/images/lantern.png"
           alt="Lantern"
           fill
-          className="scale-90 object-contain object-center opacity-40 mix-blend-screen"
+          className="scale-90 object-contain object-center mix-blend-screen"
           unoptimized
         />
 
