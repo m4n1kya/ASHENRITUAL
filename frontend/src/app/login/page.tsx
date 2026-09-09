@@ -294,12 +294,12 @@ export default function LoginPage() {
           src="/images/lantern.png"
           alt="Lantern"
           fill
-          className="scale-90 translate-y-20 object-contain object-center mix-blend-screen"
+          className="scale-90 object-contain object-center mix-blend-screen"
           unoptimized
         />
 
         {/* Glowing Ash Particles around the lantern */}
-        <div className="absolute inset-0 z-10 flex items-center justify-center translate-y-20">
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
           {[...Array(50)].map((_, i) => {
             const size = Math.random() * 4 + 1.5;
             const startX = (Math.random() - 0.5) * 400;
