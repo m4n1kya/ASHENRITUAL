@@ -83,7 +83,7 @@ async function main() {
         name: 'Formal Navy Shirt',
         description: 'Pure European linen in a deep navy tone. Relaxed fit. The kind of shirt that speaks before you do.',
         price: 3999,
-        images: ['/images/clothes/Shirts/6eb00b0b-0d6f-4242-803d-f3ec66a32ca81718972526500-DENNISON-Men-Navy-Blue-Comfort-Regular-Fit-Solid-Formal-Shir-1.jpg'],
+        images: ['/images/clothes/Shirts/6eb00b0b-0d6f-4242-803d-f3ec66a32ca81718972526500-DENNISON-Men-Navy-Blue-Comfort-Regular-Fit-Solid-Formal-Shir-1.webp'],
         stock: 28,
         categoryId: shirts.id,
       },
