@@ -159,7 +159,7 @@ export default function HomePage() {
           className="absolute top-[52px] inset-x-0 bottom-0 z-0 will-change-transform"
         >
           <Image
-            src="/images/home-hero.jpg"
+            src="/images/home-hero.webp"
             alt="ASHENRITUAL — Presence isn't purchased"
             fill
             priority
@@ -476,7 +476,7 @@ export default function HomePage() {
           className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden md:aspect-[21/9]"
         >
           <Image
-            src="/images/vesper-texture.jpg"
+            src="/images/vesper-texture.webp"
             alt="Editorial"
             fill
             sizes="100vw"
@@ -518,19 +518,19 @@ export default function HomePage() {
                 n: "01",
                 t: "Intentional",
                 d: "We design with purpose. Nothing is accidental.",
-                img: "/images/INTENTIONAL.jpg",
+                img: "/images/INTENTIONAL.webp",
               },
               {
                 n: "02",
                 t: "Precise",
                 d: "Every detail serves a function.",
-                img: "/images/PRECISE.jpg",
+                img: "/images/PRECISE.webp",
               },
               {
                 n: "03",
                 t: "Timeless",
                 d: "Built to outlast trends. Made to endure.",
-                img: "/images/TIMELESS.jpg",
+                img: "/images/TIMELESS.webp",
               },
             ].map(({ n, t, d, img }, i) => (
               <motion.div
@@ -746,7 +746,7 @@ export default function HomePage() {
                 style={{ height: "460px" }}
               >
                 <Image
-                  src="/images/vesper-lantern.png"
+                  src="/images/vesper-lantern.webp"
                   alt="Vesper — The Silent Curator"
                   fill
                   sizes="(max-width: 1024px) 80vw, 50vw"

@@ -8,10 +8,10 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 const CREATORS = [
-  { name: 'Elena Rostova', role: 'Architectural Photographer', img: '/images/beyond/young-man-portrait.jpg' },
-  { name: 'Kaelen Vance', role: 'Stylist & Director', img: '/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.jpg' },
-  { name: 'Studio Form', role: 'Brutalist Design Firm', img: '/images/beyond/beautiful-belarus-person-city.jpg' },
-  { name: 'Marcus Chen', role: 'Fashion Filmmaker', img: '/images/beyond/medium-shot-young-man-posing-outdoors.jpg' },
+  { name: 'Elena Rostova', role: 'Architectural Photographer', img: '/images/beyond/young-man-portrait.webp' },
+  { name: 'Kaelen Vance', role: 'Stylist & Director', img: '/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.webp' },
+  { name: 'Studio Form', role: 'Brutalist Design Firm', img: '/images/beyond/beautiful-belarus-person-city.webp' },
+  { name: 'Marcus Chen', role: 'Fashion Filmmaker', img: '/images/beyond/medium-shot-young-man-posing-outdoors.webp' },
 ];
 
 export function BeyondCreators() {

@@ -8,9 +8,9 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 const IMAGES = [
-  { src: '/images/beyond/cowboy-silhouette-with-horse-against-warm-light.jpg', speed: 0.1, className: 'w-[80%] md:w-[45%] h-[50vh] md:h-[70vh] left-[10%] top-0 z-10' },
-  { src: '/images/beyond/medium-shot-young-man-posing-outdoors.jpg', speed: 0.25, className: 'w-[60%] md:w-[35%] h-[40vh] md:h-[50vh] right-[5%] top-[20%] z-20' },
-  { src: '/images/beyond/portrait-fashionable-boy-outdoors.jpg', speed: 0.05, className: 'w-[70%] md:w-[40%] h-[45vh] md:h-[60vh] left-[20%] top-[40%] z-0' },
+  { src: '/images/beyond/cowboy-silhouette-with-horse-against-warm-light.webp', speed: 0.1, className: 'w-[80%] md:w-[45%] h-[50vh] md:h-[70vh] left-[10%] top-0 z-10' },
+  { src: '/images/beyond/medium-shot-young-man-posing-outdoors.webp', speed: 0.25, className: 'w-[60%] md:w-[35%] h-[40vh] md:h-[50vh] right-[5%] top-[20%] z-20' },
+  { src: '/images/beyond/portrait-fashionable-boy-outdoors.webp', speed: 0.05, className: 'w-[70%] md:w-[40%] h-[45vh] md:h-[60vh] left-[20%] top-[40%] z-0' },
 ];
 
 export function BeyondCommunity() {

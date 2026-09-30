@@ -14,14 +14,14 @@ const chapters = [
     id: "fw26",
     title: "Forged Today",
     description: "The latest arrivals for the modern wardrobe.",
-    image: "/images/product.png",
+    image: "/images/product.webp",
     link: "/chapters/forged-today",
   },
   {
     id: "essentials",
     title: "The Foundation",
     description: "Timeless silhouettes that never speak out of turn.",
-    image: "/images/texture.png",
+    image: "/images/texture.webp",
     link: "/chapters/foundation",
   },
 ];

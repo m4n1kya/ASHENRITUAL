@@ -84,7 +84,7 @@ export function StartupAnimation() {
 
             {/* SHINY LANTERN IMAGE */}
             <Image 
-              src="/images/lantern-logo.png" 
+              src="/images/lantern-logo.webp" 
               alt="ASHENRITUAL" 
               width={500} 
               height={500} 

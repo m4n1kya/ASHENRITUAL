@@ -188,12 +188,12 @@ export function ShopPageClient({
 
   // Slideshow logic
   const SLIDESHOW_IMAGES = [
-    "/images/shop/slideshow/person-browsing-through-items-yard-sale-looking-bargains.jpg",
-    "/images/shop/slideshow/person-browsing-through-items-yard-sale-looking-bargains1.jpg",
-    "/images/shop/slideshow/monochrome-view-handsom-businessman-room-is-drinking-alcohol-drink-near-window.jpg",
-    "/images/shop/slideshow/empty-clothing-store-with-casual-formal-wear-design-retail-shop-with-clothes-hangers-racks-department-store-inside-shopping-center-fashion-merchandise-sale.jpg",
-    "/images/shop/slideshow/cinematic-style-mall.jpg",
-    "/images/shop/slideshow/empty-shopping-store-with-casual-formal-wear-design-retail-shop-with-fashionable-clothes-hangers-racks-modern-boutique-clothing-center-fashion-merchandise-sale.jpg",
+    "/images/shop/slideshow/person-browsing-through-items-yard-sale-looking-bargains.webp",
+    "/images/shop/slideshow/person-browsing-through-items-yard-sale-looking-bargains1.webp",
+    "/images/shop/slideshow/monochrome-view-handsom-businessman-room-is-drinking-alcohol-drink-near-window.webp",
+    "/images/shop/slideshow/empty-clothing-store-with-casual-formal-wear-design-retail-shop-with-clothes-hangers-racks-department-store-inside-shopping-center-fashion-merchandise-sale.webp",
+    "/images/shop/slideshow/cinematic-style-mall.webp",
+    "/images/shop/slideshow/empty-shopping-store-with-casual-formal-wear-design-retail-shop-with-fashionable-clothes-hangers-racks-modern-boutique-clothing-center-fashion-merchandise-sale.webp",
   ];
   const [currentSlide, setCurrentSlide] = useState(0);
 

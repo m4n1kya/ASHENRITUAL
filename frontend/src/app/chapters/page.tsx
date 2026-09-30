@@ -74,7 +74,7 @@ export default async function ChaptersPage() {
                   className={`relative aspect-[16/9] overflow-hidden bg-card md:aspect-auto md:min-h-[480px] ${!isEven ? "md:order-2" : ""}`}
                 >
                   <Image
-                    src={chapter.image || "/images/hero.png"}
+                    src={chapter.image || "/images/hero.webp"}
                     alt={chapter.name}
                     fill
                     className="object-cover transition-transform duration-[2000ms] group-hover:scale-[1.03]"

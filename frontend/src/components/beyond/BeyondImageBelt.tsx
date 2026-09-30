@@ -7,14 +7,14 @@
 import { motion } from 'framer-motion';
 
 const IMAGES = [
-  '/images/beyond/young-man-portrait.jpg',
-  '/images/beyond/portrait-fashionable-boy-outdoors.jpg',
-  '/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.jpg',
-  '/images/beyond/beautiful-belarus-person-city.jpg',
-  '/images/beyond/cowboy-silhouette-with-horse-against-warm-light.jpg',
-  '/images/beyond/young-man-portrait.jpg',
-  '/images/beyond/portrait-fashionable-boy-outdoors.jpg',
-  '/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.jpg',
+  '/images/beyond/young-man-portrait.webp',
+  '/images/beyond/portrait-fashionable-boy-outdoors.webp',
+  '/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.webp',
+  '/images/beyond/beautiful-belarus-person-city.webp',
+  '/images/beyond/cowboy-silhouette-with-horse-against-warm-light.webp',
+  '/images/beyond/young-man-portrait.webp',
+  '/images/beyond/portrait-fashionable-boy-outdoors.webp',
+  '/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.webp',
 ];
 
 export function BeyondImageBelt() {

@@ -28,84 +28,84 @@ import type { Concept, User } from "@/types";
 const PROTO_IMAGES = [
   {
     id: "e1",
-    src: "/images/exhibition_01.png",
+    src: "/images/exhibition_01.webp",
     creator: "@void.ritual",
     handle: "ASHEN-2041",
     title: "Fractured Silhouette",
   },
   {
     id: "e2",
-    src: "/images/exhibition_02.png",
+    src: "/images/exhibition_02.webp",
     creator: "@mute.form",
     handle: "ASHEN-1879",
     title: "Textile Study III",
   },
   {
     id: "e3",
-    src: "/images/exhibition_03.png",
+    src: "/images/exhibition_03.webp",
     creator: "@liminal.cut",
     handle: "ASHEN-3302",
     title: "Brutalist Drape",
   },
   {
     id: "e4",
-    src: "/images/exhibition_04.png",
+    src: "/images/exhibition_04.webp",
     creator: "@ash.theory",
     handle: "ASHEN-0091",
     title: "Ink Draft No. 7",
   },
   {
     id: "e5",
-    src: "/images/exhibition_05.png",
+    src: "/images/exhibition_05.webp",
     creator: "@null.cloth",
     handle: "ASHEN-4410",
     title: "Collage Fragment",
   },
   {
     id: "e6",
-    src: "/images/exhibition_06.png",
+    src: "/images/exhibition_06.webp",
     creator: "@still.object",
     handle: "ASHEN-2253",
     title: "Geometry of Utility",
   },
   {
     id: "e7",
-    src: "/images/exhibition_07.png",
+    src: "/images/exhibition_07.webp",
     creator: "@dusk.atelier",
     handle: "ASHEN-1102",
     title: "Night Architecture",
   },
   {
     id: "e8",
-    src: "/images/exhibition_08.png",
+    src: "/images/exhibition_08.webp",
     creator: "@grey.index",
     handle: "ASHEN-3871",
     title: "Moodboard 88",
   },
   {
     id: "e9",
-    src: "/images/forge-hero.jpg",
+    src: "/images/forge-hero.webp",
     creator: "@iron.stitch",
     handle: "ASHEN-5519",
     title: "The Forge Series",
   },
   {
     id: "e10",
-    src: "/images/natural-texture.jpg",
+    src: "/images/natural-texture.webp",
     creator: "@earth.form",
     handle: "ASHEN-6634",
     title: "Raw Material I",
   },
   {
     id: "e11",
-    src: "/images/cowboy-silhouette.jpg",
+    src: "/images/cowboy-silhouette.webp",
     creator: "@wet.ink",
     handle: "ASHEN-7701",
     title: "Surface Tension",
   },
   {
     id: "e12",
-    src: "/images/new-texture-hero.jpg",
+    src: "/images/new-texture-hero.webp",
     creator: "@texture.lab",
     handle: "ASHEN-8823",
     title: "Woven Horizon",
@@ -113,42 +113,42 @@ const PROTO_IMAGES = [
   // Beyond images
   {
     id: "e13",
-    src: "/images/beyond/beautiful-belarus-person-city.jpg",
+    src: "/images/beyond/beautiful-belarus-person-city.webp",
     creator: "@urban.phantom",
     handle: "ASHEN-9201",
     title: "City Veil",
   },
   {
     id: "e14",
-    src: "/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.jpg",
+    src: "/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.webp",
     creator: "@flash.cut",
     handle: "ASHEN-9302",
     title: "Flash Study I",
   },
   {
     id: "e15",
-    src: "/images/beyond/cowboy-silhouette-with-horse-against-warm-light.jpg",
+    src: "/images/beyond/cowboy-silhouette-with-horse-against-warm-light.webp",
     creator: "@dust.ritual",
     handle: "ASHEN-9403",
     title: "Western Form",
   },
   {
     id: "e16",
-    src: "/images/beyond/medium-shot-young-man-posing-outdoors.jpg",
+    src: "/images/beyond/medium-shot-young-man-posing-outdoors.webp",
     creator: "@field.edit",
     handle: "ASHEN-9504",
     title: "Open Air No. 3",
   },
   {
     id: "e17",
-    src: "/images/beyond/portrait-fashionable-boy-outdoors.jpg",
+    src: "/images/beyond/portrait-fashionable-boy-outdoors.webp",
     creator: "@street.form",
     handle: "ASHEN-9605",
     title: "Outdoor Portrait",
   },
   {
     id: "e18",
-    src: "/images/beyond/young-man-portrait.jpg",
+    src: "/images/beyond/young-man-portrait.webp",
     creator: "@still.face",
     handle: "ASHEN-9706",
     title: "Portrait Study",
@@ -302,7 +302,7 @@ export function SanctumClient() {
 
               {/* SHINY LANTERN IMAGE */}
               <Image
-                src="/images/lantern-logo.png"
+                src="/images/lantern-logo.webp"
                 alt="ASHENRITUAL"
                 width={500}
                 height={500}
@@ -544,7 +544,7 @@ function CreatorHub({
               />
             ) : (
               <Image
-                src="/images/default-avatar.png"
+                src="/images/default-avatar.webp"
                 alt="Guest Profile"
                 fill
                 className="object-cover scale-[1.15] translate-y-3 bg-gradient-to-br from-[#1A1A1A] to-[#2A2A2A]"
@@ -619,7 +619,7 @@ function CreatorHub({
             }}
           >
             <Image
-              src="/images/lantern.png"
+              src="/images/lantern.webp"
               alt="Enter Exhibition"
               fill
               sizes="380px"

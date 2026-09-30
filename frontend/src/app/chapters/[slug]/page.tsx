@@ -67,7 +67,7 @@ export default async function ChapterPage({ params }: PageProps) {
       {/* Hero Section — Cinematic & Poetic */}
       <section className="relative h-[80vh] min-h-[600px] w-full bg-card overflow-hidden">
         <Image
-          src={chapter.image || "/images/hero.png"}
+          src={chapter.image || "/images/hero.webp"}
           alt={chapter.name}
           fill
           className="object-cover"

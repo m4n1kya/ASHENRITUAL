@@ -354,7 +354,7 @@ function HeroSection({
         className="absolute inset-0 z-0 bg-[#050505]"
       >
         <Image
-          src="/images/showrooms/showroom-hero-dark.jpg"
+          src="/images/showrooms/showroom-hero-dark.webp"
           alt="Showrooms Hero"
           fill
           className="object-cover opacity-80"

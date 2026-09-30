@@ -186,7 +186,7 @@ html[data-theme="light"] .home-tier1 {
 
   html {
     background-color: #0A0A0A;
-    background-image: url('/images/global-bg.jpg');
+    background-image: url('/images/global-bg.webp');
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
@@ -203,7 +203,7 @@ html[data-theme="light"] .home-tier1 {
     background-color: #010204;
     background-image:
       linear-gradient(to bottom, rgba(5, 5, 8, 0.70), rgba(1, 2, 4, 0.85)),
-      url('/images/lapis-bg-natural.jpg');
+      url('/images/lapis-bg-natural.webp');
     background-size: cover;
     background-attachment: fixed;
     background-position: center;

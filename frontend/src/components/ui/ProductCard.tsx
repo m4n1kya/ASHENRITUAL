@@ -44,7 +44,7 @@ export function ProductCard({ product, priority = false, className }: ProductCar
     maximumFractionDigits: 0,
   }).format(Number(product.price));
 
-  const src = !imgErr && product.images?.[0] ? product.images[0] : '/images/product.png';
+  const src = !imgErr && product.images?.[0] ? product.images[0] : '/images/product.webp';
 
   return (
     <motion.article 

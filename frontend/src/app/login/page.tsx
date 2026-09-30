@@ -291,7 +291,7 @@ export default function LoginPage() {
       {/* Right Side: Lantern & Particles (Hidden on Mobile) */}
       <div className="relative hidden w-1/2 items-center justify-center overflow-hidden lg:flex">
         <Image
-          src="/images/lantern.png"
+          src="/images/lantern.webp"
           alt="Lantern"
           fill
           className="scale-90 object-contain object-center mix-blend-screen"

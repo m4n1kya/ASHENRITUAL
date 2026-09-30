@@ -50,7 +50,7 @@ function HeroSection({
         className="absolute inset-0 z-0 bg-background"
       >
         <Image
-          src="/images/forge-hero.jpg"
+          src="/images/forge-hero.webp"
           alt="Forge Studio"
           fill
           className="object-cover object-center opacity-80"
@@ -107,7 +107,7 @@ function BrandPhilosophy() {
           className="lg:col-span-5 relative aspect-[4/5] w-full max-w-md mx-auto lg:mx-0 overflow-hidden bg-[#1A1A1A]"
         >
           <Image
-            src="/images/forge/low-key-portrait.jpg"
+            src="/images/forge/low-key-portrait.webp"
             alt="Philosophy"
             fill
             className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 opacity-80"
@@ -226,21 +226,21 @@ const MATERIALS = [
     origin: "Okayama, Japan",
     texture: "Dense, structured, matte",
     desc: "Woven on vintage looms, this cotton provides an architectural rigidity that softens beautifully over years of wear.",
-    img: "/images/forge/Japanese Selvedge Denim.jpg",
+    img: "/images/forge/Japanese Selvedge Denim.webp",
   },
   {
     name: "Brushed Italian Wool",
     origin: "Biella, Italy",
     texture: "Soft, dense, heavy-drape",
     desc: "A meticulously milled wool offering profound warmth and a fluid drape, engineered for the deepest winter months.",
-    img: "/images/forge/Brushed Italian Wool.jpg",
+    img: "/images/forge/Brushed Italian Wool.webp",
   },
   {
     name: "Vegetable-Tanned Calfskin",
     origin: "Tuscany, Italy",
     texture: "Smooth, rigid, patinating",
     desc: "Treated with natural tannins, this leather begins stiff and structural, molding uniquely to the wearer's anatomy over time.",
-    img: "/images/forge/Vegetable-Tanned Calfskin.jpg",
+    img: "/images/forge/Vegetable-Tanned Calfskin.webp",
   },
 ];
 
@@ -375,32 +375,32 @@ const SEASONS = [
   {
     name: "Vernal Silence",
     desc: "Exploring the violent rebirth of spring through lightweight architectural layering.",
-    img: "/images/chapters/Vernal Silence.jpg",
+    img: "/images/chapters/Vernal Silence.webp",
   },
   {
     name: "Summer Afterglow",
     desc: "A study in stark contrasts—shadow and light, breathable linens against brutalist concrete.",
-    img: "/images/chapters/Summer Afterglow.jpg",
+    img: "/images/chapters/Summer Afterglow.webp",
   },
   {
     name: "Autumn Ashes",
     desc: "The descent into darkness. Heavy cottons and deep earthy undertones reflecting decay.",
-    img: "/images/chapters/Autumn Ashes.jpg",
+    img: "/images/chapters/Autumn Ashes.webp",
   },
   {
     name: "Winter Solitude",
     desc: "Isolation engineered. Extreme thermal protection encased in absolute minimalist forms.",
-    img: "/images/chapters/Winter Solitude.jpg",
+    img: "/images/chapters/Winter Solitude.webp",
   },
   {
     name: "Monsoon Reverie",
     desc: "Technical mastery meets fluidity. Water-repellent nylon behaving like liquid silk.",
-    img: "/images/chapters/Monsoon Reverie.jpg",
+    img: "/images/chapters/Monsoon Reverie.webp",
   },
   {
     name: "The White Hour",
     desc: "Absolute reduction. The ultimate expression of our philosophy in pristine, untouched monochrome.",
-    img: "/images/chapters/The White Hour.jpg",
+    img: "/images/chapters/The White Hour.webp",
   },
 ];
 
@@ -469,12 +469,12 @@ function SeasonalDevelopment() {
 
 /* ── 7. Inspiration Wall ─────────────────────────────────────────────────── */
 const MASONRY_IMGS = [
-  "/images/forge-hero.jpg",
-  "/images/cowboy-silhouette.jpg",
-  "/images/new-texture-hero.jpg",
-  "/images/natural-texture.jpg",
-  "/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.jpg",
-  "/images/beyond/young-man-portrait.jpg",
+  "/images/forge-hero.webp",
+  "/images/cowboy-silhouette.webp",
+  "/images/new-texture-hero.webp",
+  "/images/natural-texture.webp",
+  "/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.webp",
+  "/images/beyond/young-man-portrait.webp",
 ];
 
 function InspirationWall() {
@@ -558,10 +558,10 @@ function Craftsmanship() {
 /* ── 9. Studio Gallery ───────────────────────────────────────────────────── */
 function StudioGallery() {
   const images = [
-    "/images/forge/Brushed Italian Wool.jpg",
-    "/images/forge/Japanese Selvedge Denim.jpg",
-    "/images/forge/Vegetable-Tanned Calfskin.jpg",
-    "/images/forge/cotton-plants-still-life.jpg",
+    "/images/forge/Brushed Italian Wool.webp",
+    "/images/forge/Japanese Selvedge Denim.webp",
+    "/images/forge/Vegetable-Tanned Calfskin.webp",
+    "/images/forge/cotton-plants-still-life.webp",
   ];
 
   return (

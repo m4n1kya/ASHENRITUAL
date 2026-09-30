@@ -10,7 +10,7 @@ export function BeyondEvents() {
       <div className="absolute inset-0 z-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img 
-          src="/images/beyond/beautiful-belarus-person-city.jpg" 
+          src="/images/beyond/beautiful-belarus-person-city.webp" 
           alt="Event Exhibition"
           className="w-full h-full object-cover opacity-20 grayscale"
           loading="lazy"

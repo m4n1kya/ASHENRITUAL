@@ -11,17 +11,17 @@ const SLIDES = [
   {
     title: 'Autumn Winter / 24',
     subtitle: 'Campaign',
-    image: '/images/beyond/beautiful-belarus-person-city.jpg',
+    image: '/images/beyond/beautiful-belarus-person-city.webp',
   },
   {
     title: 'The Blueprint',
     subtitle: 'Behind The Seams',
-    image: '/images/beyond/portrait-fashionable-boy-outdoors.jpg',
+    image: '/images/beyond/portrait-fashionable-boy-outdoors.webp',
   },
   {
     title: 'Silhouettes',
     subtitle: 'Editorial',
-    image: '/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.jpg',
+    image: '/images/beyond/close-up-portrait-attractive-male-model-color-flash-light.webp',
   },
 ];
 

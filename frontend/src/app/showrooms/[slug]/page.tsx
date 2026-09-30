@@ -241,7 +241,7 @@ export default async function ShowroomProfilePage({
                           />
                         ) : (
                           <Image
-                            src="/images/default-avatar.png"
+                            src="/images/default-avatar.webp"
                             alt="Creator Profile"
                             fill
                             className="object-cover scale-[1.15] translate-y-3 bg-gradient-to-br from-[#1A1A1A] to-[#2A2A2A]"

@@ -16,7 +16,7 @@ export function BeyondFilms() {
         <div className="relative w-full aspect-video bg-[#0A0A0A] overflow-hidden group cursor-pointer">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
-            src="/images/beyond/medium-shot-young-man-posing-outdoors.jpg" 
+            src="/images/beyond/medium-shot-young-man-posing-outdoors.webp" 
             alt="Film Thumbnail"
             className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-700 grayscale"
             loading="lazy"
