@@ -11,7 +11,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "npx prisma migrate resolve --rolled-back 20260930100000_webp_extension_update || true && npx prisma migrate deploy && node dist/main.js",
+    "start:prod": "npx prisma migrate deploy && node dist/main.js",
     "prisma:generate": "prisma generate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
