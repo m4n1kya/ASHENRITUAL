@@ -131,14 +131,12 @@ export default function RootLayout({
           }}
         />
         <link rel="preload" href="/images/lantern-logo.webp" as="image" />
+        <link rel="preload" href="/images/home-hero.webp" as="image" />
         <link rel="preload" href="/images/shop-hero-new.webp" as="image" />
         <link rel="preload" href="/images/forge-hero.webp" as="image" />
-        <link
-          rel="preload"
-          href="/images/showrooms/showroom-hero.webp"
-          as="image"
-        />
+        <link rel="preload" href="/images/showrooms/showroom-hero.webp" as="image" />
         <link rel="preload" href="/images/vesper-lantern.webp" as="image" />
+        <link rel="preload" href="/images/vesper-texture.webp" as="image" />
       </head>
       <body
         className={cn(
