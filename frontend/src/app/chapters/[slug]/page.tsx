@@ -29,7 +29,7 @@ async function getChapter(slug: string): Promise<Chapter | null> {
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
   try {
     const res = await fetch(`${API_URL}/chapters/${slug}`, {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
     if (!res.ok) return null;
     return res.json();
