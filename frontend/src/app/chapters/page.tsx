@@ -29,7 +29,7 @@ async function getChapters(): Promise<Chapter[]> {
   const API_URL =
     process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
   try {
-    const res = await fetch(`${API_URL}/chapters`, { cache: "no-store" });
+    const res = await fetch(`${API_URL}/chapters`, { next: { revalidate: 60 } });
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : [];

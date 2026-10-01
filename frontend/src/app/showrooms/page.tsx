@@ -7,7 +7,6 @@ import type { Metadata } from "next";
 import { ShowroomsClient } from "./ShowroomsClient";
 import { Showroom } from "@/types";
 
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "SHOWROOMS — ASHENRITUAL",
