@@ -1,46 +1,24 @@
-# ASHENRITUAL Frontend
+# ASHENRITUAL — Web Client
 
-This is the frontend application for ASHENRITUAL, delivering a cinematic user experience through modern UI technologies. It emphasizes intentional design, timeless aesthetics, and a seamless user experience.
+Next.js 15 (App Router) and React 19 frontend engineered for the ASHENRITUAL platform, featuring hardware-accelerated animations, Incremental Static Regeneration (ISR), and client-side computer vision.
 
-## Technology Stack
+## Key Capabilities
 
-- **Framework**: Next.js 15 (App Router)
-- **Library**: React 19
-- **Styling**: Tailwind CSS v4, shadcn/ui
-- **Animation**: Framer Motion, GSAP
-- **State Management**: Zustand
-- **Form Handling**: React Hook Form with Zod
+- **App Router & ISR** — Server-rendered dynamic routes (`/shop`, `/chapters`, `/showrooms`, `/sanctum`, `/forge`, `/beyond`) with instant skeleton loading transitions
+- **VESPER Interface (`/vesper`)** — Real-time Server-Sent Events (SSE) token streaming with inline interactive garment recommendations and routing actions
+- **Size Intelligence (`/vesper/size`)** — Client-side WebAssembly/GPU skeletal pose estimation powered by `@mediapipe/tasks-vision` (`PoseLandmarker`)
+- **Motion & Aesthetics** — Engineered with Tailwind CSS v4, Framer Motion 12, GSAP 3, and Lenis smooth scroll physics
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v20+ required for Next.js 15)
-
-### Installation
+## Local Development
 
 ```bash
-cd frontend
 npm install
-```
-
-### Running the Application
-
-First, run the development server:
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You may need to change the port to `3001` or another port if the backend is running on `3000`. In the main README, the frontend is documented to run on `3001`.
-
-```bash
-npm run dev -- -p 3001
-```
-
-### Building for Production
+Build for production:
 
 ```bash
 npm run build
-npm start
+npm run start
 ```

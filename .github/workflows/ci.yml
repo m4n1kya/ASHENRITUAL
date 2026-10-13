@@ -1,8 +1,22 @@
-name: CI
-on: [push]
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
 jobs:
-  build:
+  verify:
+    name: Workspace Integrity Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: echo "CI pipeline initialized"
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Verify Monorepo Structure
+        run: |
+          test -f frontend/package.json
+          test -f backend/package.json
+          test -f backend/prisma/schema.prisma
+          echo "Monorepo structure verified."
