@@ -144,7 +144,7 @@ export const useVesperStore = create<VesperState>()(
           let currentId = state.currentSessionId;
           let nextSessions = [...state.sessions];
 
-          let sessionIndex = currentId
+          const sessionIndex = currentId
             ? nextSessions.findIndex((s) => s.id === currentId)
             : -1;
 
@@ -233,18 +233,20 @@ export const useVesperStore = create<VesperState>()(
       name: 'vesper-storage',
       version: 1,
       storage: createJSONStorage(() => localStorage),
-      migrate: (persistedState: any) => {
-        if (!persistedState) return persistedState;
-        const state = persistedState as any;
+      migrate: (persistedState: unknown) => {
+        if (!persistedState || typeof persistedState !== 'object') return persistedState as VesperState;
+        const state = persistedState as Partial<VesperState>;
         const hasExistingMessages =
           Array.isArray(state.messages) && state.messages.length > 0;
         const hasSessions =
           Array.isArray(state.sessions) && state.sessions.length > 0;
 
-        if (hasExistingMessages && !hasSessions) {
-          const firstUser = state.messages.find((m: any) => m.role === 'user');
-          const title =
-            firstUser?.content?.trim()?.slice(0, 36) || 'Previous Consultation';
+        if (hasExistingMessages && !hasSessions && state.messages) {
+          const firstUser = state.messages.find((m) => m && typeof m === 'object' && 'role' in m && (m as { role: string }).role === 'user');
+          const content = firstUser && 'content' in firstUser && typeof (firstUser as { content: string }).content === 'string'
+            ? (firstUser as { content: string }).content
+            : '';
+          const title = content.trim().slice(0, 36) || 'Previous Consultation';
           const initialSession: VesperChatSession = {
             id: `legacy-${Date.now()}`,
             title,

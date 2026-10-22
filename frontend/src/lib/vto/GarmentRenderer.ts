@@ -229,10 +229,16 @@ export class GarmentRenderer {
             ? mesh.material
             : [mesh.material];
           for (const mat of materials) {
-            if (mat.map) mat.map.dispose();
-            if (mat.normalMap) mat.normalMap.dispose();
-            if (mat.roughnessMap) mat.roughnessMap.dispose();
-            if (mat.metalnessMap) mat.metalnessMap.dispose();
+            const m = mat as THREE.Material & {
+              map?: { dispose?: () => void };
+              normalMap?: { dispose?: () => void };
+              roughnessMap?: { dispose?: () => void };
+              metalnessMap?: { dispose?: () => void };
+            };
+            if (m.map && typeof m.map.dispose === "function") m.map.dispose();
+            if (m.normalMap && typeof m.normalMap.dispose === "function") m.normalMap.dispose();
+            if (m.roughnessMap && typeof m.roughnessMap.dispose === "function") m.roughnessMap.dispose();
+            if (m.metalnessMap && typeof m.metalnessMap.dispose === "function") m.metalnessMap.dispose();
             mat.dispose();
           }
         }

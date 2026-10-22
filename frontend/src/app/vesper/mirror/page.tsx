@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   Camera,
@@ -15,8 +15,6 @@ import {
   Sparkles,
   RefreshCw,
   Scan,
-  Maximize2,
-  Sliders,
   CheckCircle2,
   AlertCircle,
   Eye,
@@ -601,6 +599,14 @@ export default function VesperMirrorPage() {
               <span>{shoulderCm}cm Span</span>
               <span className="text-white/20">•</span>
               <span>Yaw {chestYawDeg}°</span>
+              <span className="text-white/20">•</span>
+              <span>{trackingConfidence}% Conf</span>
+              {renderMode === "3D" && meshStats && (
+                <>
+                  <span className="text-white/20">•</span>
+                  <span>{(meshStats.triangles / 1000).toFixed(1)}k Tris</span>
+                </>
+              )}
             </div>
           )}
 

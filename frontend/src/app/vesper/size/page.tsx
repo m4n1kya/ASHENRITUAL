@@ -11,6 +11,8 @@ import {
   useSizeStore,
   BodyProfile,
   BodyMeasurements,
+  PreferredFit,
+  BodyType,
 } from "@/store/size.store";
 import { useVesperStore } from "@/store/vesper.store";
 import { api } from "@/lib/api";
@@ -225,15 +227,15 @@ export default function SizeIntelligencePage() {
         ...finalMeasurements,
         gender,
         preferredFit,
-      })) as any;
+      })) as { bodyType?: BodyType; confidenceScore?: number; report?: string };
 
       const profileData: BodyProfile = {
         id: "bp-" + Date.now(),
         measurements: finalMeasurements,
-        bodyType: response.bodyType || "Athletic Slim",
-        preferredFit: preferredFit as any,
+        bodyType: response?.bodyType || "Athletic Slim",
+        preferredFit: preferredFit as PreferredFit,
         gender,
-        confidenceScore: response.confidenceScore || 94,
+        confidenceScore: response?.confidenceScore || 94,
         lastUpdated: new Date().toISOString(),
       };
 
