@@ -48,18 +48,18 @@
 }
 
 .specular-button--sm {
-  padding: 10px 20px;
-  font-size: 0.875rem;
+  padding: 8px 18px;
+  font-size: inherit;
 }
 
 .specular-button--md {
-  padding: 14px 28px;
-  font-size: 1rem;
+  padding: 12px 24px;
+  font-size: inherit;
 }
 
 .specular-button--lg {
-  padding: 18px 38px;
-  font-size: 1.125rem;
+  padding: 16px 32px;
+  font-size: inherit;
 }
 
 .specular-button__light {
@@ -78,4 +78,5 @@
   display: inline-flex;
   align-items: center;
   gap: inherit;
+  font-size: inherit;
 }

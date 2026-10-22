@@ -108,19 +108,19 @@ export default function VesperLayout({
           onClick={() => setIsChatsOpen(!isChatsOpen)}
           aria-expanded={isChatsOpen}
           aria-label="All Chats Menu"
-          className="h-11 px-4 md:px-6 font-heading text-[10px] font-medium uppercase tracking-[0.25em] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+          className="h-11 px-4 md:px-6 font-heading text-[9px] font-medium uppercase tracking-[0.25em] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
         >
           <span className="flex items-center gap-2">
             <span>All Chats</span>
             {mounted && sessions.length > 0 && (
-              <span className="ml-0.5 rounded-full bg-white/15 px-1.5 py-0.5 text-[8px] tracking-normal text-white">
+              <span className="ml-0.5 rounded-full bg-white/15 px-1.5 py-0.5 text-[7.5px] tracking-normal text-white">
                 {sessions.length}
               </span>
             )}
           </span>
           <ChevronDown
             className={cn(
-              "h-3.5 w-3.5 ml-1 transition-transform duration-500",
+              "h-3 w-3 ml-0.5 transition-transform duration-500",
               isChatsOpen ? "rotate-180" : ""
             )}
             strokeWidth={1.5}
@@ -247,7 +247,7 @@ export default function VesperLayout({
           proximity={200}
           onClick={() => router.push("/vesper/mirror")}
           aria-label="Launch Vesper Mirror"
-          className="h-11 px-5 md:px-6 font-heading text-[10px] font-medium uppercase tracking-[0.22em] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+          className="h-11 px-5 md:px-6 font-heading text-[9px] font-medium uppercase tracking-[0.22em] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
         >
           <span>Vesper — Mirror</span>
         </SpecularButton>
