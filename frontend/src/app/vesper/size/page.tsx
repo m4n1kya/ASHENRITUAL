@@ -14,6 +14,7 @@ import {
   PreferredFit,
   BodyType,
 } from "@/store/size.store";
+import { drawWhiteBodySilhouette } from "@/lib/vto/WhiteSilhouetteRenderer";
 import { useVesperStore } from "@/store/vesper.store";
 import { api } from "@/lib/api";
 import {
@@ -152,27 +153,10 @@ export default function SizeIntelligencePage() {
 
         if (results.landmarks && results.landmarks.length > 0) {
           const marks = results.landmarks[0];
-          ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
-          ctx.lineWidth = 1.5;
-
           const lShoulder = marks[11];
           const rShoulder = marks[12];
 
           if (lShoulder && rShoulder) {
-            ctx.beginPath();
-            ctx.moveTo(lShoulder.x * canvas.width, lShoulder.y * canvas.height);
-            ctx.lineTo(rShoulder.x * canvas.width, rShoulder.y * canvas.height);
-            ctx.stroke();
-
-            const drawJoint = (x: number, y: number) => {
-              ctx.beginPath();
-              ctx.arc(x, y, 3, 0, 2 * Math.PI);
-              ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-              ctx.fill();
-            };
-            drawJoint(lShoulder.x * canvas.width, lShoulder.y * canvas.height);
-            drawJoint(rShoulder.x * canvas.width, rShoulder.y * canvas.height);
-
             const pixelDist = Math.abs(lShoulder.x - rShoulder.x);
             const estimatedShouldersCm = Math.round(
               pixelDist * parseInt(heightCm) * 1.5
@@ -183,7 +167,8 @@ export default function SizeIntelligencePage() {
               shoulderWidthCm: estimatedShouldersCm,
             }));
 
-            if (estimatedShouldersCm > 35 && estimatedShouldersCm < 65) {
+            const isLocked = estimatedShouldersCm > 35 && estimatedShouldersCm < 65;
+            if (isLocked) {
               stableFrames.current++;
               if (stableFrames.current > 45) {
                 setIsStable(true);
@@ -191,6 +176,14 @@ export default function SizeIntelligencePage() {
             } else {
               stableFrames.current = 0;
             }
+
+            // Pure architectural white body silhouette mask (strictly NO color)
+            drawWhiteBodySilhouette(
+              canvas,
+              marks,
+              estimatedShouldersCm,
+              stableFrames.current > 45
+            );
           }
         }
       }
@@ -307,7 +300,7 @@ export default function SizeIntelligencePage() {
           </div>
 
           <div className="border border-white/10 rounded-2xl bg-[#0A0A0A]/80 backdrop-blur-xl p-3 flex items-center gap-2 text-[#777]">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+            <ShieldCheck className="h-3.5 w-3.5 text-white/80 shrink-0" />
             <p className="text-[9px] uppercase tracking-wider font-heading">
               Edge Vision • Zero Cloud Storage
             </p>
@@ -436,8 +429,8 @@ export default function SizeIntelligencePage() {
                             className={cn(
                               "w-1.5 h-1.5 rounded-full",
                               isStable
-                                ? "bg-emerald-400 animate-ping"
-                                : "bg-amber-400 animate-pulse"
+                                ? "bg-white animate-ping"
+                                : "bg-white/40 animate-pulse"
                             )}
                           />
                           {isStable
@@ -466,7 +459,7 @@ export default function SizeIntelligencePage() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex flex-col items-center justify-center text-center p-6 w-full max-w-sm"
                 >
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-3 text-emerald-400">
+                  <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center mb-3 text-white">
                     <CheckCircle2 className="w-6 h-6 stroke-[1.5]" />
                   </div>
 
@@ -618,7 +611,7 @@ export default function SizeIntelligencePage() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="rounded-full px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-[10px] uppercase tracking-widest inline-block">
+                  <span className="rounded-full px-3 py-1 bg-white/10 border border-white/20 text-white font-mono text-[10px] uppercase tracking-widest inline-block">
                     {profile.confidenceScore}% Match
                   </span>
                 </div>
