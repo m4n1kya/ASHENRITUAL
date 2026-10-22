@@ -49,8 +49,10 @@ export function drawWhiteGarmentSilhouette(
   // Euclidean shoulder span in pixels
   const span = Math.max(pose.shoulderWidthNorm * w, 40);
 
-  // Roll angle (tilt between shoulders)
-  const rollAngle = pose.rollAngle;
+  // Roll angle (tilt between shoulders) normalized to human upright posture [-pi/2, pi/2]
+  let rollAngle = pose.rollAngle;
+  while (rollAngle > Math.PI / 2) rollAngle -= Math.PI;
+  while (rollAngle < -Math.PI / 2) rollAngle += Math.PI;
 
   // Proportions relative to span
   const halfSpan = (span / 2) * fitScale;
@@ -95,9 +97,9 @@ export function drawWhiteGarmentSilhouette(
   ctx.save();
   ctx.globalAlpha = baseOpacity;
 
-  // Transform to neck base origin and rotate with shoulders
+  // Transform to neck base origin and rotate with shoulders (negated to match mirrored canvas)
   ctx.translate(neckX, neckY);
-  ctx.rotate(rollAngle);
+  ctx.rotate(-rollAngle);
 
   // ─── 1. BUILD ARCHITECTURAL SILHOUETTE PATH ──────────────────────────────
   ctx.beginPath();

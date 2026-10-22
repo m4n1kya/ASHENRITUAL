@@ -203,8 +203,8 @@ export class VtoPoseEngine {
     this._tmp.set(targetX, targetY, depthZ);
 
     // 4. Orientation: Roll, Yaw, Pitch
-    // Roll: 2D angle of shoulder line
-    const rollAngle = Math.atan2(rs.y - ls.y, rs.x - ls.x);
+    // Roll: 2D angle of shoulder line from screen-left to screen-right (dx > 0 so roll is centered at 0 rad)
+    const rollAngle = Math.atan2(ls.y - rs.y, ls.x - rs.x);
 
     // Yaw: from 3D world landmarks or 2D z-disparity
     let rawYaw = 0;
