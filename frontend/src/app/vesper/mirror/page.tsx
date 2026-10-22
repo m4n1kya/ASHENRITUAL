@@ -2,13 +2,9 @@
  * @fileoverview ASHENRITUAL Vesper Mirror — Standalone Real-Time Virtual Try-On
  * @module page.tsx
  *
- * Implements a pure monochrome architectural White Mask Silhouette fitting experience.
- * Strictly NO color — renders crisp white outlines and frosted translucent masks
- * anchored to detected body landmarks.
- * Garment selection drawer is positioned vertically on the RIGHT side of the window.
- * Website products and 3D assets remain separate.
- * Features a floating return bubble in top-left over camera, size bubbles (XS, S, M, L, XL)
- * in bottom-left over camera, and dynamic silhouette scaling per size.
+ * Implements high-precision real-time fitting with anthropometrically calibrated
+ * 3D mesh alignment, dual-scale (CM/FT+IN and KG/LBS) anatomical profiling,
+ * and high-fashion monochrome / luxury material rendering.
  */
 "use client";
 
@@ -28,15 +24,24 @@ import {
   Download,
   Box,
   Layers,
+  Sliders,
+  Sparkles,
 } from "lucide-react";
 import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import { VtoPoseEngine, ComputedPoseState } from "@/lib/vto/PoseEngine";
-import { GarmentRenderer, GarmentMeshStats } from "@/lib/vto/GarmentRenderer";
+import { GarmentRenderer, GarmentMeshStats, GarmentFinishStyle } from "@/lib/vto/GarmentRenderer";
 import { drawWhiteGarmentSilhouette } from "@/lib/vto/WhiteSilhouetteRenderer";
 import {
   ASHEN_TRYON_CATALOGUE,
   TryOnProduct,
 } from "@/lib/vto/garmentCatalog";
+import {
+  UserBodyMetrics,
+  DEFAULT_BODY_METRICS,
+  loadUserBodyProfile,
+  saveUserBodyProfile,
+} from "@/lib/vto/anthropometrics";
+import { AnthropometricModal } from "@/components/mirror/AnthropometricModal";
 import { cn } from "@/lib/utils";
 
 type MirrorStatus =
@@ -71,6 +76,11 @@ export default function VesperMirrorPage() {
   const [renderMode, setRenderMode] = useState<RenderMode>("SILHOUETTE");
   const [selectedSize, setSelectedSize] = useState<GarmentSize>("M");
   const [showLandmarks, setShowLandmarks] = useState<boolean>(false);
+  const [finishStyle, setFinishStyle] = useState<GarmentFinishStyle>("OBSIDIAN");
+
+  // Anthropometrics Profile
+  const [bodyMetrics, setBodyMetrics] = useState<UserBodyMetrics>(DEFAULT_BODY_METRICS);
+  const [isCalibrationOpen, setIsCalibrationOpen] = useState<boolean>(false);
 
   // Live telemetry metrics
   const [fps, setFps] = useState<number>(0);
@@ -98,6 +108,24 @@ export default function VesperMirrorPage() {
   const selectedProductRef = useRef<TryOnProduct>(selectedProduct);
   const selectedSizeRef = useRef<GarmentSize>("M");
 
+  // Load saved profile on enter or trigger popup if first visit
+  useEffect(() => {
+    const { metrics, hasStoredProfile } = loadUserBodyProfile();
+    setBodyMetrics(metrics);
+    setSelectedSize(metrics.recommendedSize);
+    // User requested: Pop-up appears when user enters the mirror to increase accuracy
+    if (!hasStoredProfile) {
+      setIsCalibrationOpen(true);
+    }
+  }, []);
+
+  // Synchronize body metrics to pose engine
+  useEffect(() => {
+    if (poseEngineRef.current) {
+      poseEngineRef.current.bodyMetrics = bodyMetrics;
+    }
+  }, [bodyMetrics]);
+
   // Synchronize refs with state
   useEffect(() => {
     selectedProductRef.current = selectedProduct;
@@ -110,7 +138,7 @@ export default function VesperMirrorPage() {
     }
   }, [selectedSize]);
 
-  // Performance telemetry counters
+  // Telemetry counters
   const frameCountRef = useRef<number>(0);
   const lastFpsTimestampRef = useRef<number>(performance.now());
 
@@ -159,16 +187,18 @@ export default function VesperMirrorPage() {
     try {
       const stage = stageRef.current;
       garmentRendererRef.current = new GarmentRenderer(threeCanvasRef.current);
+      garmentRendererRef.current.setFinishStyle(finishStyle);
       if (stage) {
         garmentRendererRef.current.resize(stage.clientWidth, stage.clientHeight);
       }
       poseEngineRef.current = new VtoPoseEngine();
+      poseEngineRef.current.bodyMetrics = bodyMetrics;
       poseEngineRef.current.userFitScale = SIZE_SCALE_FACTORS[selectedSizeRef.current];
     } catch (err) {
       console.warn("Vesper Mirror: WebGL initialization failed, using White Silhouette Mask", err);
       setRenderMode("SILHOUETTE");
     }
-  }, []);
+  }, [bodyMetrics, finishStyle]);
 
   // ─── Switch Garment Selection ─────────────────────────────────────────────
   const handleSelectProduct = useCallback(
@@ -194,6 +224,30 @@ export default function VesperMirrorPage() {
     },
     [renderMode]
   );
+
+  // ─── Auto-load 3D Model when Entering 3D Mode or Changing Product ─────────
+  useEffect(() => {
+    if (
+      renderMode === "3D" &&
+      garmentRendererRef.current &&
+      selectedProduct.is3DSupported &&
+      selectedProduct.model3DPath
+    ) {
+      setModelLoadingProgress(15);
+      garmentRendererRef.current
+        .loadGarment(selectedProduct.model3DPath, (percent) =>
+          setModelLoadingProgress(percent)
+        )
+        .then((stats) => {
+          setMeshStats(stats);
+          setModelLoadingProgress(null);
+        })
+        .catch((err) => {
+          console.warn("3D model load failed:", err);
+          setModelLoadingProgress(null);
+        });
+    }
+  }, [renderMode, selectedProduct]);
 
   // ─── Start Camera & Live Tracking ─────────────────────────────────────────
   const startCamera = async () => {
@@ -239,13 +293,11 @@ export default function VesperMirrorPage() {
 
   // ─── Stop Camera & Comprehensive Cleanup ──────────────────────────────────
   const stopCamera = useCallback(() => {
-    // 1. Cancel animation loop
     if (animFrameRef.current) {
       cancelAnimationFrame(animFrameRef.current);
       animFrameRef.current = null;
     }
 
-    // 2. Stop all media stream tracks
     if (mediaStreamRef.current) {
       mediaStreamRef.current.getTracks().forEach((track) => {
         track.stop();
@@ -253,17 +305,14 @@ export default function VesperMirrorPage() {
       mediaStreamRef.current = null;
     }
 
-    // 3. Clear video element
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
 
-    // 4. Clear WebGL models
     if (garmentRendererRef.current) {
       garmentRendererRef.current.clearCurrentModel();
     }
 
-    // 5. Clear overlay & debug canvases
     if (debugCanvasRef.current) {
       const ctx = debugCanvasRef.current.getContext("2d");
       ctx?.clearRect(0, 0, debugCanvasRef.current.width, debugCanvasRef.current.height);
@@ -277,7 +326,7 @@ export default function VesperMirrorPage() {
     setStatus("IDLE");
   }, []);
 
-  // Guarantee cleanup on unmount
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       stopCamera();
@@ -347,7 +396,7 @@ export default function VesperMirrorPage() {
             const rawLandmarks = detectionResult.landmarks[0];
             const worldLandmarks = detectionResult.worldLandmarks?.[0];
 
-            // 2. Compute 3D Body Frame & Transforms
+            // 2. Compute 3D Body Frame & Transforms with Anthropometrics
             const poseState = poseEngine.update(
               rawLandmarks,
               worldLandmarks,
@@ -593,35 +642,62 @@ export default function VesperMirrorPage() {
             </span>
             {(["XS", "S", "M", "L", "XL"] as GarmentSize[]).map((size) => {
               const isChosen = selectedSize === size;
+              const isRecommended = bodyMetrics.recommendedSize === size;
               return (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
                   className={cn(
-                    "w-8 h-8 rounded-full font-heading text-[9px] uppercase font-bold transition-all duration-300 flex items-center justify-center border",
+                    "relative w-8 h-8 rounded-full font-heading text-[9px] uppercase font-bold transition-all duration-300 flex items-center justify-center border",
                     isChosen
                       ? "bg-white text-black border-white shadow-lg scale-105"
                       : "text-white/70 hover:text-white border-white/10 hover:border-white/30 bg-white/5"
                   )}
-                  title={`Select Size ${size}`}
+                  title={`Select Size ${size}${isRecommended ? " (Recommended Fit)" : ""}`}
                 >
                   {size}
+                  {isRecommended && !isChosen && (
+                    <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-white border border-black animate-pulse" />
+                  )}
                 </button>
               );
             })}
           </div>
 
-          {/* ─── FLOATING HUD: TOP-RIGHT CONTROLS & STATUS ─────────────────── */}
-          <div className="absolute top-5 right-5 z-40 flex items-center gap-2">
-            {/* Live Status Badge */}
+          {/* ─── FLOATING HUD: TOP-RIGHT CONTROLS, MEASUREMENTS & STATUS ────── */}
+          <div className="absolute top-5 right-5 z-40 flex flex-wrap items-center justify-end gap-2 max-w-[calc(100vw-120px)] sm:max-w-none">
+            {/* ANTHROPOMETRIC MEASUREMENT DISPLAY PILL (Click to Calibrate) */}
+            <button
+              onClick={() => setIsCalibrationOpen(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/20 bg-black/60 hover:bg-white hover:text-black backdrop-blur-xl font-mono text-[9px] text-white shadow-lg transition-all group cursor-pointer"
+              title="Calibrate height, weight, and anatomical proportions"
+            >
+              <Sliders className="w-3 h-3 text-white/70 group-hover:text-black transition-colors" />
+              <span>
+                {bodyMetrics.heightUnit === "ft"
+                  ? `${bodyMetrics.heightFeet}'${bodyMetrics.heightInches}"`
+                  : `${bodyMetrics.heightCm}cm`}
+                {" · "}
+                {bodyMetrics.weightUnit === "lbs"
+                  ? `${bodyMetrics.weightLbs}lbs`
+                  : `${bodyMetrics.weightKg}kg`}
+              </span>
+              <span className="text-white/30 group-hover:text-black/40">•</span>
+              <span className="text-white/90 group-hover:text-black font-semibold">
+                Span {Math.round(bodyMetrics.bideltoidCm)}cm
+              </span>
+              <span className="hidden lg:inline text-white/40 group-hover:text-black/60">
+                (Rec: {bodyMetrics.recommendedSize})
+              </span>
+            </button>
+
+            {/* Live Tracking Status Badge */}
             {status === "TRACKING_LOCKED" ? (
               <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/20 bg-black/60 backdrop-blur-xl font-mono text-[9px] text-white shadow-lg">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                 <span>LOCKED</span>
                 <span className="text-white/20">•</span>
                 <span>{fps} FPS</span>
-                <span className="text-white/20">•</span>
-                <span>{shoulderCm}cm</span>
               </div>
             ) : status === "SEARCHING_BODY" ? (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/20 bg-black/60 backdrop-blur-xl font-mono text-[9px] text-white/70 shadow-lg">
@@ -632,14 +708,21 @@ export default function VesperMirrorPage() {
 
             {(status === "TRACKING_LOCKED" || status === "SEARCHING_BODY") && (
               <>
-                {/* Snapshot Button */}
-                <button
-                  onClick={captureSnapshot}
-                  className="w-9 h-9 rounded-full border border-white/20 bg-black/60 backdrop-blur-xl text-white flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg"
-                  title="Capture & Save Look"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                </button>
+                {/* 3D Finish Toggle (Obsidian Luxe vs Architectural Alabaster) */}
+                {renderMode === "3D" && (
+                  <button
+                    onClick={() => {
+                      const next = finishStyle === "OBSIDIAN" ? "ALABASTER" : "OBSIDIAN";
+                      setFinishStyle(next);
+                      garmentRendererRef.current?.setFinishStyle(next);
+                    }}
+                    className="h-9 px-3 rounded-full border border-white/20 bg-black/60 backdrop-blur-xl text-white flex items-center gap-1.5 hover:bg-white hover:text-black transition-all shadow-lg font-mono text-[9px] font-bold"
+                    title={`3D Material Finish: Currently ${finishStyle === "OBSIDIAN" ? "Obsidian Luxe" : "Architectural Alabaster"}`}
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    <span>{finishStyle === "OBSIDIAN" ? "OBSIDIAN" : "ALABASTER"}</span>
+                  </button>
+                )}
 
                 {/* Mode Toggle: White Mask Silhouette vs 3D */}
                 {selectedProduct.is3DSupported && (
@@ -653,6 +736,15 @@ export default function VesperMirrorPage() {
                     {renderMode === "SILHOUETTE" ? <Layers className="w-3.5 h-3.5" /> : <Box className="w-3.5 h-3.5" />}
                   </button>
                 )}
+
+                {/* Snapshot Button */}
+                <button
+                  onClick={captureSnapshot}
+                  className="w-9 h-9 rounded-full border border-white/20 bg-black/60 backdrop-blur-xl text-white flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg"
+                  title="Capture & Save Look"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                </button>
 
                 {/* Landmarks Wireframe Toggle */}
                 <button
@@ -717,17 +809,25 @@ export default function VesperMirrorPage() {
                 Vesper Mirror
               </h2>
               <p className="font-mono text-[9px] uppercase tracking-widest text-white/40 mb-3">
-                Architectural White Mask Silhouette Fitting
+                Architectural 3D Mesh & White Silhouette Fitting
               </p>
               <p className="text-white/70 text-xs font-sans leading-relaxed mb-6 max-w-md mx-auto">
-                Live webcam body tracking calibrated to human shoulder span and torso geometry. Pure monochrome silhouette mask with zero cloud uploads.
+                Live webcam body tracking calibrated to human shoulder span, chest volume, and torso geometry. Pure quiet luxury fit with zero cloud uploads.
               </p>
-              <button
-                onClick={startCamera}
-                className="px-8 py-3.5 rounded-full bg-white text-black font-heading text-[10px] font-semibold uppercase tracking-[0.25em] hover:bg-neutral-200 transition-all duration-300 shadow-xl"
-              >
-                Initialize Live Mirror
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button
+                  onClick={startCamera}
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black font-heading text-[10px] font-semibold uppercase tracking-[0.25em] hover:bg-neutral-200 transition-all duration-300 shadow-xl"
+                >
+                  Initialize Live Mirror
+                </button>
+                <button
+                  onClick={() => setIsCalibrationOpen(true)}
+                  className="w-full sm:w-auto px-5 py-3.5 rounded-full border border-white/15 bg-transparent text-white/70 hover:text-white hover:border-white/30 font-heading text-[9px] uppercase tracking-widest transition-all"
+                >
+                  Adjust Height & Weight
+                </button>
+              </div>
             </div>
           )}
 
@@ -779,7 +879,7 @@ export default function VesperMirrorPage() {
               Architectural Wardrobe
             </span>
             <span className="font-mono text-[8px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 bg-white/5 text-white/80">
-              White Mask Silhouette
+              {renderMode === "3D" ? "3D Mesh Engine" : "White Mask Silhouette"}
             </span>
           </div>
 
@@ -867,7 +967,7 @@ export default function VesperMirrorPage() {
                     ₹{product.price.toLocaleString("en-IN")}
                   </span>
                   <span className="font-mono text-[8px] uppercase tracking-widest text-white/40 mt-0.5">
-                    {product.category} • Silhouette
+                    {product.category} • {product.is3DSupported ? "3D Mesh & Mask" : "Mask Only"}
                   </span>
                 </div>
 
@@ -893,7 +993,7 @@ export default function VesperMirrorPage() {
         <div className="p-4 border-t border-white/[0.08] bg-black/40 flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="font-heading text-[8px] uppercase tracking-widest text-white/50">
-              Active Silhouette Scale
+              Active Fit Scale
             </span>
             <span className="font-mono text-[9px] uppercase tracking-widest text-white px-2 py-0.5 rounded-full border border-white/20 bg-white/5 font-bold">
               Size {selectedSize} ({Math.round(SIZE_SCALE_FACTORS[selectedSize] * 100)}%)
@@ -902,14 +1002,29 @@ export default function VesperMirrorPage() {
 
           <div className="flex items-center justify-between pt-1">
             <span className="font-mono text-[8px] text-white/40 uppercase tracking-widest">
-              Monochrome Mask Engine
+              Anatomical Frame
             </span>
             <span className="font-mono text-[8px] text-white/70">
-              {shoulderCm > 0 ? `${shoulderCm}cm Span Calibrated` : "Awaiting Frame"}
+              {Math.round(bodyMetrics.bideltoidCm)}cm Shoulder Span • Chest {Math.round(bodyMetrics.chestCircumferenceCm)}cm
             </span>
           </div>
         </div>
       </aside>
+
+      {/* ─── ANTHROPOMETRIC FIT CALIBRATION MODAL ────────────────────────────── */}
+      <AnthropometricModal
+        isOpen={isCalibrationOpen}
+        currentMetrics={bodyMetrics}
+        onSave={(metrics) => {
+          setBodyMetrics(metrics);
+          saveUserBodyProfile(metrics);
+          setSelectedSize(metrics.recommendedSize);
+          if (poseEngineRef.current) {
+            poseEngineRef.current.bodyMetrics = metrics;
+          }
+        }}
+        onClose={() => setIsCalibrationOpen(false)}
+      />
     </div>
   );
 }

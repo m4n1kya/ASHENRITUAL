@@ -1,9 +1,13 @@
 /**
  * @fileoverview ASHENRITUAL Vesper Mirror — Pose Estimation & Tracking Engine
  * @module PoseEngine.ts
+ *
+ * Implements high-precision real-time body tracking with anatomical landmark
+ * anchoring, anthropometrically calibrated camera distance, and 3D garment scaling.
  */
 
 import * as THREE from "three";
+import { UserBodyMetrics, DEFAULT_BODY_METRICS } from "./anthropometrics";
 
 export interface NormalizedLandmark {
   x: number;
@@ -89,9 +93,11 @@ export class VtoPoseEngine {
   private lostFrames = 0;
   private lostFrameThreshold = 18;
 
-  // Custom tuning
-  public userFitScale: number = 1.0; // 0.9 = snug, 1.0 = regular, 1.15 = relaxed
-  public torsoDropFactor: number = 0.95; // distance from shoulders to garment center
+  // Anthropometrics Profile
+  public bodyMetrics: UserBodyMetrics = DEFAULT_BODY_METRICS;
+
+  // Custom sizing tuning
+  public userFitScale: number = 1.0; // 0.88 = XS, 1.0 = M, 1.15 = XL
 
   // Yaw tuning
   public yawGain: number = 1.6;
@@ -155,8 +161,10 @@ export class VtoPoseEngine {
     const rawShoulderW = Math.max(Math.hypot(ls.x - rs.x, ls.y - rs.y), 0.01);
     const shoulderW = this.shoulderWidthFilter.filter(rawShoulderW);
 
-    // Estimate shoulder width in cm (approx 45cm nominal human shoulder)
-    const shoulderWidthCm = Math.round(shoulderW * 140);
+    // Dynamic calibrated shoulder span in cm based on user anthropometrics
+    const shoulderWidthCm = Math.round(
+      this.bodyMetrics.bideltoidCm || (shoulderW * 140)
+    );
 
     // 2. Torso Center & Hips
     const lh = landmarks[POSE_LANDMARKS.LEFT_HIP];
@@ -171,39 +179,56 @@ export class VtoPoseEngine {
     if (hipsVisible) {
       const hipMidY = (lh.y + rh.y) / 2;
       torsoHeightNorm = Math.max(hipMidY - shoulderMidY, 0.1);
-      // Torso center is roughly 38% down from shoulders towards hips
-      torsoCenterY = shoulderMidY + torsoHeightNorm * 0.42 * this.torsoDropFactor;
+      torsoCenterY = shoulderMidY + torsoHeightNorm * 0.45;
     } else {
       torsoHeightNorm = shoulderW * 1.35;
-      torsoCenterY = shoulderMidY + shoulderW * 0.48 * this.torsoDropFactor;
+      torsoCenterY = shoulderMidY + shoulderW * 0.52;
     }
 
     // 3. Depth & 3D Position
     const vFOV = (camera.fov * Math.PI) / 180;
     const tanHalf = Math.tan(vFOV / 2);
 
-    // Calibrated human upper-body scale: at 2.0m distance, shoulder width is ~0.24 normalized
-    const nominalShoulderWidth = 0.24;
-    const baseDistance = 2.0;
+    // ANTHROPOMETRIC DISTANCE CALCULATION:
+    // Landmarks 11 and 12 measure biacromial diameter (bony shoulder span).
+    // Using user's physical biacromial breadth in meters:
+    const realBiacromialM = (this.bodyMetrics.biacromialCm || 41.5) / 100;
+    const planeHeightAt1m = 2 * tanHalf;
+    const planeWidthAt1m = planeHeightAt1m * camera.aspect;
+
+    // Distance to camera where physical span matches observed screen span:
     const estimatedDistance = clamp(
-      (nominalShoulderWidth / Math.max(shoulderW, 0.05)) * baseDistance,
-      0.8,
-      4.5
+      realBiacromialM / Math.max(shoulderW * planeWidthAt1m, 0.08),
+      0.65,
+      4.2
     );
     const depthZ = camera.position.z - estimatedDistance;
 
-    // Project (shoulderMidX, torsoCenterY) at depthZ
+    // Projection dimensions at this specific depth
     const distToCam = Math.abs(depthZ - camera.position.z);
     const planeHeight = 2 * tanHalf * distToCam;
     const planeWidth = planeHeight * camera.aspect;
 
-    // Normalized coordinates (0..1) to scene coordinates centered at (0,0)
+    // CRITICAL ALIGNMENT FIX:
+    // The 3D garment model collar is anchored at local (0, 0, 0).
+    // Therefore, the target Y MUST sit at the suprasternal notch / neck base line (shoulderMidY),
+    // NOT down at torsoCenterY!
+    const nose = landmarks[POSE_LANDMARKS.NOSE];
+    const neckAnchorY =
+      nose && (nose.visibility ?? 1) > 0.3
+        ? shoulderMidY - (shoulderMidY - nose.y) * 0.15
+        : shoulderMidY - Math.min(shoulderW * 0.03, 0.015);
+
+    // Convert from normalized (0..1) coordinates to Three.js world coordinates
     const targetX = (shoulderMidX - 0.5) * planeWidth;
-    const targetY = -(torsoCenterY - 0.5) * planeHeight;
-    this._tmp.set(targetX, targetY, depthZ);
+    const targetY = -(neckAnchorY - 0.5) * planeHeight;
+
+    // Push slightly forward along Z to drape in front of the skeleton plane
+    const targetZ = depthZ + 0.04;
+    this._tmp.set(targetX, targetY, targetZ);
 
     // 4. Orientation: Roll, Yaw, Pitch
-    // Roll: 2D angle of shoulder line from screen-left to screen-right (dx > 0 so roll is centered at 0 rad)
+    // Roll: 2D angle of shoulder line
     const rollAngle = Math.atan2(ls.y - rs.y, ls.x - rs.x);
 
     // Yaw: from 3D world landmarks or 2D z-disparity
@@ -212,11 +237,9 @@ export class VtoPoseEngine {
       const wls = worldLandmarks[POSE_LANDMARKS.LEFT_SHOULDER];
       const wrs = worldLandmarks[POSE_LANDMARKS.RIGHT_SHOULDER];
       if (wls && wrs) {
-        // In metric world coordinates, Z is depth relative to hips
         rawYaw = Math.atan2(wls.z - wrs.z, Math.abs(wls.x - wrs.x) + 0.001) * this.yawGain;
       }
     } else {
-      // Fallback: estimate from normalized landmarks Z
       rawYaw = Math.atan2((ls.z - rs.z) * 1.5, shoulderW + 0.001) * this.yawGain;
     }
     rawYaw = clamp(rawYaw, -this.maxYaw, this.maxYaw);
@@ -227,22 +250,42 @@ export class VtoPoseEngine {
     this._rollQuat.setFromAxisAngle(new THREE.Vector3(0, 0, 1), rollAngle);
     this._targetQuat.copy(this._yawQuat).multiply(this._rollQuat);
 
-    // 5. Garment Scale
-    // Scale proportional to shoulder width and distance so garment matches human proportions
-    const baseGarmentScale = (shoulderW / nominalShoulderWidth) * 1.05 * this.userFitScale;
+    // 5. ANTHROPOMETRIC 3D GARMENT SCALING:
+    // User's outer shoulder span (bideltoid breadth) is wider than joint distance:
+    const deltoidRatio =
+      this.bodyMetrics.bideltoidCm && this.bodyMetrics.biacromialCm
+        ? this.bodyMetrics.bideltoidCm / this.bodyMetrics.biacromialCm
+        : 1.16;
 
-    // 6. Smoothing & Interpolation
+    // Target outer shoulder width in Three.js world units:
+    const targetShoulderSpan3D = shoulderW * planeWidth * deltoidRatio;
+
+    // Standard baseline garment shoulder span at 1.0 scale is ~0.48m
+    const baseScaleX = (targetShoulderSpan3D / 0.48) * this.userFitScale;
+
+    // Height scale: ensure garment reaches the waist/hip level accurately
+    const targetTorsoHeight3D = torsoHeightNorm * planeHeight;
+    const baseScaleY = (targetTorsoHeight3D / 0.65) * this.userFitScale;
+
+    // Chest depth scale: volume scales with user's anthropometric chest depth
+    const depthFactor = this.bodyMetrics.chestDepthCm
+      ? clamp(this.bodyMetrics.chestDepthCm / 24, 0.88, 1.25)
+      : 1.0;
+    const baseScaleZ = baseScaleX * depthFactor;
+
+    // Harmonized 3D scale vector
+    const harmonizedScaleY = clamp(baseScaleY, baseScaleX * 0.90, baseScaleX * 1.20);
+    const targetScaleVec = new THREE.Vector3(baseScaleX, harmonizedScaleY, baseScaleZ);
+
+    // 6. Smoothing & Interpolation (One-Euro style filter for jitter-free tracking)
     if (!this.hasState) {
       this.currentPosition.copy(this._tmp);
-      this.currentScale.setScalar(baseGarmentScale);
+      this.currentScale.copy(targetScaleVec);
       this.currentQuaternion.copy(this._targetQuat);
       this.hasState = true;
     } else {
       this.currentPosition.lerp(this._tmp, this.positionLerp);
-      this.currentScale.lerp(
-        new THREE.Vector3().setScalar(baseGarmentScale),
-        this.scaleLerp
-      );
+      this.currentScale.lerp(targetScaleVec, this.scaleLerp);
       this.currentQuaternion.slerp(this._targetQuat, this.rotationSlerp);
     }
 

@@ -1,6 +1,9 @@
 /**
  * @fileoverview ASHENRITUAL Vesper Mirror — Three.js WebGL Garment Renderer
  * @module GarmentRenderer.ts
+ *
+ * Implements high-fidelity 3D garment rendering with luxury cloth shaders,
+ * accurate collar/shoulder anatomical normalization, and studio rim lighting.
  */
 
 import * as THREE from "three";
@@ -13,12 +16,15 @@ export interface GarmentMeshStats {
   drawCalls: number;
 }
 
+export type GarmentFinishStyle = "OBSIDIAN" | "ALABASTER";
+
 export class GarmentRenderer {
   public scene: THREE.Scene;
   public camera: THREE.PerspectiveCamera;
   public renderer: THREE.WebGLRenderer | null = null;
   public rootGroup: THREE.Group;
   public currentModel: THREE.Group | null = null;
+  public finishStyle: GarmentFinishStyle = "OBSIDIAN";
 
   private canvas: HTMLCanvasElement;
   private gltfLoader: GLTFLoader;
@@ -50,31 +56,37 @@ export class GarmentRenderer {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.15;
+    this.renderer.toneMappingExposure = 1.35;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    // 4. Lights (Editorial High-Fashion Setup)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    // 4. Lights (Editorial High-Fashion Dark Luxury Setup)
+    // Ambient fill
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
     this.scene.add(ambientLight);
 
     // Key light (soft warm top-front)
-    const keyLight = new THREE.DirectionalLight(0xfffbf5, 1.6);
-    keyLight.position.set(0.8, 1.8, 2.2);
+    const keyLight = new THREE.DirectionalLight(0xfff8ee, 1.8);
+    keyLight.position.set(0.6, 2.0, 2.4);
     this.scene.add(keyLight);
 
     // Fill light (subtle cool fill from left)
-    const fillLight = new THREE.DirectionalLight(0xdde5ff, 0.9);
-    fillLight.position.set(-1.2, 0.4, 1.8);
+    const fillLight = new THREE.DirectionalLight(0xccd6ff, 1.1);
+    fillLight.position.set(-1.4, 0.6, 1.8);
     this.scene.add(fillLight);
 
-    // Rim light (highlight silhouette from behind)
-    const rimLight = new THREE.DirectionalLight(0xffffff, 1.1);
-    rimLight.position.set(0, 1.5, -2.0);
-    this.scene.add(rimLight);
+    // Rim light 1 (sharp edge separation from behind)
+    const rimLight1 = new THREE.DirectionalLight(0xffffff, 2.2);
+    rimLight1.position.set(1.5, 1.8, -1.8);
+    this.scene.add(rimLight1);
+
+    // Rim light 2 (secondary rim for silhouette definition)
+    const rimLight2 = new THREE.DirectionalLight(0xe8e8ff, 1.8);
+    rimLight2.position.set(-1.5, 1.4, -1.8);
+    this.scene.add(rimLight2);
 
     // Bottom bounce light
-    const bounceLight = new THREE.DirectionalLight(0x222222, 0.5);
-    bounceLight.position.set(0, -1.5, 1.0);
+    const bounceLight = new THREE.DirectionalLight(0x333338, 0.6);
+    bounceLight.position.set(0, -1.8, 1.0);
     this.scene.add(bounceLight);
 
     // 5. Root garment container
@@ -82,10 +94,13 @@ export class GarmentRenderer {
     this.rootGroup.name = "VesperMirror_RootGroup";
     this.scene.add(this.rootGroup);
 
-    // 6. Loaders setup
+    // 6. Loaders setup with robust CDN Draco decoders
     this.dracoLoader = new DRACOLoader();
-    this.dracoLoader.setDecoderPath("/draco/");
-    this.dracoLoader.setDecoderConfig({ type: "js" });
+    try {
+      this.dracoLoader.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.6/");
+    } catch {
+      this.dracoLoader.setDecoderPath("/draco/");
+    }
 
     this.gltfLoader = new GLTFLoader();
     this.gltfLoader.setDRACOLoader(this.dracoLoader);
@@ -96,6 +111,13 @@ export class GarmentRenderer {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height, false);
+  }
+
+  public setFinishStyle(style: GarmentFinishStyle) {
+    this.finishStyle = style;
+    if (this.currentModel) {
+      this.applyLuxuryMaterials(this.currentModel, this.currentModelPath || "");
+    }
   }
 
   public async loadGarment(
@@ -120,38 +142,20 @@ export class GarmentRenderer {
           const wrapper = new THREE.Group();
           wrapper.name = `GarmentWrapper_${modelPath}`;
 
-          // Normalize garment orientation & center bounding box
+          // Calculate precise bounding box
           const bbox = new THREE.Box3().setFromObject(rawScene);
           const center = bbox.getCenter(new THREE.Vector3());
           const size = bbox.getSize(new THREE.Vector3());
 
-          // Offset geometry so its neck/shoulder collar line sits near local origin
-          // Typically upper garments have neck at ~top 20%
-          const collarOffsetY = center.y + size.y * 0.32;
-          rawScene.position.set(-center.x, -collarOffsetY, -center.z);
+          // CRITICAL ALIGNMENT FIX:
+          // In upper garments, the collar line (suprasternal notch) is near the top of the mesh.
+          // By offsetting the scene so the neck/collar sits at local Y=0,
+          // the PoseEngine can directly position the root at the detected neck/shoulder landmark.
+          const collarAnchorY = bbox.max.y - size.y * 0.08;
+          rawScene.position.set(-center.x, -collarAnchorY, -center.z);
 
-          // Enhance materials for luxury matte cloth rendering
-          rawScene.traverse((child) => {
-            if ((child as THREE.Mesh).isMesh) {
-              const mesh = child as THREE.Mesh;
-              mesh.castShadow = true;
-              mesh.receiveShadow = true;
-
-              if (mesh.material) {
-                const materials = Array.isArray(mesh.material)
-                  ? mesh.material
-                  : [mesh.material];
-
-                for (const mat of materials) {
-                  if (mat instanceof THREE.MeshStandardMaterial) {
-                    mat.roughness = Math.max(mat.roughness, 0.65);
-                    mat.metalness = Math.min(mat.metalness, 0.25);
-                    mat.needsUpdate = true;
-                  }
-                }
-              }
-            }
-          });
+          // Apply editorial luxury shaders
+          this.applyLuxuryMaterials(rawScene, modelPath);
 
           wrapper.add(rawScene);
           this.rootGroup.add(wrapper);
@@ -170,6 +174,91 @@ export class GarmentRenderer {
           reject(error);
         }
       );
+    });
+  }
+
+  /**
+   * Transforms raw 3D mesh materials into editorial Quiet Luxury cloth / leather
+   */
+  private applyLuxuryMaterials(obj: THREE.Object3D, modelPath: string) {
+    const isPuffa = modelPath.includes("puffa");
+    const isLeather = modelPath.includes("leather");
+    const isSuit = modelPath.includes("suit");
+    const isAlabaster = this.finishStyle === "ALABASTER";
+
+    obj.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
+        if (isAlabaster) {
+          // Pure Architectural Alabaster: Frosted white sculptural cloth
+          mesh.material = new THREE.MeshStandardMaterial({
+            color: 0xf6f6f8,
+            roughness: 0.35,
+            metalness: 0.08,
+            emissive: 0x222225,
+            emissiveIntensity: 0.25,
+            transparent: true,
+            opacity: 0.94,
+          });
+          return;
+        }
+
+        // Luxury Obsidian / Stealth Palette
+        if (isPuffa) {
+          // Replace garish yellow puffer with stealth architectural matte carbon puffer
+          mesh.material = new THREE.MeshStandardMaterial({
+            color: 0x121215,
+            roughness: 0.62,
+            metalness: 0.15,
+            emissive: 0x050508,
+            emissiveIntensity: 0.15,
+          });
+          return;
+        }
+
+        if (isLeather) {
+          // Supple lambskin leather with directional sheen
+          mesh.material = new THREE.MeshStandardMaterial({
+            color: 0x0b0b0d,
+            roughness: 0.38,
+            metalness: 0.22,
+          });
+          return;
+        }
+
+        if (isSuit) {
+          // Deep charcoal worsted wool
+          mesh.material = new THREE.MeshStandardMaterial({
+            color: 0x16171a,
+            roughness: 0.78,
+            metalness: 0.04,
+          });
+          return;
+        }
+
+        // Standard enhancement for other garments (tees, shirts, bombers)
+        if (mesh.material) {
+          const materials = Array.isArray(mesh.material)
+            ? mesh.material
+            : [mesh.material];
+
+          for (const mat of materials) {
+            if (mat instanceof THREE.MeshStandardMaterial) {
+              // Dim down overly bright textures to fit ASHEN palette
+              if (mat.color.r > 0.4 && mat.color.g > 0.4 && mat.color.b < 0.2) {
+                // Detected garish yellow or bright color -> convert to dark graphite
+                mat.color.setHex(0x141416);
+              }
+              mat.roughness = Math.max(mat.roughness, 0.55);
+              mat.metalness = Math.min(mat.metalness, 0.2);
+              mat.needsUpdate = true;
+            }
+          }
+        }
+      }
     });
   }
 
@@ -249,9 +338,6 @@ export class GarmentRenderer {
   public dispose() {
     this.isDisposed = true;
     this.clearCurrentModel();
-    if (this.dracoLoader) {
-      this.dracoLoader.dispose();
-    }
     if (this.renderer) {
       this.renderer.dispose();
       this.renderer = null;
