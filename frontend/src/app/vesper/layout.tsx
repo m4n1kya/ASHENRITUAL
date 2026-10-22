@@ -16,6 +16,7 @@ import {
   History,
   Plus,
   Trash2,
+  Camera,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -101,6 +102,10 @@ export default function VesperLayout({
     navItems.find((item) => item.href === pathname) || navItems[0];
   const ActiveIcon = activeItem.icon;
 
+  if (pathname === "/vesper/mirror") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex h-[100dvh] bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden relative pt-[72px] md:pt-[100px]">
       {/* Top Left Floating Vesper Navigation Bubble */}
@@ -128,6 +133,18 @@ export default function VesperLayout({
             strokeWidth={1.5}
           />
         </button>
+
+        {/* Separate Button Below: Vesper — Mirror */}
+        <Link
+          href="/vesper/mirror"
+          className="group inline-flex h-10 items-center justify-between gap-3 border border-white/15 bg-black/60 hover:border-white hover:bg-white hover:text-black backdrop-blur-xl px-5 md:px-6 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.22em] text-[#FDFCFB] transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_0_25px_rgba(255,255,255,0.25)] mt-2.5"
+        >
+          <span className="flex items-center gap-2">
+            <Camera className="h-3.5 w-3.5 text-white group-hover:text-black transition-colors" />
+            <span>Vesper — Mirror</span>
+          </span>
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        </Link>
 
         <AnimatePresence>
           {isNavOpen && (
