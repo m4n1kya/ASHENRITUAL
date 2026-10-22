@@ -22,7 +22,7 @@ const QUICK_PROMPTS = [
 
 export default function VesperChatPage() {
   const { token, isAuthenticated, _hasHydrated } = useAuthStore();
-  const { messages, addMessage, updateMessage, clearMessages } =
+  const { messages, addMessage, updateMessage, clearMessages, currentSessionId } =
     useVesperStore();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -30,8 +30,16 @@ export default function VesperChatPage() {
   const [focused, setFocused] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const prevSessionId = useRef(currentSessionId);
 
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (prevSessionId.current !== currentSessionId) {
+      setInput("");
+      prevSessionId.current = currentSessionId;
+    }
+  }, [currentSessionId]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

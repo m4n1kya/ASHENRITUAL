@@ -8,13 +8,13 @@ import { useVesperStore } from './vesper.store';
 // Reset store state before each test
 beforeEach(() => {
   act(() => {
-    useVesperStore.getState().clearMessages();
+    useVesperStore.getState().clearAllSessions();
   });
 });
 
 describe('useVesperStore', () => {
   describe('addMessage', () => {
-    it('adds a user message to the store', () => {
+    it('adds a user message to the store and creates a session', () => {
       act(() => {
         useVesperStore.getState().addMessage({
           id: '1',
@@ -23,10 +23,12 @@ describe('useVesperStore', () => {
         });
       });
 
-      const { messages } = useVesperStore.getState();
+      const { messages, sessions } = useVesperStore.getState();
       expect(messages).toHaveLength(1);
       expect(messages[0].content).toBe('What should I wear tonight?');
       expect(messages[0].role).toBe('user');
+      expect(sessions).toHaveLength(1);
+      expect(sessions[0].title).toBe('What should I wear tonight?');
     });
 
     it('adds a model message to the store', () => {
@@ -43,16 +45,18 @@ describe('useVesperStore', () => {
       expect(messages[0].role).toBe('model');
     });
 
-    it('accumulates multiple messages in order', () => {
+    it('accumulates multiple messages in order within the active session', () => {
       act(() => {
         useVesperStore.getState().addMessage({ id: '1', role: 'user', content: 'Hello' });
         useVesperStore.getState().addMessage({ id: '2', role: 'model', content: 'Hello back' });
       });
 
-      const { messages } = useVesperStore.getState();
+      const { messages, sessions } = useVesperStore.getState();
       expect(messages).toHaveLength(2);
       expect(messages[0].id).toBe('1');
       expect(messages[1].id).toBe('2');
+      expect(sessions).toHaveLength(1);
+      expect(sessions[0].messages).toHaveLength(2);
     });
   });
 
@@ -63,9 +67,10 @@ describe('useVesperStore', () => {
         useVesperStore.getState().updateMessage('1', { content: 'Full response', isStreaming: false });
       });
 
-      const { messages } = useVesperStore.getState();
+      const { messages, sessions } = useVesperStore.getState();
       expect(messages[0].content).toBe('Full response');
       expect(messages[0].isStreaming).toBe(false);
+      expect(sessions[0].messages[0].content).toBe('Full response');
     });
 
     it('updates recommendations on a message', () => {
@@ -98,7 +103,7 @@ describe('useVesperStore', () => {
   });
 
   describe('clearMessages', () => {
-    it('clears all messages from the store', () => {
+    it('clears active messages from the store view', () => {
       act(() => {
         useVesperStore.getState().addMessage({ id: '1', role: 'user', content: 'Test' });
         useVesperStore.getState().addMessage({ id: '2', role: 'model', content: 'Response' });
@@ -106,6 +111,51 @@ describe('useVesperStore', () => {
       });
 
       expect(useVesperStore.getState().messages).toHaveLength(0);
+      expect(useVesperStore.getState().currentSessionId).toBeNull();
+    });
+  });
+
+  describe('chat history sessions', () => {
+    it('supports creating and switching between multiple chat sessions', () => {
+      // 1. First chat
+      act(() => {
+        useVesperStore.getState().addMessage({ id: '1', role: 'user', content: 'Chat one prompt' });
+        useVesperStore.getState().addMessage({ id: '2', role: 'model', content: 'Chat one answer' });
+      });
+
+      const firstSessionId = useVesperStore.getState().currentSessionId!;
+      expect(useVesperStore.getState().sessions).toHaveLength(1);
+
+      // 2. Start new chat
+      act(() => {
+        useVesperStore.getState().createNewSession();
+      });
+
+      expect(useVesperStore.getState().messages).toHaveLength(0);
+
+      // 3. Second chat
+      act(() => {
+        useVesperStore.getState().addMessage({ id: '3', role: 'user', content: 'Chat two prompt' });
+      });
+
+      expect(useVesperStore.getState().sessions).toHaveLength(2);
+      expect(useVesperStore.getState().messages).toHaveLength(1);
+
+      // 4. Switch back to first chat
+      act(() => {
+        useVesperStore.getState().selectSession(firstSessionId);
+      });
+
+      expect(useVesperStore.getState().currentSessionId).toBe(firstSessionId);
+      expect(useVesperStore.getState().messages).toHaveLength(2);
+      expect(useVesperStore.getState().messages[0].content).toBe('Chat one prompt');
+
+      // 5. Delete a session
+      act(() => {
+        useVesperStore.getState().deleteSession(firstSessionId);
+      });
+
+      expect(useVesperStore.getState().sessions).toHaveLength(1);
     });
   });
 });
