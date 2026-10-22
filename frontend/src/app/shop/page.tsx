@@ -1,12 +1,15 @@
 /**
- * @fileoverview ASHENRITUAL Architecture
+ * @fileoverview ASHENRITUAL Architecture — Archival Shop
  * @module page.tsx
  */
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ShopPageClient } from "./ShopPageClient";
 import { ProductCardSkeleton } from "@/components/ui/Skeleton";
-import type {  } from "@/types";
+import {
+  ASHEN_CATEGORIES,
+  filterAndSortCatalog,
+} from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Shop — ASHENRITUAL",
@@ -19,33 +22,53 @@ async function getInitialShopData() {
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
+
     const [productsRes, categoriesRes] = await Promise.all([
       fetch(`${API_URL}/products?page=1&limit=12`, {
         next: { revalidate: 3600 },
-      }),
-      fetch(`${API_URL}/categories`, { next: { revalidate: 3600 } }),
+        signal: controller.signal,
+      }).catch(() => null),
+      fetch(`${API_URL}/categories`, {
+        next: { revalidate: 3600 },
+        signal: controller.signal,
+      }).catch(() => null),
     ]);
+    clearTimeout(timeoutId);
 
-    const productsData = productsRes.ok
-      ? await productsRes.json()
-      : { data: [], total: 0, totalPages: 1 };
-    const categoriesData = categoriesRes.ok ? await categoriesRes.json() : [];
+    const productsData =
+      productsRes && productsRes.ok ? await productsRes.json() : null;
+    const categoriesData =
+      categoriesRes && categoriesRes.ok ? await categoriesRes.json() : null;
 
-    return {
-      initialProducts: productsData.data || [],
-      initialTotal: productsData.total || 0,
-      initialTotalPages: productsData.totalPages || 1,
-      initialCategories: categoriesData || [],
-    };
+    if (
+      productsData &&
+      Array.isArray(productsData.data) &&
+      productsData.data.length > 0
+    ) {
+      return {
+        initialProducts: productsData.data,
+        initialTotal: productsData.total || productsData.data.length,
+        initialTotalPages: productsData.totalPages || 1,
+        initialCategories:
+          categoriesData && Array.isArray(categoriesData) && categoriesData.length > 0
+            ? categoriesData
+            : ASHEN_CATEGORIES,
+      };
+    }
   } catch (err) {
-    console.error("Failed to fetch initial shop data:", err);
-    return {
-      initialProducts: [],
-      initialTotal: 0,
-      initialTotalPages: 1,
-      initialCategories: [],
-    };
+    console.warn("Shop: Backend API unreachable during SSR, using archival catalog.", err);
   }
+
+  // Resilient fallback to verified archival catalog
+  const fallback = filterAndSortCatalog({ page: 1, limit: 12, sort: "newest" });
+  return {
+    initialProducts: fallback.data,
+    initialTotal: fallback.total,
+    initialTotalPages: fallback.totalPages,
+    initialCategories: ASHEN_CATEGORIES,
+  };
 }
 
 export default async function ShopPage() {

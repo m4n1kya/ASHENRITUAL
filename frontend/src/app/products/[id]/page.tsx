@@ -8,6 +8,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import type { Product } from "@/types";
+import { getCatalogProductById, filterAndSortCatalog } from "@/lib/catalog";
 
 /* Reference: Product detail — large image left with 4-grid thumbnails bottom,
    right panel has breadcrumb, huge product name, price, "MOVE TO REVEAL" CTA */
@@ -16,14 +17,18 @@ interface ProductPageProps {
   params: Promise<{ id: string }>;
 }
 
-async function getProduct(id: string) {
+async function getProduct(id: string): Promise<Product | null> {
   const API_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
-  const res = await fetch(`${API_URL}/products/${id}`, {
-    next: { revalidate: 3600 },
-  });
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const res = await fetch(`${API_URL}/products/${id}`, {
+      next: { revalidate: 3600 },
+    });
+    if (res.ok) return await res.json();
+  } catch {
+    // ignore
+  }
+  return getCatalogProductById(id);
 }
 
 async function getRelated(
@@ -36,12 +41,17 @@ async function getRelated(
     const res = await fetch(`${API_URL}/products?category=${categoryId}`, {
       next: { revalidate: 3600 },
     });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.filter((p: Product) => p.id !== currentId).slice(0, 4);
+    if (res.ok) {
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : data.data || [];
+      return list.filter((p: Product) => p.id !== currentId).slice(0, 4);
+    }
   } catch {
-    return [];
+    // ignore
   }
+  return filterAndSortCatalog({ category: categoryId })
+    .data.filter((p) => p.id !== currentId)
+    .slice(0, 4);
 }
 
 export async function generateMetadata({
@@ -189,7 +199,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </span>
               {avgRating && (
                 <span className="text-[11px] text-[#8D8D8D]">
-                  ★ {avgRating} ({product.reviews.length})
+                  ★ {avgRating} ({product.reviews?.length ?? 0})
                 </span>
               )}
             </div>
@@ -247,7 +257,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </div>
 
       {/* ── Reviews ───────────────────────────────────────────────────────────── */}
-      {product.reviews?.length > 0 && (
+      {(product.reviews?.length ?? 0) > 0 && (
         <section className="border-t border-[#202020]">
           <div className="mx-auto max-w-screen-xl px-8 py-16 lg:px-12">
             <p className="font-heading text-[10px] font-medium uppercase tracking-[0.35em] text-[#8D8D8D]">
@@ -257,7 +267,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               Reviews
             </h2>
             <div className="mt-8 grid gap-4 md:grid-cols-3">
-              {product.reviews.map(
+              {product.reviews?.map(
                 (review: {
                   id: string;
                   rating: number;

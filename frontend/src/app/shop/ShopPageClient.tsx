@@ -20,6 +20,7 @@ import { ProductCard } from "@/components/ui/ProductCard";
 import { ProductCardSkeleton } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { api } from "@/lib/api";
+import { ASHEN_CATEGORIES, filterAndSortCatalog } from "@/lib/catalog";
 import type { Product, Category } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -52,15 +53,34 @@ export function ShopPageClient({
   const searchParams = useSearchParams();
   const gridRef = useRef<HTMLDivElement>(null);
 
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  // Initialize with initialProducts or instant fallback to prevent blank shop screen
+  const [products, setProducts] = useState<Product[]>(() => {
+    if (Array.isArray(initialProducts) && initialProducts.length > 0) {
+      return initialProducts;
+    }
+    return filterAndSortCatalog({ page: 1, limit: 12, sort: "newest" }).data;
+  });
+
+  const [categories, setCategories] = useState<Category[]>(() => {
+    if (Array.isArray(initialCategories) && initialCategories.length > 0) {
+      return initialCategories;
+    }
+    return ASHEN_CATEGORIES;
+  });
 
   // If there are initial products, we don't need to show the loading skeleton initially unless query params exist that differ
   const hasInitialParams = searchParams.toString() !== "";
   const [loading, setLoading] = useState(hasInitialParams);
 
-  const [totalPages, setTotalPages] = useState(initialTotalPages);
-  const [totalItems, setTotalItems] = useState(initialTotal);
+  const [totalPages, setTotalPages] = useState(() => {
+    if (initialTotalPages && initialTotalPages > 0) return initialTotalPages;
+    return filterAndSortCatalog({ page: 1, limit: 12, sort: "newest" }).totalPages;
+  });
+
+  const [totalItems, setTotalItems] = useState(() => {
+    if (initialTotal !== undefined && initialTotal > 0) return initialTotal;
+    return filterAndSortCatalog({ page: 1, limit: 12, sort: "newest" }).total;
+  });
 
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.get("category") || "",
@@ -110,6 +130,13 @@ export function ShopPageClient({
     }
   }, [filterKey]);
 
+  // Ensure categories are populated
+  useEffect(() => {
+    if (categories.length === 0) {
+      setCategories(ASHEN_CATEGORIES);
+    }
+  }, [categories.length]);
+
   const isFirstRender = useRef(true);
 
   useEffect(() => {
@@ -117,7 +144,10 @@ export function ShopPageClient({
     async function load() {
       if (isFirstRender.current) {
         isFirstRender.current = false;
+        // Only skip first client fetch if server SSR already delivered real products
         if (
+          Array.isArray(initialProducts) &&
+          initialProducts.length > 0 &&
           !selectedCategory &&
           !searchQuery &&
           selectedSort === "newest" &&
@@ -145,29 +175,59 @@ export function ShopPageClient({
         }>(url);
 
         if (!cancelled) {
-          const sorted = Array.isArray(res.data) ? [...res.data] : [];
-          if (selectedSort === "price_asc")
-            sorted.sort((a, b) => a.price - b.price);
-          if (selectedSort === "price_desc")
-            sorted.sort((a, b) => b.price - a.price);
+          if (res && Array.isArray(res.data) && res.data.length > 0) {
+            const sorted = [...res.data];
+            if (selectedSort === "price_asc")
+              sorted.sort((a, b) => a.price - b.price);
+            if (selectedSort === "price_desc")
+              sorted.sort((a, b) => b.price - a.price);
 
-          setProducts((prev) => {
-            if (page === 1) return sorted;
-            // Prevent duplicates in Strict Mode double-invocations
-            const existingIds = new Set(prev.map((p) => p.id));
-            const newProducts = sorted.filter((p) => !existingIds.has(p.id));
-            return [...prev, ...newProducts];
-          });
-          setTotalPages(res.totalPages || 1);
-          setTotalItems(res.total || 0);
+            setProducts((prev) => {
+              if (page === 1) return sorted;
+              // Prevent duplicates in Strict Mode double-invocations
+              const existingIds = new Set(prev.map((p) => p.id));
+              const newProducts = sorted.filter((p) => !existingIds.has(p.id));
+              return [...prev, ...newProducts];
+            });
+            setTotalPages(res.totalPages || 1);
+            setTotalItems(res.total || sorted.length);
+          } else {
+            // If backend returned empty data or is cold, use archival catalog
+            const fallbackResult = filterAndSortCatalog({
+              category: selectedCategory,
+              sort: selectedSort,
+              query: searchQuery,
+              page,
+              limit: 12,
+            });
+            setProducts((prev) => {
+              if (page === 1) return fallbackResult.data;
+              const existingIds = new Set(prev.map((p) => p.id));
+              const newProducts = fallbackResult.data.filter((p) => !existingIds.has(p.id));
+              return [...prev, ...newProducts];
+            });
+            setTotalPages(fallbackResult.totalPages);
+            setTotalItems(fallbackResult.total);
+          }
         }
       } catch {
         if (!cancelled) {
-          if (page === 1) {
-            setProducts([]);
-            setTotalItems(0);
-          }
-          setTotalPages(1);
+          // Graceful fallback to verified archival catalog on backend failure/network error
+          const fallbackResult = filterAndSortCatalog({
+            category: selectedCategory,
+            sort: selectedSort,
+            query: searchQuery,
+            page,
+            limit: 12,
+          });
+          setProducts((prev) => {
+            if (page === 1) return fallbackResult.data;
+            const existingIds = new Set(prev.map((p) => p.id));
+            const newProducts = fallbackResult.data.filter((p) => !existingIds.has(p.id));
+            return [...prev, ...newProducts];
+          });
+          setTotalPages(fallbackResult.totalPages);
+          setTotalItems(fallbackResult.total);
         }
       } finally {
         if (!cancelled) {
@@ -180,7 +240,7 @@ export function ShopPageClient({
     return () => {
       cancelled = true;
     };
-  }, [selectedCategory, selectedSort, searchQuery, page]);
+  }, [selectedCategory, selectedSort, searchQuery, page, initialProducts]);
 
   const scrollToGrid = useCallback(() => {
     gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
