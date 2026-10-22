@@ -108,19 +108,19 @@ export default function VesperLayout({
           onClick={() => setIsChatsOpen(!isChatsOpen)}
           aria-expanded={isChatsOpen}
           aria-label="All Chats Menu"
-          className="h-9 md:h-9.5 px-4 md:px-4.5 font-heading text-[10px] md:text-[10.5px] font-medium uppercase tracking-[0.22em] shadow-[0_4px_20px_rgba(0,0,0,0.35)]"
+          className="h-10 md:h-10.5 px-4.5 md:px-5 font-heading text-[11px] md:text-[11.5px] font-medium uppercase tracking-[0.22em] shadow-[0_4px_20px_rgba(0,0,0,0.35)]"
         >
-          <span className="flex items-center gap-1.5 font-heading text-[10px] md:text-[10.5px]">
+          <span className="flex items-center gap-1.5 font-heading text-[11px] md:text-[11.5px]">
             <span>All Chats</span>
             {mounted && sessions.length > 0 && (
-              <span className="ml-0.5 rounded-full bg-white/15 px-1.5 py-0.5 text-[7.5px] tracking-normal text-white">
+              <span className="ml-0.5 rounded-full bg-white/15 px-1.5 py-0.5 text-[8px] tracking-normal text-white">
                 {sessions.length}
               </span>
             )}
           </span>
           <ChevronDown
             className={cn(
-              "h-3 w-3 ml-0.5 transition-transform duration-500",
+              "h-3.5 w-3.5 ml-1 transition-transform duration-500",
               isChatsOpen ? "rotate-180" : ""
             )}
             strokeWidth={1.5}
@@ -139,7 +139,7 @@ export default function VesperLayout({
               animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
               exit={{ opacity: 0, y: -10, filter: "blur(10px)", scale: 0.95 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[calc(100%+10px)] left-0 w-[270px] sm:w-[290px] md:w-[310px] max-w-[calc(100vw-2rem)] flex flex-col border border-white/10 rounded-[22px] bg-[#0A0A0A]/95 backdrop-blur-2xl shadow-[0_24px_60px_rgba(0,0,0,0.9)] p-2.5 z-50 overflow-hidden"
+              className="absolute top-[calc(100%+12px)] left-0 w-[275px] sm:w-[295px] md:w-[315px] max-w-[calc(100vw-2rem)] flex flex-col border border-white/10 rounded-[28px] sm:rounded-[32px] bg-[#0A0A0A]/95 backdrop-blur-2xl shadow-[0_24px_60px_rgba(0,0,0,0.9)] p-3 z-50 overflow-hidden"
             >
               {/* New Chat Action Item */}
               <button
@@ -151,7 +151,7 @@ export default function VesperLayout({
               </button>
 
               {/* History Section Header */}
-              <div className="flex items-center justify-between px-3 pt-3 pb-1.5 text-[8.5px] uppercase tracking-[0.25em] text-[#777] font-heading border-b border-white/5 mb-1">
+              <div className="flex items-center justify-between px-3 pt-3 pb-1.5 text-[8.5px] uppercase tracking-[0.25em] text-[#777] font-heading border-b border-white/5 mb-1.5">
                 <span>History ({mounted ? sessions.length : 0})</span>
                 {mounted && sessions.length > 0 && (
                   <button
@@ -164,7 +164,7 @@ export default function VesperLayout({
               </div>
 
               {/* History List */}
-              <div className="max-h-[300px] overflow-y-auto space-y-1 hide-scrollbar pr-0.5">
+              <div className="max-h-[300px] overflow-y-auto space-y-1.5 hide-scrollbar pr-0.5">
                 {!mounted || sessions.length === 0 ? (
                   <div className="py-7 px-4 text-center">
                     <MessageSquare className="h-4 w-4 mx-auto mb-2 text-[#444]" />
@@ -183,23 +183,25 @@ export default function VesperLayout({
                         key={session.id}
                         onClick={() => handleSelectSession(session.id)}
                         className={cn(
-                          "group/item flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-300 cursor-pointer relative",
+                          "group/item flex items-center justify-between gap-2.5 px-3.5 py-2.5 rounded-2xl transition-all duration-300 cursor-pointer relative",
                           isCurrent
-                            ? "bg-white/15 text-white border border-white/20 shadow-sm"
+                            ? "bg-white/10 text-white border border-white/15 shadow-sm"
                             : "text-[#888] hover:bg-white/5 hover:text-white border border-transparent"
                         )}
                       >
-                        {isCurrent && (
-                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2.5px] h-1/2 bg-white rounded-r-full" />
-                        )}
                         <div className="flex-1 min-w-0 pr-1">
-                          <p
-                            className="text-[11px] font-sans font-medium text-foreground truncate group-hover/item:text-white"
-                            title={session.title}
-                          >
-                            {session.title || "Consultation"}
-                          </p>
-                          <p className="text-[8.5px] text-[#666] tracking-wider uppercase font-heading mt-0.5">
+                          <div className="flex items-center gap-1.5">
+                            {isCurrent && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0 shadow-[0_0_6px_rgba(255,255,255,0.8)]" />
+                            )}
+                            <p
+                              className="text-[11px] font-sans font-medium text-foreground truncate group-hover/item:text-white"
+                              title={session.title}
+                            >
+                              {session.title || "Consultation"}
+                            </p>
+                          </div>
+                          <p className="text-[8.5px] text-[#666] tracking-wider uppercase font-heading mt-0.5 pl-3">
                             {formatSessionTime(session.updatedAt)} •{" "}
                             {session.messages.length} msg
                             {session.messages.length !== 1 ? "s" : ""}
@@ -247,9 +249,9 @@ export default function VesperLayout({
           proximity={200}
           onClick={() => router.push("/vesper/mirror")}
           aria-label="Launch Vesper Mirror"
-          className="h-9 md:h-9.5 px-4 md:px-5 font-heading text-[10px] md:text-[10.5px] font-medium uppercase tracking-[0.22em] shadow-[0_4px_20px_rgba(0,0,0,0.35)]"
+          className="h-10 md:h-10.5 px-5 md:px-5.5 font-heading text-[11px] md:text-[11.5px] font-medium uppercase tracking-[0.22em] shadow-[0_4px_20px_rgba(0,0,0,0.35)]"
         >
-          <span className="font-heading text-[10px] md:text-[10.5px]">Vesper — Mirror</span>
+          <span className="font-heading text-[11px] md:text-[11.5px]">Vesper — Mirror</span>
         </SpecularButton>
       </div>
 
