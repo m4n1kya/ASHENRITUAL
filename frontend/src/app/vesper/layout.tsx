@@ -84,20 +84,9 @@ export default function VesperLayout({
 
   return (
     <div className="flex h-[100dvh] bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden relative pt-[72px] md:pt-[100px]">
-      {/* Top Left Floating Vesper Mirror Button */}
-      <div className="fixed top-[72px] md:top-[116px] left-4 md:left-8 z-50">
-        <Link
-          href="/vesper/mirror"
-          className="group inline-flex h-11 items-center justify-between gap-3 border border-white/10 bg-black/50 hover:border-white hover:bg-white hover:text-black backdrop-blur-xl px-5 md:px-6 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.22em] text-[#FDFCFB] transition-all duration-500 shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_25px_rgba(255,255,255,0.25)]"
-        >
-          <span>Vesper — Mirror</span>
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse group-hover:bg-emerald-600 transition-colors" />
-        </Link>
-      </div>
-
-      {/* Top Right Floating All Chats Bubble */}
+      {/* Top Left Floating All Chats Bubble */}
       <div
-        className="fixed top-[72px] md:top-[116px] right-4 md:right-8 z-50 flex flex-col items-end"
+        className="fixed top-[72px] md:top-[116px] left-4 md:left-8 z-50 flex flex-col items-start"
         ref={chatsDropdownRef}
       >
         <button
@@ -135,7 +124,7 @@ export default function VesperLayout({
               animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
               exit={{ opacity: 0, y: -10, filter: "blur(10px)", scale: 0.95 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[calc(100%+10px)] right-0 w-[270px] sm:w-[290px] md:w-[310px] max-w-[calc(100vw-2rem)] flex flex-col border border-white/10 rounded-[22px] bg-[#0A0A0A]/95 backdrop-blur-2xl shadow-[0_24px_60px_rgba(0,0,0,0.9)] p-2.5 z-50 overflow-hidden"
+              className="absolute top-[calc(100%+10px)] left-0 w-[270px] sm:w-[290px] md:w-[310px] max-w-[calc(100vw-2rem)] flex flex-col border border-white/10 rounded-[22px] bg-[#0A0A0A]/95 backdrop-blur-2xl shadow-[0_24px_60px_rgba(0,0,0,0.9)] p-2.5 z-50 overflow-hidden"
             >
               {/* New Chat Action Item */}
               <button
@@ -221,6 +210,17 @@ export default function VesperLayout({
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+
+      {/* Top Right Floating Vesper Mirror Button */}
+      <div className="fixed top-[72px] md:top-[116px] right-4 md:right-8 z-50">
+        <Link
+          href="/vesper/mirror"
+          className="group inline-flex h-11 items-center justify-between gap-3 border border-white/10 bg-black/50 hover:border-white hover:bg-white hover:text-black backdrop-blur-xl px-5 md:px-6 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.22em] text-[#FDFCFB] transition-all duration-500 shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_25px_rgba(255,255,255,0.25)]"
+        >
+          <span>Vesper — Mirror</span>
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse group-hover:bg-emerald-600 transition-colors" />
+        </Link>
       </div>
 
       {/* Main Chat Content — Full Width */}
