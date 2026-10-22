@@ -54,7 +54,7 @@ export function VesperMessageComponent({ message }: { message: VesperMessageType
         </div>
 
         {/* Text Content */}
-        {message.content && (
+        {message.content ? (
           <div className={`prose prose-invert max-w-none text-[12px] md:text-[13px] font-sans leading-relaxed ${isUser ? 'text-[#E8E8E8]' : 'text-[#A8A8A8]'}`}>
             {isUser ? (
               <p>{displayedContent}</p>
@@ -62,7 +62,11 @@ export function VesperMessageComponent({ message }: { message: VesperMessageType
               <ReactMarkdown>{displayedContent + (isTyping ? ' ▋' : '')}</ReactMarkdown>
             )}
           </div>
-        )}
+        ) : !isUser && message.isStreaming ? (
+          <div className="flex items-center gap-2 py-1 text-white/70 font-mono text-[11px]">
+            <span className="inline-block w-1.5 h-3 bg-white/80 animate-pulse" />
+          </div>
+        ) : null}
 
         {/* Rich Components (only if model and not streaming text) */}
         {!isUser && !isTyping && message.recommendations && (

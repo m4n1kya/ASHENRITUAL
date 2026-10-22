@@ -279,31 +279,35 @@ export default function VesperChatPage() {
       {/* Input bar */}
       <div className="relative z-20 shrink-0 px-6 pb-8 pt-3">
         <div className="max-w-2xl mx-auto">
-          {/* Thinking dots */}
+          {/* Thinking indicator */}
           <AnimatePresence>
             {isLoading && (
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 6 }}
-                className="mb-3 flex items-center gap-2 pl-2"
+                className="mb-3.5 flex items-center gap-2.5 pl-2 select-none"
               >
-                <div className="flex gap-1">
+                <div className="flex gap-1.5 items-center">
                   {[0, 1, 2].map((i) => (
                     <motion.span
                       key={i}
-                      animate={{ opacity: [0.2, 1, 0.2] }}
+                      animate={{
+                        opacity: [0.35, 1, 0.35],
+                        scale: [0.85, 1.2, 0.85],
+                      }}
                       transition={{
                         duration: 1.2,
                         repeat: Infinity,
                         delay: i * 0.2,
+                        ease: "easeInOut",
                       }}
-                      className="block w-1 h-1 rounded-full bg-[#3A3A3A]"
+                      className="block w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]"
                     />
                   ))}
                 </div>
-                <span className="text-[9px] uppercase tracking-widest text-[#222]">
-                  Vesper is thinking
+                <span className="font-heading text-[10px] uppercase tracking-[0.25em] text-[#E0E0E0] font-semibold drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
+                  Vesper is thinking...
                 </span>
               </motion.div>
             )}
