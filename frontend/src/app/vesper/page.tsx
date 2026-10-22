@@ -277,7 +277,7 @@ export default function VesperChatPage() {
       </div>
 
       {/* Input bar */}
-      <div className="relative z-20 shrink-0 px-6 pb-8 pt-3">
+      <div className="relative z-20 shrink-0 px-4 sm:px-6 pb-3 pt-1.5">
         <div className="max-w-2xl mx-auto">
           {/* Thinking indicator */}
           <AnimatePresence>
@@ -286,7 +286,7 @@ export default function VesperChatPage() {
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 6 }}
-                className="mb-3.5 flex items-center gap-2.5 pl-2 select-none"
+                className="mb-2.5 flex items-center gap-2.5 pl-2 select-none"
               >
                 <div className="flex gap-1.5 items-center">
                   {[0, 1, 2].map((i) => (
@@ -315,7 +315,7 @@ export default function VesperChatPage() {
 
           <motion.form
             onSubmit={handleSubmit}
-            className="relative flex items-end gap-3 rounded-2xl px-5 py-4 overflow-hidden"
+            className="relative flex items-center gap-3 rounded-2xl px-4 sm:px-5 py-2.5 sm:py-3 overflow-hidden"
             style={{
               background: focused
                 ? "rgba(20,20,20,0.95)"
@@ -346,7 +346,7 @@ export default function VesperChatPage() {
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               placeholder="Ask Vesper anything..."
-              className="relative z-10 flex-1 bg-transparent text-[13px] text-[#FDFCFB] placeholder:text-[#2A2A2A] outline-none resize-none hide-scrollbar leading-relaxed tracking-wide"
+              className="relative z-10 flex-1 bg-transparent text-[13px] text-[#FDFCFB] placeholder:text-[#4A4A4A] outline-none resize-none hide-scrollbar leading-normal tracking-wide py-1"
               rows={1}
               style={{ maxHeight: "120px" }}
               onKeyDown={(e) => {
@@ -361,7 +361,7 @@ export default function VesperChatPage() {
               disabled={!input.trim() || isLoading}
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
-              className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FDFCFB] text-[#0A0A0A] transition-all duration-300 disabled:opacity-15 disabled:cursor-not-allowed"
+              className="relative z-10 flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full bg-[#FDFCFB] text-[#0A0A0A] transition-all duration-300 disabled:opacity-15 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -370,11 +370,6 @@ export default function VesperChatPage() {
               )}
             </motion.button>
           </motion.form>
-
-          <p className="text-center text-[9px] text-[#1A1A1A] mt-3 tracking-widest uppercase">
-            Vesper may occasionally be imperfect. Verify important styling
-            choices.
-          </p>
         </div>
       </div>
     </main>
