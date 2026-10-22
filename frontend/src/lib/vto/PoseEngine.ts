@@ -224,7 +224,7 @@ export class VtoPoseEngine {
 
     // Build combined quaternion: Yaw (around Y) * Roll (around Z)
     this._yawQuat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.smoothYaw);
-    this._rollQuat.setFromAxisAngle(new THREE.Vector3(0, 0, 1), -rollAngle);
+    this._rollQuat.setFromAxisAngle(new THREE.Vector3(0, 0, 1), rollAngle);
     this._targetQuat.copy(this._yawQuat).multiply(this._rollQuat);
 
     // 5. Garment Scale

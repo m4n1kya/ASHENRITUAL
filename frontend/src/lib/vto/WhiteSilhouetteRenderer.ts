@@ -100,12 +100,12 @@ export function drawWhiteGarmentSilhouette(
 
   // Proportional vertical lift to position garment naturally at the collar & shoulder crest
   // above the raw acromion detection joint pipe
-  const verticalLiftRatio = options.verticalLiftRatio ?? 0.12;
+  const verticalLiftRatio = options.verticalLiftRatio ?? 0.18;
   const verticalLift = span * verticalLiftRatio;
 
   // Transform to neck base origin, rotate with shoulders, and lift upward along the body axis
   ctx.translate(neckX, neckY);
-  ctx.rotate(-rollAngle);
+  ctx.rotate(rollAngle);
   ctx.translate(0, -verticalLift);
 
   // ─── 1. BUILD ARCHITECTURAL SILHOUETTE PATH ──────────────────────────────
