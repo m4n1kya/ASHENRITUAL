@@ -11,7 +11,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   Camera,
@@ -26,6 +26,7 @@ import {
   Layers,
   Sliders,
   Sparkles,
+  X,
 } from "lucide-react";
 import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import { VtoPoseEngine, ComputedPoseState } from "@/lib/vto/PoseEngine";
@@ -81,6 +82,16 @@ export default function VesperMirrorPage() {
   // Anthropometrics Profile
   const [bodyMetrics, setBodyMetrics] = useState<UserBodyMetrics>(DEFAULT_BODY_METRICS);
   const [isCalibrationOpen, setIsCalibrationOpen] = useState<boolean>(false);
+  const [recommendationPopup, setRecommendationPopup] = useState<UserBodyMetrics | null>(null);
+
+  // Auto-dismiss recommendation popup after 7 seconds
+  useEffect(() => {
+    if (!recommendationPopup) return;
+    const timer = setTimeout(() => {
+      setRecommendationPopup(null);
+    }, 7000);
+    return () => clearTimeout(timer);
+  }, [recommendationPopup]);
 
   // Live telemetry metrics
   const [fps, setFps] = useState<number>(0);
@@ -1022,9 +1033,109 @@ export default function VesperMirrorPage() {
           if (poseEngineRef.current) {
             poseEngineRef.current.bodyMetrics = metrics;
           }
+          setRecommendationPopup(metrics);
         }}
         onClose={() => setIsCalibrationOpen(false)}
       />
+
+      {/* ─── VESPER SIZE RECOMMENDATION POPUP ──────────────────────────────── */}
+      <AnimatePresence>
+        {recommendationPopup && (
+          <div className="fixed inset-0 z-[130] flex items-center justify-center p-4 select-none pointer-events-auto font-sans">
+            {/* Soft backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setRecommendationPopup(null)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+
+            {/* Popup Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 16 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="relative z-10 w-full max-w-md rounded-[26px] border border-white/20 bg-[#0C0C0E]/95 backdrop-blur-3xl p-6 sm:p-7 text-white shadow-[0_24px_80px_rgba(0,0,0,0.95)]"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setRecommendationPopup(null)}
+                className="absolute top-4 right-4 w-7 h-7 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                title="Dismiss"
+                aria-label="Close"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+
+              {/* Eyebrow */}
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                <span className="font-heading text-[9.5px] uppercase tracking-[0.3em] text-white/60">
+                  Vesper Fit Intelligence
+                </span>
+              </div>
+
+              {/* Size Recommendation Highlight */}
+              <div className="flex items-baseline gap-2.5 mb-2">
+                <span className="font-heading text-xs uppercase tracking-[0.2em] text-white/70">
+                  Optimal Silhouette
+                </span>
+                <span className="font-mono text-2xl font-bold tracking-tight text-white border-b-2 border-white pb-0.5">
+                  Size {recommendationPopup.recommendedSize}
+                </span>
+              </div>
+
+              {/* Bespoke Vesper Recommendation Text */}
+              <p className="text-white/80 text-[12.5px] font-sans leading-relaxed mt-2.5 mb-5">
+                Based on your anatomical proportions, Vesper recommends{" "}
+                <span className="text-white font-semibold underline underline-offset-4 decoration-white/40">
+                  Size {recommendationPopup.recommendedSize}
+                </span>{" "}
+                for an intentional, tailored architectural drape.
+              </p>
+
+              {/* Proportions Metrics Strip */}
+              <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl border border-white/10 bg-white/[0.03] mb-5 font-mono text-[9px]">
+                <div className="text-center">
+                  <span className="block text-white/40 uppercase tracking-wider text-[7.5px]">
+                    Span
+                  </span>
+                  <span className="font-bold text-white">
+                    {Math.round(recommendationPopup.bideltoidCm)} cm
+                  </span>
+                </div>
+                <div className="text-center border-x border-white/10">
+                  <span className="block text-white/40 uppercase tracking-wider text-[7.5px]">
+                    Chest
+                  </span>
+                  <span className="font-bold text-white">
+                    {Math.round(recommendationPopup.chestCircumferenceCm)} cm
+                  </span>
+                </div>
+                <div className="text-center">
+                  <span className="block text-white/40 uppercase tracking-wider text-[7.5px]">
+                    BMI
+                  </span>
+                  <span className="font-bold text-white">
+                    {recommendationPopup.bmi}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <button
+                type="button"
+                onClick={() => setRecommendationPopup(null)}
+                className="w-full py-3 px-5 rounded-full bg-white text-black font-heading text-[10px] font-bold uppercase tracking-[0.22em] hover:bg-[#E8E8E8] transition-all flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(255,255,255,0.15)] cursor-pointer"
+              >
+                <span>Continue In Mirror</span>
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
