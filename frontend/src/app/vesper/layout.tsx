@@ -9,25 +9,13 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   MessageSquare,
-  Scan,
-  Eye,
-  Ruler,
   ChevronDown,
-  History,
   Plus,
   Trash2,
-  Camera,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useVesperStore, formatSessionTime } from "@/store/vesper.store";
-
-const navItems = [
-  { name: "Chat", href: "/vesper", icon: MessageSquare },
-  { name: "Size", href: "/vesper/size", icon: Scan },
-  { name: "Preview", href: "/vesper/preview", icon: Eye },
-  { name: "Fit", href: "/vesper/measurements", icon: Ruler },
-];
 
 export default function VesperLayout({
   children,
@@ -37,11 +25,9 @@ export default function VesperLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  const [isNavOpen, setIsNavOpen] = useState(false);
   const [isChatsOpen, setIsChatsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  const navDropdownRef = useRef<HTMLDivElement>(null);
   const chatsDropdownRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -57,15 +43,9 @@ export default function VesperLayout({
     setMounted(true);
   }, []);
 
-  // Close dropdowns on click outside
+  // Close dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        navDropdownRef.current &&
-        !navDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsNavOpen(false);
-      }
       if (
         chatsDropdownRef.current &&
         !chatsDropdownRef.current.contains(event.target as Node)
@@ -98,97 +78,21 @@ export default function VesperLayout({
     clearAllSessions();
   };
 
-  const activeItem =
-    navItems.find((item) => item.href === pathname) || navItems[0];
-  const ActiveIcon = activeItem.icon;
-
   if (pathname === "/vesper/mirror") {
     return <>{children}</>;
   }
 
   return (
     <div className="flex h-[100dvh] bg-[#050505] text-[#E8E8E8] font-sans overflow-hidden relative pt-[72px] md:pt-[100px]">
-      {/* Top Left Floating Vesper Navigation Bubble */}
-      <div
-        className="fixed top-[72px] md:top-[116px] left-4 md:left-8 z-50 flex flex-col"
-        ref={navDropdownRef}
-      >
-        <button
-          onClick={() => {
-            setIsNavOpen(!isNavOpen);
-            if (!isNavOpen) setIsChatsOpen(false);
-          }}
-          className="group inline-flex h-11 items-center gap-5 border border-white/10 bg-black/50 backdrop-blur-xl px-5 md:px-7 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-white hover:bg-white hover:text-black shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
-        >
-          <span className="flex items-center gap-2">
-            <ActiveIcon className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Vesper — </span>
-            {activeItem.name}
-          </span>
-          <ChevronDown
-            className={cn(
-              "h-3.5 w-3.5 transition-transform duration-500",
-              isNavOpen ? "rotate-180" : ""
-            )}
-            strokeWidth={1.5}
-          />
-        </button>
-
-        {/* Separate Button Below: Vesper — Mirror */}
+      {/* Top Left Floating Vesper Mirror Button */}
+      <div className="fixed top-[72px] md:top-[116px] left-4 md:left-8 z-50">
         <Link
           href="/vesper/mirror"
-          className="group inline-flex h-10 items-center justify-between gap-3 border border-white/15 bg-black/60 hover:border-white hover:bg-white hover:text-black backdrop-blur-xl px-5 md:px-6 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.22em] text-[#FDFCFB] transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_0_25px_rgba(255,255,255,0.25)] mt-2.5"
+          className="group inline-flex h-11 items-center justify-between gap-3 border border-white/10 bg-black/50 hover:border-white hover:bg-white hover:text-black backdrop-blur-xl px-5 md:px-6 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.22em] text-[#FDFCFB] transition-all duration-500 shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_25px_rgba(255,255,255,0.25)]"
         >
-          <span className="flex items-center gap-2">
-            <Camera className="h-3.5 w-3.5 text-white group-hover:text-black transition-colors" />
-            <span>Vesper — Mirror</span>
-          </span>
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Vesper — Mirror</span>
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse group-hover:bg-emerald-600 transition-colors" />
         </Link>
-
-        <AnimatePresence>
-          {isNavOpen && (
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: -10,
-                filter: "blur(10px)",
-                scale: 0.95,
-              }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
-              exit={{ opacity: 0, y: -10, filter: "blur(10px)", scale: 0.95 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[calc(100%+12px)] left-0 w-full min-w-[220px] flex flex-col border border-white/10 rounded-[20px] bg-[#0A0A0A]/70 backdrop-blur-2xl shadow-[0_16px_40px_rgba(0,0,0,0.6)] p-2"
-            >
-              {navItems.map((item) => {
-                const isActive = pathname === item.href;
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setIsNavOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 px-5 py-3.5 text-[10px] uppercase tracking-[0.25em] transition-all duration-300 font-heading rounded-xl relative overflow-hidden",
-                      isActive
-                        ? "bg-white/15 text-white"
-                        : "text-[#888] hover:bg-white/5 hover:text-white"
-                    )}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeIndicator"
-                        className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-1/2 bg-white rounded-r-full"
-                      />
-                    )}
-                    <Icon className="h-3.5 w-3.5 relative z-10" />
-                    <span className="relative z-10">{item.name}</span>
-                  </Link>
-                );
-              })}
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
       {/* Top Right Floating All Chats Bubble */}
@@ -197,19 +101,15 @@ export default function VesperLayout({
         ref={chatsDropdownRef}
       >
         <button
-          onClick={() => {
-            setIsChatsOpen(!isChatsOpen);
-            if (!isChatsOpen) setIsNavOpen(false);
-          }}
-          className="group inline-flex h-11 items-center gap-3 md:gap-4 border border-white/10 bg-black/50 backdrop-blur-xl px-4 md:px-7 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-white hover:bg-white hover:text-black shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+          onClick={() => setIsChatsOpen(!isChatsOpen)}
+          className="group inline-flex h-11 items-center gap-3 md:gap-4 border border-white/10 bg-black/50 backdrop-blur-xl px-4 md:px-6 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-white hover:bg-white hover:text-black shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
           aria-expanded={isChatsOpen}
           aria-label="All Chats Menu"
         >
           <span className="flex items-center gap-2">
-            <History className="h-3.5 w-3.5" />
             <span>All Chats</span>
             {mounted && sessions.length > 0 && (
-              <span className="ml-1 rounded-full bg-white/15 px-1.5 py-0.5 text-[8px] tracking-normal text-white group-hover:bg-black/20 group-hover:text-black transition-colors">
+              <span className="ml-0.5 rounded-full bg-white/15 px-1.5 py-0.5 text-[8px] tracking-normal text-white group-hover:bg-black/20 group-hover:text-black transition-colors">
                 {sessions.length}
               </span>
             )}
@@ -235,24 +135,19 @@ export default function VesperLayout({
               animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
               exit={{ opacity: 0, y: -10, filter: "blur(10px)", scale: 0.95 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[calc(100%+12px)] right-0 w-[350px] sm:w-[420px] md:w-[450px] max-w-[calc(100vw-2rem)] flex flex-col border border-white/10 rounded-[28px] bg-[#0A0A0A]/95 backdrop-blur-2xl shadow-[0_24px_60px_rgba(0,0,0,0.9)] p-3.5 z-50 overflow-hidden"
+              className="absolute top-[calc(100%+10px)] right-0 w-[270px] sm:w-[290px] md:w-[310px] max-w-[calc(100vw-2rem)] flex flex-col border border-white/10 rounded-[22px] bg-[#0A0A0A]/95 backdrop-blur-2xl shadow-[0_24px_60px_rgba(0,0,0,0.9)] p-2.5 z-50 overflow-hidden"
             >
-              {/* New Chat Action Item with Curved Edges */}
+              {/* New Chat Action Item */}
               <button
                 onClick={handleNewChat}
-                className="group/new flex items-center justify-between w-full px-5 py-3.5 rounded-full bg-white/[0.08] hover:bg-white text-white hover:text-black font-heading text-[10px] font-medium uppercase tracking-[0.22em] transition-all duration-300 shadow-sm border border-white/10 hover:border-white"
+                className="group/new flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-full bg-white/[0.08] hover:bg-white text-white hover:text-black font-heading text-[10px] font-medium uppercase tracking-[0.22em] transition-all duration-300 shadow-sm border border-white/10 hover:border-white"
               >
-                <span className="flex items-center gap-2.5">
-                  <Plus className="h-3.5 w-3.5 transition-transform duration-300 group-hover/new:rotate-90" />
-                  <span>New Chat</span>
-                </span>
-                <span className="text-[9px] opacity-60 tracking-widest lowercase group-hover:text-black transition-colors">
-                  start fresh
-                </span>
+                <Plus className="h-3.5 w-3.5 transition-transform duration-300 group-hover/new:rotate-90" />
+                <span>New Chat</span>
               </button>
 
               {/* History Section Header */}
-              <div className="flex items-center justify-between px-3.5 pt-3.5 pb-2 text-[9px] uppercase tracking-[0.25em] text-[#777] font-heading border-b border-white/5 mb-1.5">
+              <div className="flex items-center justify-between px-3 pt-3 pb-1.5 text-[8.5px] uppercase tracking-[0.25em] text-[#777] font-heading border-b border-white/5 mb-1">
                 <span>History ({mounted ? sessions.length : 0})</span>
                 {mounted && sessions.length > 0 && (
                   <button
@@ -265,9 +160,9 @@ export default function VesperLayout({
               </div>
 
               {/* History List */}
-              <div className="max-h-[320px] overflow-y-auto space-y-1.5 hide-scrollbar pr-0.5">
+              <div className="max-h-[300px] overflow-y-auto space-y-1 hide-scrollbar pr-0.5">
                 {!mounted || sessions.length === 0 ? (
-                  <div className="py-8 px-4 text-center">
+                  <div className="py-7 px-4 text-center">
                     <MessageSquare className="h-4 w-4 mx-auto mb-2 text-[#444]" />
                     <p className="text-[11px] text-[#777]">
                       No saved conversations yet.
@@ -284,14 +179,14 @@ export default function VesperLayout({
                         key={session.id}
                         onClick={() => handleSelectSession(session.id)}
                         className={cn(
-                          "group/item flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-300 cursor-pointer relative",
+                          "group/item flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-300 cursor-pointer relative",
                           isCurrent
                             ? "bg-white/15 text-white border border-white/20 shadow-sm"
                             : "text-[#888] hover:bg-white/5 hover:text-white border border-transparent"
                         )}
                       >
                         {isCurrent && (
-                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-1/2 bg-white rounded-r-full" />
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2.5px] h-1/2 bg-white rounded-r-full" />
                         )}
                         <div className="flex-1 min-w-0 pr-1">
                           <p
@@ -300,7 +195,7 @@ export default function VesperLayout({
                           >
                             {session.title || "Consultation"}
                           </p>
-                          <p className="text-[9px] text-[#666] tracking-wider uppercase font-heading mt-0.5">
+                          <p className="text-[8.5px] text-[#666] tracking-wider uppercase font-heading mt-0.5">
                             {formatSessionTime(session.updatedAt)} •{" "}
                             {session.messages.length} msg
                             {session.messages.length !== 1 ? "s" : ""}
@@ -312,7 +207,7 @@ export default function VesperLayout({
                             e.stopPropagation();
                             deleteSession(session.id);
                           }}
-                          className="opacity-0 group-hover/item:opacity-100 p-1.5 hover:text-red-400 text-[#666] hover:bg-white/5 rounded-full transition-all shrink-0"
+                          className="opacity-0 group-hover/item:opacity-100 p-1 hover:text-red-400 text-[#666] hover:bg-white/5 rounded-full transition-all shrink-0"
                           title="Delete conversation"
                           aria-label="Delete conversation"
                         >
