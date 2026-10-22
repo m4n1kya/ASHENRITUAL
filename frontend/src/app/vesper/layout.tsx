@@ -6,7 +6,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   MessageSquare,
   ChevronDown,
@@ -16,6 +15,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useVesperStore, formatSessionTime } from "@/store/vesper.store";
+import { SpecularButton } from "@/components/ui/SpecularButton";
 
 export default function VesperLayout({
   children,
@@ -89,28 +89,43 @@ export default function VesperLayout({
         className="fixed top-[72px] md:top-[116px] left-4 md:left-8 z-50 flex flex-col items-start"
         ref={chatsDropdownRef}
       >
-        <button
+        <SpecularButton
+          size="sm"
+          radius={9999}
+          tint="#ffffff"
+          tintOpacity={0.04}
+          textColor="#FDFCFB"
+          lineColor="#ffffff"
+          baseColor="#404040"
+          intensity={1.1}
+          idleIntensity={0.35}
+          shineSize={14}
+          shineFade={36}
+          thickness={1.2}
+          glow={1}
+          followMouse={true}
+          proximity={250}
           onClick={() => setIsChatsOpen(!isChatsOpen)}
-          className="group inline-flex h-11 items-center gap-3 md:gap-4 border border-white/10 bg-black/50 backdrop-blur-xl px-4 md:px-6 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.25em] text-[#FDFCFB] transition-all duration-500 hover:border-white hover:bg-white hover:text-black shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
           aria-expanded={isChatsOpen}
           aria-label="All Chats Menu"
+          className="h-11 px-4 md:px-6 font-heading text-[10px] font-medium uppercase tracking-[0.25em] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
         >
           <span className="flex items-center gap-2">
             <span>All Chats</span>
             {mounted && sessions.length > 0 && (
-              <span className="ml-0.5 rounded-full bg-white/15 px-1.5 py-0.5 text-[8px] tracking-normal text-white group-hover:bg-black/20 group-hover:text-black transition-colors">
+              <span className="ml-0.5 rounded-full bg-white/15 px-1.5 py-0.5 text-[8px] tracking-normal text-white">
                 {sessions.length}
               </span>
             )}
           </span>
           <ChevronDown
             className={cn(
-              "h-3.5 w-3.5 transition-transform duration-500",
+              "h-3.5 w-3.5 ml-1 transition-transform duration-500",
               isChatsOpen ? "rotate-180" : ""
             )}
             strokeWidth={1.5}
           />
-        </button>
+        </SpecularButton>
 
         <AnimatePresence>
           {isChatsOpen && (
@@ -214,13 +229,28 @@ export default function VesperLayout({
 
       {/* Top Right Floating Vesper Mirror Button */}
       <div className="fixed top-[72px] md:top-[116px] right-4 md:right-8 z-50">
-        <Link
-          href="/vesper/mirror"
-          className="group inline-flex h-11 items-center justify-between gap-3 border border-white/10 bg-black/50 hover:border-white hover:bg-white hover:text-black backdrop-blur-xl px-5 md:px-6 rounded-full font-heading text-[10px] font-medium uppercase tracking-[0.22em] text-[#FDFCFB] transition-all duration-500 shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_25px_rgba(255,255,255,0.25)]"
+        <SpecularButton
+          size="sm"
+          radius={9999}
+          tint="#ffffff"
+          tintOpacity={0.04}
+          textColor="#FDFCFB"
+          lineColor="#ffffff"
+          baseColor="#404040"
+          intensity={1.1}
+          idleIntensity={0.35}
+          shineSize={14}
+          shineFade={36}
+          thickness={1.2}
+          glow={1}
+          followMouse={true}
+          proximity={250}
+          onClick={() => router.push("/vesper/mirror")}
+          aria-label="Launch Vesper Mirror"
+          className="h-11 px-5 md:px-6 font-heading text-[10px] font-medium uppercase tracking-[0.22em] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
         >
           <span>Vesper — Mirror</span>
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse group-hover:bg-emerald-600 transition-colors" />
-        </Link>
+        </SpecularButton>
       </div>
 
       {/* Main Chat Content — Full Width */}
