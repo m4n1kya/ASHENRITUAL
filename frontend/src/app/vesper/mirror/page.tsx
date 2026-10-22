@@ -7,6 +7,8 @@
  * anchored to detected body landmarks.
  * Garment selection drawer is positioned vertically on the RIGHT side of the window.
  * Website products and 3D assets remain separate.
+ * Features a floating return bubble in top-left over camera, size bubbles (XS, S, M, L, XL)
+ * in bottom-left over camera, and dynamic silhouette scaling per size.
  */
 "use client";
 
@@ -20,7 +22,6 @@ import {
   CameraOff,
   RefreshCw,
   Scan,
-  CheckCircle2,
   AlertCircle,
   Eye,
   EyeOff,
@@ -47,8 +48,16 @@ type MirrorStatus =
   | "CAMERA_DENIED"
   | "ERROR";
 
-type FitMode = "Snug" | "Standard" | "Relaxed";
+export type GarmentSize = "XS" | "S" | "M" | "L" | "XL";
 type RenderMode = "SILHOUETTE" | "3D";
+
+const SIZE_SCALE_FACTORS: Record<GarmentSize, number> = {
+  XS: 0.88,
+  S: 0.94,
+  M: 1.00,
+  L: 1.07,
+  XL: 1.15,
+};
 
 export default function VesperMirrorPage() {
   // ─── State ────────────────────────────────────────────────────────────────
@@ -60,7 +69,7 @@ export default function VesperMirrorPage() {
   );
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [renderMode, setRenderMode] = useState<RenderMode>("SILHOUETTE");
-  const [fitMode, setFitMode] = useState<FitMode>("Standard");
+  const [selectedSize, setSelectedSize] = useState<GarmentSize>("M");
   const [showLandmarks, setShowLandmarks] = useState<boolean>(false);
 
   // Live telemetry metrics
@@ -87,11 +96,19 @@ export default function VesperMirrorPage() {
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const lastPoseStateRef = useRef<ComputedPoseState | null>(null);
   const selectedProductRef = useRef<TryOnProduct>(selectedProduct);
+  const selectedSizeRef = useRef<GarmentSize>("M");
 
-  // Synchronize ref with active product
+  // Synchronize refs with state
   useEffect(() => {
     selectedProductRef.current = selectedProduct;
   }, [selectedProduct]);
+
+  useEffect(() => {
+    selectedSizeRef.current = selectedSize;
+    if (poseEngineRef.current) {
+      poseEngineRef.current.userFitScale = SIZE_SCALE_FACTORS[selectedSize];
+    }
+  }, [selectedSize]);
 
   // Performance telemetry counters
   const frameCountRef = useRef<number>(0);
@@ -102,14 +119,6 @@ export default function VesperMirrorPage() {
     if (activeCategory === "all") return ASHEN_TRYON_CATALOGUE;
     return ASHEN_TRYON_CATALOGUE.filter((p) => p.category === activeCategory);
   }, [activeCategory]);
-
-  // ─── Fit Scale Mapping ────────────────────────────────────────────────────
-  useEffect(() => {
-    if (!poseEngineRef.current) return;
-    if (fitMode === "Snug") poseEngineRef.current.userFitScale = 0.92;
-    else if (fitMode === "Relaxed") poseEngineRef.current.userFitScale = 1.12;
-    else poseEngineRef.current.userFitScale = 1.0;
-  }, [fitMode]);
 
   // ─── Initialize MediaPipe Tasks Vision ────────────────────────────────────
   const initMediaPipe = useCallback(async (): Promise<PoseLandmarker | null> => {
@@ -154,6 +163,7 @@ export default function VesperMirrorPage() {
         garmentRendererRef.current.resize(stage.clientWidth, stage.clientHeight);
       }
       poseEngineRef.current = new VtoPoseEngine();
+      poseEngineRef.current.userFitScale = SIZE_SCALE_FACTORS[selectedSizeRef.current];
     } catch (err) {
       console.warn("Vesper Mirror: WebGL initialization failed, using White Silhouette Mask", err);
       setRenderMode("SILHOUETTE");
@@ -356,13 +366,14 @@ export default function VesperMirrorPage() {
               // 3. Render White Mask Silhouette (Strictly NO COLOR)
               if (renderMode === "SILHOUETTE" && overlayCanvasRef.current) {
                 const currentProd = selectedProductRef.current;
+                const currentScale = SIZE_SCALE_FACTORS[selectedSizeRef.current];
                 drawWhiteGarmentSilhouette(
                   overlayCanvasRef.current,
                   poseState,
                   currentProd.category,
                   currentProd.id,
                   {
-                    fitScale: poseEngineRef.current?.userFitScale || 1.0,
+                    fitScale: currentScale,
                     showSeams: true,
                   }
                 );
@@ -502,236 +513,132 @@ export default function VesperMirrorPage() {
     sCtx.font = "400 9px monospace";
     sCtx.fillStyle = "rgba(255, 255, 255, 0.5)";
     sCtx.fillText(
-      `${selectedProduct.name.toUpperCase()} • ${shoulderCm}CM SPAN • ${new Date().toLocaleDateString()}`,
+      `${selectedProduct.name.toUpperCase()} (SIZE ${selectedSize}) • ${shoulderCm}CM SPAN • ${new Date().toLocaleDateString()}`,
       24,
       snapshotCanvas.height - 16
     );
 
     // Trigger download
     const link = document.createElement("a");
-    link.download = `ashenritual-look-${selectedProduct.id}-${Date.now()}.png`;
+    link.download = `ashenritual-look-${selectedProduct.id}-${selectedSize}-${Date.now()}.png`;
     link.href = snapshotCanvas.toDataURL("image/png");
     link.click();
-  }, [selectedProduct, shoulderCm, renderMode]);
+  }, [selectedProduct, selectedSize, shoulderCm, renderMode]);
 
   return (
-    <div className="fixed inset-0 z-[100] w-screen h-screen bg-black text-white flex flex-col overflow-hidden select-none font-sans">
-      {/* ─── TOP BAR: NAVIGATION & HUD ─────────────────────────────────────── */}
-      <header className="relative z-40 h-14 border-b border-white/[0.08] bg-[#0A0A0A]/95 backdrop-blur-2xl px-4 sm:px-6 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3">
+    <div className="fixed inset-0 z-[100] w-screen h-screen bg-black text-white flex flex-col md:flex-row overflow-hidden select-none font-sans">
+      {/* ─── LEFT/CENTER: FULL HEIGHT CAMERA VIEWPORT ────────────────────────── */}
+      <main className="relative flex-1 h-full overflow-hidden flex items-center justify-center bg-black">
+        <div
+          ref={stageRef}
+          className="relative w-full h-full flex items-center justify-center overflow-hidden"
+        >
+          {/* 1. Live Video Feed (Mirrored) */}
+          <video
+            ref={videoRef}
+            playsInline
+            muted
+            className={cn(
+              "absolute inset-0 w-full h-full object-cover -scale-x-100 transition-opacity duration-700",
+              status === "TRACKING_LOCKED" || status === "SEARCHING_BODY"
+                ? "opacity-100"
+                : "opacity-0"
+            )}
+          />
+
+          {/* 2. WebGL 3D Garment Canvas (Mirrored) */}
+          <canvas
+            ref={threeCanvasRef}
+            className={cn(
+              "absolute inset-0 w-full h-full pointer-events-none -scale-x-100 z-10",
+              renderMode === "3D" ? "block" : "hidden"
+            )}
+          />
+
+          {/* 3. White Mask Silhouette Canvas (Mirrored) */}
+          <canvas
+            ref={overlayCanvasRef}
+            className={cn(
+              "absolute inset-0 w-full h-full pointer-events-none -scale-x-100 z-10",
+              renderMode === "SILHOUETTE" ? "block" : "hidden"
+            )}
+          />
+
+          {/* 4. Debug Skeleton Landmarks Canvas (Mirrored) */}
+          <canvas
+            ref={debugCanvasRef}
+            className={cn(
+              "absolute inset-0 w-full h-full pointer-events-none -scale-x-100 z-20",
+              showLandmarks ? "block" : "hidden"
+            )}
+          />
+
+          {/* ─── FLOATING BUBBLE: TOP-LEFT RETURN BUTTON OVER CAMERA ────────── */}
           <Link
             href="/vesper"
             onClick={() => stopCamera()}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.03] hover:bg-white hover:text-black font-heading text-[10px] uppercase tracking-[0.2em] transition-all duration-300 text-white/80 group"
+            className="absolute top-5 left-5 z-40 group flex items-center gap-2 px-3.5 py-2 rounded-full border border-white/20 bg-black/60 hover:bg-white hover:text-black backdrop-blur-xl text-white transition-all duration-300 shadow-2xl"
+            title="Return to Vesper"
           >
-            <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
-            <span>Back to Vesper Chat</span>
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
+            <span className="font-heading text-[10px] uppercase tracking-[0.2em] font-medium">
+              Return
+            </span>
           </Link>
 
-          <div className="hidden sm:block h-4 w-[1px] bg-white/10" />
-
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            <h1 className="font-heading text-xs uppercase tracking-[0.25em] text-white font-semibold">
-              Vesper — Mirror
-            </h1>
-            <span className="text-white/20 hidden md:inline">/</span>
-            <span className="font-mono text-[9px] uppercase tracking-widest text-white/50 hidden md:inline">
-              Architectural Virtual Dressing
+          {/* ─── FLOATING BUBBLES: BOTTOM-LEFT SIZES (XS, S, M, L, XL) OVER CAMERA ─ */}
+          <div className="absolute bottom-6 left-6 z-40 flex items-center gap-1.5 p-1.5 rounded-full border border-white/20 bg-black/70 backdrop-blur-2xl shadow-2xl">
+            <span className="pl-2.5 pr-1 font-heading text-[8px] uppercase tracking-widest text-white/40 select-none">
+              Size
             </span>
+            {(["XS", "S", "M", "L", "XL"] as GarmentSize[]).map((size) => {
+              const isChosen = selectedSize === size;
+              return (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={cn(
+                    "w-8 h-8 rounded-full font-heading text-[9px] uppercase font-bold transition-all duration-300 flex items-center justify-center border",
+                    isChosen
+                      ? "bg-white text-black border-white shadow-lg scale-105"
+                      : "text-white/70 hover:text-white border-white/10 hover:border-white/30 bg-white/5"
+                  )}
+                  title={`Select Size ${size}`}
+                >
+                  {size}
+                </button>
+              );
+            })}
           </div>
-        </div>
 
-        {/* Telemetry Status Chips */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {status === "TRACKING_LOCKED" && (
-            <div className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.02] font-mono text-[9px] text-white/70">
-              <span>{fps} FPS</span>
-              <span className="text-white/20">•</span>
-              <span>{shoulderCm}cm Span</span>
-              <span className="text-white/20">•</span>
-              <span>Yaw {chestYawDeg}°</span>
-              <span className="text-white/20">•</span>
-              <span>{trackingConfidence}% Conf</span>
-              {renderMode === "3D" && meshStats && (
-                <>
-                  <span className="text-white/20">•</span>
-                  <span>{(meshStats.triangles / 1000).toFixed(1)}k Tris</span>
-                </>
-              )}
-            </div>
-          )}
-
-          {status === "TRACKING_LOCKED" ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-mono tracking-widest uppercase bg-white/10 text-white border border-white/20">
-              <CheckCircle2 className="w-3 h-3 text-white" />
-              Locked
-            </span>
-          ) : status === "SEARCHING_BODY" ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-mono tracking-widest uppercase bg-white/5 text-white/70 border border-white/10">
-              <Scan className="w-3 h-3 animate-spin text-white/70" />
-              Calibrating
-            </span>
-          ) : null}
-
-          {status === "TRACKING_LOCKED" || status === "SEARCHING_BODY" ? (
-            <button
-              onClick={stopCamera}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-mono tracking-widest uppercase bg-white/5 text-white/70 hover:bg-white hover:text-black border border-white/10 transition-colors"
-            >
-              <CameraOff className="w-3 h-3" />
-              <span className="hidden sm:inline">Stop</span>
-            </button>
-          ) : null}
-        </div>
-      </header>
-
-      {/* ─── MAIN WORKSPACE: CAMERA STAGE + RIGHT CLOTHES DRAWER ─────────── */}
-      <div className="relative flex-1 w-full h-[calc(100vh-56px)] flex flex-col md:flex-row overflow-hidden">
-        {/* ─── LEFT/CENTER: FULL HEIGHT CAMERA VIEWPORT ────────────────────── */}
-        <main className="relative flex-1 h-full overflow-hidden flex items-center justify-center bg-black">
-          <div
-            ref={stageRef}
-            className="relative w-full h-full flex items-center justify-center overflow-hidden"
-          >
-            {/* 1. Live Video Feed (Mirrored) */}
-            <video
-              ref={videoRef}
-              playsInline
-              muted
-              className={cn(
-                "absolute inset-0 w-full h-full object-cover -scale-x-100 transition-opacity duration-700",
-                status === "TRACKING_LOCKED" || status === "SEARCHING_BODY"
-                  ? "opacity-100"
-                  : "opacity-0"
-              )}
-            />
-
-            {/* 2. WebGL 3D Garment Canvas (Mirrored) */}
-            <canvas
-              ref={threeCanvasRef}
-              className={cn(
-                "absolute inset-0 w-full h-full pointer-events-none -scale-x-100 z-10",
-                renderMode === "3D" ? "block" : "hidden"
-              )}
-            />
-
-            {/* 3. White Mask Silhouette Canvas (Mirrored) */}
-            <canvas
-              ref={overlayCanvasRef}
-              className={cn(
-                "absolute inset-0 w-full h-full pointer-events-none -scale-x-100 z-10",
-                renderMode === "SILHOUETTE" ? "block" : "hidden"
-              )}
-            />
-
-            {/* 4. Debug Skeleton Landmarks Canvas (Mirrored) */}
-            <canvas
-              ref={debugCanvasRef}
-              className={cn(
-                "absolute inset-0 w-full h-full pointer-events-none -scale-x-100 z-20",
-                showLandmarks ? "block" : "hidden"
-              )}
-            />
-
-            {/* 5. 3D Model Loading Overlay */}
-            {modelLoadingProgress !== null && (
-              <div className="absolute top-6 left-1/2 -translate-x-1/2 z-40 px-5 py-2.5 rounded-full border border-white/15 bg-black/80 backdrop-blur-xl flex items-center gap-3">
-                <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" />
-                <span className="font-mono text-[10px] tracking-widest text-white/90">
-                  LOADING 3D MESH ({modelLoadingProgress}%)
-                </span>
+          {/* ─── FLOATING HUD: TOP-RIGHT CONTROLS & STATUS ─────────────────── */}
+          <div className="absolute top-5 right-5 z-40 flex items-center gap-2">
+            {/* Live Status Badge */}
+            {status === "TRACKING_LOCKED" ? (
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/20 bg-black/60 backdrop-blur-xl font-mono text-[9px] text-white shadow-lg">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                <span>LOCKED</span>
+                <span className="text-white/20">•</span>
+                <span>{fps} FPS</span>
+                <span className="text-white/20">•</span>
+                <span>{shoulderCm}cm</span>
               </div>
-            )}
-
-            {/* 6. Guidance Overlay when Searching Body */}
-            {status === "SEARCHING_BODY" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="absolute top-8 left-1/2 -translate-x-1/2 z-30 px-6 py-3 rounded-full border border-white/20 bg-black/80 backdrop-blur-2xl text-center pointer-events-none shadow-2xl"
-              >
-                <p className="font-heading text-[10px] uppercase tracking-[0.25em] text-white mb-1">
-                  Position Upper Torso in Frame
-                </p>
-                <p className="font-mono text-[9px] text-white/50 tracking-wider">
-                  Step 1.5 - 2.5m back • Ensure shoulders are visible
-                </p>
-              </motion.div>
-            )}
-
-            {/* 7. Idle Splash / Activation State */}
-            {status === "IDLE" && (
-              <div className="relative z-30 max-w-lg w-full mx-4 p-8 rounded-[32px] border border-white/10 bg-[#0A0A0A]/90 backdrop-blur-2xl text-center shadow-2xl">
-                <div className="w-14 h-14 mx-auto mb-5 rounded-full border border-white/15 bg-white/[0.03] flex items-center justify-center text-white">
-                  <Camera className="w-6 h-6 stroke-[1.5]" />
-                </div>
-                <h2 className="font-heading text-lg uppercase tracking-[0.3em] text-white font-medium mb-2">
-                  Vesper Mirror
-                </h2>
-                <p className="font-mono text-[9px] uppercase tracking-widest text-white/40 mb-3">
-                  Architectural White Mask Silhouette Fitting
-                </p>
-                <p className="text-white/70 text-xs font-sans leading-relaxed mb-6 max-w-md mx-auto">
-                  Live webcam body tracking calibrated to human shoulder span and torso geometry. Pure monochrome silhouette mask with zero cloud uploads.
-                </p>
-                <button
-                  onClick={startCamera}
-                  className="px-8 py-3.5 rounded-full bg-white text-black font-heading text-[10px] font-semibold uppercase tracking-[0.25em] hover:bg-neutral-200 transition-all duration-300 shadow-xl"
-                >
-                  Initialize Live Mirror
-                </button>
+            ) : status === "SEARCHING_BODY" ? (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/20 bg-black/60 backdrop-blur-xl font-mono text-[9px] text-white/70 shadow-lg">
+                <Scan className="w-3 h-3 animate-spin text-white/70" />
+                <span>CALIBRATING</span>
               </div>
-            )}
+            ) : null}
 
-            {/* 8. Initializing / Requesting Camera State */}
-            {(status === "INITIALIZING_VISION" ||
-              status === "REQUESTING_CAMERA") && (
-              <div className="relative z-30 max-w-sm w-full mx-4 p-8 rounded-[32px] border border-white/10 bg-[#0A0A0A]/90 backdrop-blur-2xl text-center">
-                <RefreshCw className="w-8 h-8 mx-auto mb-4 animate-spin text-white" />
-                <h3 className="font-heading text-xs uppercase tracking-[0.25em] text-white mb-2">
-                  {status === "INITIALIZING_VISION"
-                    ? "Loading Vision Landmarker..."
-                    : "Connecting Video Stream..."}
-                </h3>
-                <p className="text-white/50 text-[10px] font-mono tracking-wider">
-                  Edge computer vision pipeline calibrating
-                </p>
-              </div>
-            )}
-
-            {/* 9. Error / Denied State */}
-            {(status === "CAMERA_DENIED" || status === "ERROR") && (
-              <div className="relative z-30 max-w-md w-full mx-4 p-8 rounded-[28px] border border-white/20 bg-[#0A0A0A]/95 backdrop-blur-2xl text-center">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full border border-white/20 bg-white/5 flex items-center justify-center text-white">
-                  <AlertCircle className="w-6 h-6" />
-                </div>
-                <h3 className="font-heading text-sm uppercase tracking-widest text-white mb-2">
-                  Camera Access Needed
-                </h3>
-                <p className="text-white/60 text-xs font-sans leading-relaxed mb-6">
-                  {errorMessage || "Unable to access webcam."}
-                </p>
-                <button
-                  onClick={startCamera}
-                  className="px-6 py-3 rounded-full bg-white text-black font-heading text-[10px] font-semibold uppercase tracking-widest hover:bg-neutral-200 transition-colors"
-                >
-                  Retry Activation
-                </button>
-              </div>
-            )}
-
-            {/* 10. Floating HUD Controls (Top Right of Stage) */}
             {(status === "TRACKING_LOCKED" || status === "SEARCHING_BODY") && (
-              <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
+              <>
                 {/* Snapshot Button */}
                 <button
                   onClick={captureSnapshot}
-                  className="w-10 h-10 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl text-white flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg"
+                  className="w-9 h-9 rounded-full border border-white/20 bg-black/60 backdrop-blur-xl text-white flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg"
                   title="Capture & Save Look"
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="w-3.5 h-3.5" />
                 </button>
 
                 {/* Mode Toggle: White Mask Silhouette vs 3D */}
@@ -740,10 +647,10 @@ export default function VesperMirrorPage() {
                     onClick={() =>
                       setRenderMode((m) => (m === "SILHOUETTE" ? "3D" : "SILHOUETTE"))
                     }
-                    className="w-10 h-10 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl text-white flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg font-mono text-[9px] font-bold"
+                    className="w-9 h-9 rounded-full border border-white/20 bg-black/60 backdrop-blur-xl text-white flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg font-mono text-[9px] font-bold"
                     title={`Switch Mode: Currently ${renderMode === "SILHOUETTE" ? "White Mask Silhouette" : "3D Mesh"}`}
                   >
-                    {renderMode === "SILHOUETTE" ? <Layers className="w-4 h-4" /> : <Box className="w-4 h-4" />}
+                    {renderMode === "SILHOUETTE" ? <Layers className="w-3.5 h-3.5" /> : <Box className="w-3.5 h-3.5" />}
                   </button>
                 )}
 
@@ -751,174 +658,258 @@ export default function VesperMirrorPage() {
                 <button
                   onClick={() => setShowLandmarks((s) => !s)}
                   className={cn(
-                    "w-10 h-10 rounded-full border backdrop-blur-xl flex items-center justify-center transition-all shadow-lg",
+                    "w-9 h-9 rounded-full border backdrop-blur-xl flex items-center justify-center transition-all shadow-lg",
                     showLandmarks
                       ? "bg-white text-black border-white"
-                      : "border-white/15 bg-black/60 text-white hover:bg-white hover:text-black"
+                      : "border-white/20 bg-black/60 text-white hover:bg-white hover:text-black"
                   )}
                   title="Toggle Skeleton Landmarks Overlay"
                 >
-                  {showLandmarks ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                  {showLandmarks ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                 </button>
-              </div>
+
+                {/* Stop Camera Button */}
+                <button
+                  onClick={stopCamera}
+                  className="w-9 h-9 rounded-full border border-white/20 bg-black/60 backdrop-blur-xl text-white/80 flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg"
+                  title="Stop Camera"
+                >
+                  <CameraOff className="w-3.5 h-3.5" />
+                </button>
+              </>
             )}
           </div>
-        </main>
 
-        {/* ─── RIGHT PANEL: VERTICAL CLOTHES SELECTION DRAWER ──────────────── */}
-        <aside className="relative z-30 w-full md:w-80 lg:w-96 h-auto md:h-full flex flex-col border-t md:border-t-0 md:border-l border-white/[0.08] bg-[#0A0A0A]/95 backdrop-blur-2xl shrink-0 overflow-hidden">
-          {/* Panel Header */}
-          <div className="p-4 border-b border-white/[0.08]">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-heading text-[10px] uppercase tracking-[0.25em] text-white/50">
-                Architectural Wardrobe
-              </span>
-              <span className="font-mono text-[8px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 bg-white/5 text-white/80">
-                White Mask Silhouette
+          {/* 5. 3D Model Loading Overlay */}
+          {modelLoadingProgress !== null && (
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 z-40 px-5 py-2.5 rounded-full border border-white/15 bg-black/80 backdrop-blur-xl flex items-center gap-3">
+              <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" />
+              <span className="font-mono text-[10px] tracking-widest text-white/90">
+                LOADING 3D MESH ({modelLoadingProgress}%)
               </span>
             </div>
+          )}
 
-            {/* Active Selected Garment Summary Card */}
-            <div className="p-3 rounded-2xl border border-white/15 bg-white/[0.03] flex items-center gap-3">
-              <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
-                <Image
-                  src={selectedProduct.image}
-                  alt={selectedProduct.name}
-                  fill
-                  sizes="48px"
-                  className="object-cover"
-                />
+          {/* 6. Guidance Overlay when Searching Body */}
+          {status === "SEARCHING_BODY" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="absolute top-8 left-1/2 -translate-x-1/2 z-30 px-6 py-3 rounded-full border border-white/20 bg-black/80 backdrop-blur-2xl text-center pointer-events-none shadow-2xl"
+            >
+              <p className="font-heading text-[10px] uppercase tracking-[0.25em] text-white mb-1">
+                Position Upper Torso in Frame
+              </p>
+              <p className="font-mono text-[9px] text-white/50 tracking-wider">
+                Step 1.5 - 2.5m back • Ensure shoulders are visible
+              </p>
+            </motion.div>
+          )}
+
+          {/* 7. Idle Splash / Activation State */}
+          {status === "IDLE" && (
+            <div className="relative z-30 max-w-lg w-full mx-4 p-8 rounded-[32px] border border-white/10 bg-[#0A0A0A]/90 backdrop-blur-2xl text-center shadow-2xl">
+              <div className="w-14 h-14 mx-auto mb-5 rounded-full border border-white/15 bg-white/[0.03] flex items-center justify-center text-white">
+                <Camera className="w-6 h-6 stroke-[1.5]" />
               </div>
-              <div className="flex flex-col min-w-0 flex-1">
-                <span className="font-heading text-xs uppercase tracking-wider text-white truncate font-medium">
-                  {selectedProduct.name}
-                </span>
-                <span className="font-mono text-[10px] text-white/60">
-                  ₹{selectedProduct.price.toLocaleString("en-IN")}
-                </span>
-                <span className="font-mono text-[8px] uppercase text-white/40 tracking-wider">
-                  Cut: {selectedProduct.category.toUpperCase()} • {selectedProduct.fitProfile}
-                </span>
-              </div>
+              <h2 className="font-heading text-lg uppercase tracking-[0.3em] text-white font-medium mb-2">
+                Vesper Mirror
+              </h2>
+              <p className="font-mono text-[9px] uppercase tracking-widest text-white/40 mb-3">
+                Architectural White Mask Silhouette Fitting
+              </p>
+              <p className="text-white/70 text-xs font-sans leading-relaxed mb-6 max-w-md mx-auto">
+                Live webcam body tracking calibrated to human shoulder span and torso geometry. Pure monochrome silhouette mask with zero cloud uploads.
+              </p>
+              <button
+                onClick={startCamera}
+                className="px-8 py-3.5 rounded-full bg-white text-black font-heading text-[10px] font-semibold uppercase tracking-[0.25em] hover:bg-neutral-200 transition-all duration-300 shadow-xl"
+              >
+                Initialize Live Mirror
+              </button>
             </div>
+          )}
+
+          {/* 8. Initializing / Requesting Camera State */}
+          {(status === "INITIALIZING_VISION" ||
+            status === "REQUESTING_CAMERA") && (
+            <div className="relative z-30 max-w-sm w-full mx-4 p-8 rounded-[32px] border border-white/10 bg-[#0A0A0A]/90 backdrop-blur-2xl text-center">
+              <RefreshCw className="w-8 h-8 mx-auto mb-4 animate-spin text-white" />
+              <h3 className="font-heading text-xs uppercase tracking-[0.25em] text-white mb-2">
+                {status === "INITIALIZING_VISION"
+                  ? "Loading Vision Landmarker..."
+                  : "Connecting Video Stream..."}
+              </h3>
+              <p className="text-white/50 text-[10px] font-mono tracking-wider">
+                Edge computer vision pipeline calibrating
+              </p>
+            </div>
+          )}
+
+          {/* 9. Error / Denied State */}
+          {(status === "CAMERA_DENIED" || status === "ERROR") && (
+            <div className="relative z-30 max-w-md w-full mx-4 p-8 rounded-[28px] border border-white/20 bg-[#0A0A0A]/95 backdrop-blur-2xl text-center">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full border border-white/20 bg-white/5 flex items-center justify-center text-white">
+                <AlertCircle className="w-6 h-6" />
+              </div>
+              <h3 className="font-heading text-sm uppercase tracking-widest text-white mb-2">
+                Camera Access Needed
+              </h3>
+              <p className="text-white/60 text-xs font-sans leading-relaxed mb-6">
+                {errorMessage || "Unable to access webcam."}
+              </p>
+              <button
+                onClick={startCamera}
+                className="px-6 py-3 rounded-full bg-white text-black font-heading text-[10px] font-semibold uppercase tracking-widest hover:bg-neutral-200 transition-colors"
+              >
+                Retry Activation
+              </button>
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* ─── RIGHT PANEL: VERTICAL CLOTHES SELECTION DRAWER ────────────────── */}
+      <aside className="relative z-30 w-full md:w-80 lg:w-96 h-auto md:h-full flex flex-col border-t md:border-t-0 md:border-l border-white/[0.08] bg-[#0A0A0A]/95 backdrop-blur-2xl shrink-0 overflow-hidden">
+        {/* Panel Header */}
+        <div className="p-4 border-b border-white/[0.08]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-heading text-[10px] uppercase tracking-[0.25em] text-white/50">
+              Architectural Wardrobe
+            </span>
+            <span className="font-mono text-[8px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 bg-white/5 text-white/80">
+              White Mask Silhouette
+            </span>
           </div>
 
-          {/* Category Filter Pills */}
-          <div className="px-4 py-2.5 border-b border-white/[0.06] flex items-center gap-1.5 overflow-x-auto scrollbar-none">
-            {[
-              { id: "all", label: "All" },
-              { id: "jackets", label: "Outerwear" },
-              { id: "shirts", label: "Shirts" },
-              { id: "tshirts", label: "Tees" },
-              { id: "suits", label: "Suits" },
-            ].map((cat) => (
+          {/* Active Selected Garment Summary Card */}
+          <div className="p-3 rounded-2xl border border-white/15 bg-white/[0.03] flex items-center gap-3">
+            <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
+              <Image
+                src={selectedProduct.image}
+                alt={selectedProduct.name}
+                fill
+                sizes="48px"
+                className="object-cover"
+              />
+            </div>
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="font-heading text-xs uppercase tracking-wider text-white truncate font-medium">
+                {selectedProduct.name}
+              </span>
+              <span className="font-mono text-[10px] text-white/60">
+                ₹{selectedProduct.price.toLocaleString("en-IN")}
+              </span>
+              <span className="font-mono text-[8px] uppercase text-white/40 tracking-wider">
+                Cut: {selectedProduct.category.toUpperCase()} • Size: {selectedSize} • {selectedProduct.fitProfile}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Category Filter Pills */}
+        <div className="px-4 py-2.5 border-b border-white/[0.06] flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+          {[
+            { id: "all", label: "All" },
+            { id: "jackets", label: "Outerwear" },
+            { id: "shirts", label: "Shirts" },
+            { id: "tshirts", label: "Tees" },
+            { id: "suits", label: "Suits" },
+          ].map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={cn(
+                "px-3 py-1 rounded-full font-heading text-[8px] uppercase tracking-[0.2em] transition-all whitespace-nowrap",
+                activeCategory === cat.id
+                  ? "bg-white text-black font-bold shadow-sm"
+                  : "text-white/60 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10"
+              )}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Vertical Garment List */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin">
+          {filteredProducts.map((product) => {
+            const isSelected = product.id === selectedProduct.id;
+            return (
               <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
+                key={product.id}
+                onClick={() => handleSelectProduct(product)}
                 className={cn(
-                  "px-3 py-1 rounded-full font-heading text-[8px] uppercase tracking-[0.2em] transition-all whitespace-nowrap",
-                  activeCategory === cat.id
-                    ? "bg-white text-black font-bold shadow-sm"
-                    : "text-white/60 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10"
+                  "group w-full rounded-2xl p-2.5 border transition-all text-left flex items-center gap-3 overflow-hidden",
+                  isSelected
+                    ? "border-white bg-white/[0.08] shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                    : "border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]"
                 )}
               >
-                {cat.label}
-              </button>
-            ))}
-          </div>
+                {/* Thumbnail */}
+                <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    sizes="56px"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
 
-          {/* Vertical Garment List */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin">
-            {filteredProducts.map((product) => {
-              const isSelected = product.id === selectedProduct.id;
-              return (
-                <button
-                  key={product.id}
-                  onClick={() => handleSelectProduct(product)}
-                  className={cn(
-                    "group w-full rounded-2xl p-2.5 border transition-all text-left flex items-center gap-3 overflow-hidden",
-                    isSelected
-                      ? "border-white bg-white/[0.08] shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-                      : "border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]"
-                  )}
-                >
-                  {/* Thumbnail */}
-                  <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="56px"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
+                {/* Title & Metadata */}
+                <div className="flex flex-col min-w-0 flex-1">
+                  <span className="font-heading text-[10px] uppercase tracking-wider text-white truncate font-medium">
+                    {product.name}
+                  </span>
+                  <span className="font-mono text-[9px] text-white/50">
+                    ₹{product.price.toLocaleString("en-IN")}
+                  </span>
+                  <span className="font-mono text-[8px] uppercase tracking-widest text-white/40 mt-0.5">
+                    {product.category} • Silhouette
+                  </span>
+                </div>
 
-                  {/* Title & Metadata */}
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <span className="font-heading text-[10px] uppercase tracking-wider text-white truncate font-medium">
-                      {product.name}
-                    </span>
-                    <span className="font-mono text-[9px] text-white/50">
-                      ₹{product.price.toLocaleString("en-IN")}
-                    </span>
-                    <span className="font-mono text-[8px] uppercase tracking-widest text-white/40 mt-0.5">
-                      {product.category} • Silhouette
-                    </span>
-                  </div>
-
-                  {/* Radio / Selection Indicator */}
-                  <div className="shrink-0 pr-1">
-                    <div
-                      className={cn(
-                        "w-4 h-4 rounded-full border flex items-center justify-center transition-colors",
-                        isSelected
-                          ? "border-white bg-white"
-                          : "border-white/20 group-hover:border-white/40"
-                      )}
-                    >
-                      {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-black" />}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Panel Footer: Fit Scale & Snapshot */}
-          <div className="p-4 border-t border-white/[0.08] bg-black/40 flex flex-col gap-2.5">
-            <div className="flex items-center justify-between">
-              <span className="font-heading text-[8px] uppercase tracking-widest text-white/50">
-                Fit Calibration
-              </span>
-              <div className="flex items-center gap-1">
-                {(["Snug", "Standard", "Relaxed"] as FitMode[]).map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => setFitMode(f)}
+                {/* Radio / Selection Indicator */}
+                <div className="shrink-0 pr-1">
+                  <div
                     className={cn(
-                      "px-2.5 py-1 rounded-full font-heading text-[8px] uppercase tracking-wider transition-colors border",
-                      fitMode === f
-                        ? "bg-white text-black font-bold border-white"
-                        : "text-white/60 hover:text-white border-white/10 bg-white/[0.02]"
+                      "w-4 h-4 rounded-full border flex items-center justify-center transition-colors",
+                      isSelected
+                        ? "border-white bg-white"
+                        : "border-white/20 group-hover:border-white/40"
                     )}
                   >
-                    {f}
-                  </button>
-                ))}
-              </div>
-            </div>
+                    {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-black" />}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
 
-            <div className="flex items-center justify-between pt-1">
-              <span className="font-mono text-[8px] text-white/40 uppercase tracking-widest">
-                Monochrome Mask Engine
-              </span>
-              <span className="font-mono text-[8px] text-white/70">
-                {shoulderCm > 0 ? `${shoulderCm}cm Calibrated` : "Awaiting Frame"}
-              </span>
-            </div>
+        {/* Panel Footer: Size & Calibrated Telemetry */}
+        <div className="p-4 border-t border-white/[0.08] bg-black/40 flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="font-heading text-[8px] uppercase tracking-widest text-white/50">
+              Active Silhouette Scale
+            </span>
+            <span className="font-mono text-[9px] uppercase tracking-widest text-white px-2 py-0.5 rounded-full border border-white/20 bg-white/5 font-bold">
+              Size {selectedSize} ({Math.round(SIZE_SCALE_FACTORS[selectedSize] * 100)}%)
+            </span>
           </div>
-        </aside>
-      </div>
+
+          <div className="flex items-center justify-between pt-1">
+            <span className="font-mono text-[8px] text-white/40 uppercase tracking-widest">
+              Monochrome Mask Engine
+            </span>
+            <span className="font-mono text-[8px] text-white/70">
+              {shoulderCm > 0 ? `${shoulderCm}cm Span Calibrated` : "Awaiting Frame"}
+            </span>
+          </div>
+        </div>
+      </aside>
     </div>
   );
 }
