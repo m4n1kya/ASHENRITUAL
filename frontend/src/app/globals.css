@@ -22,6 +22,44 @@
   }
 }
 
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #262626 #0A0A0A;
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #0A0A0A;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #262626;
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #3A3A3A;
+  }
+}
+
+@utility scrollbar-dark {
+  scrollbar-width: thin;
+  scrollbar-color: #262626 #0A0A0A;
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #0A0A0A;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #262626;
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #3A3A3A;
+  }
+}
+
 @keyframes border-beam {
   100% {
     offset-distance: 100%;
@@ -90,6 +128,8 @@ button:focus {
 
 :root,
 .dark {
+  color-scheme: dark;
+  scrollbar-color: #262626 #0A0A0A;
   /* Surfaces - Made semi-transparent so global background shows through */
   --background:         rgba(10, 10, 10, 0.4);
   --secondary:          rgba(14, 14, 14, 0.5);
@@ -346,14 +386,28 @@ html[data-theme="light"] .home-tier1 {
    SCROLLBAR
 ────────────────────────────────────────────────────────────────────────────── */
 
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: #0A0A0A; }
-::-webkit-scrollbar-thumb { background: #202020; }
-::-webkit-scrollbar-thumb:hover { background: #2A2A2A; }
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #262626 #0A0A0A;
+}
 
-html[data-theme="light"] ::-webkit-scrollbar-track { background: #0D1118; }
-html[data-theme="light"] ::-webkit-scrollbar-thumb { background: #2A3A58; }
-html[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #4A6A9A; }
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3A3A3A;
+}
+::-webkit-scrollbar-corner {
+  background: #0A0A0A;
+}
 
 /* ────────────────────────────────────────────────────────────────────────────
    FOCUS

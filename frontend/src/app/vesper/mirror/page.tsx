@@ -882,7 +882,10 @@ export default function VesperMirrorPage() {
       </main>
 
       {/* ─── RIGHT PANEL: VERTICAL CLOTHES SELECTION DRAWER ────────────────── */}
-      <aside className="relative z-30 w-full md:w-80 lg:w-96 h-auto md:h-full flex flex-col border-t md:border-t-0 md:border-l border-white/[0.08] bg-[#0A0A0A]/95 backdrop-blur-2xl shrink-0 overflow-hidden">
+      <aside 
+        style={{ colorScheme: "dark" }}
+        className="relative z-30 w-full md:w-80 lg:w-96 h-auto md:h-full flex flex-col border-t md:border-t-0 md:border-l border-white/[0.08] bg-[#0A0A0A]/95 backdrop-blur-2xl shrink-0 overflow-hidden"
+      >
         {/* Panel Header */}
         <div className="p-4 border-b border-white/[0.08]">
           <div className="flex items-center justify-between mb-2">
@@ -944,7 +947,10 @@ export default function VesperMirrorPage() {
         </div>
 
         {/* Vertical Garment List */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin">
+        <div 
+          style={{ scrollbarColor: "#262626 #0A0A0A", colorScheme: "dark" }}
+          className="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-dark"
+        >
           {filteredProducts.map((product) => {
             const isSelected = product.id === selectedProduct.id;
             return (
