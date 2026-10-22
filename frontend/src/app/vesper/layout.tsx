@@ -218,24 +218,24 @@ export default function VesperLayout({
               animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
               exit={{ opacity: 0, y: -10, filter: "blur(10px)", scale: 0.95 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[calc(100%+12px)] right-0 w-[300px] sm:w-[360px] max-w-[calc(100vw-2rem)] flex flex-col border border-white/10 rounded-[22px] bg-[#0A0A0A]/90 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] p-3 z-50 overflow-hidden"
+              className="absolute top-[calc(100%+12px)] right-0 w-[350px] sm:w-[420px] md:w-[450px] max-w-[calc(100vw-2rem)] flex flex-col border border-white/10 rounded-[28px] bg-[#0A0A0A]/95 backdrop-blur-2xl shadow-[0_24px_60px_rgba(0,0,0,0.9)] p-3.5 z-50 overflow-hidden"
             >
-              {/* New Chat Action Item */}
+              {/* New Chat Action Item with Curved Edges */}
               <button
                 onClick={handleNewChat}
-                className="group/new flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white/[0.08] hover:bg-white text-white hover:text-black font-heading text-[10px] uppercase tracking-[0.22em] transition-all duration-300 shadow-sm border border-white/10 hover:border-white"
+                className="group/new flex items-center justify-between w-full px-5 py-3.5 rounded-full bg-white/[0.08] hover:bg-white text-white hover:text-black font-heading text-[10px] font-medium uppercase tracking-[0.22em] transition-all duration-300 shadow-sm border border-white/10 hover:border-white"
               >
                 <span className="flex items-center gap-2.5">
                   <Plus className="h-3.5 w-3.5 transition-transform duration-300 group-hover/new:rotate-90" />
                   <span>New Chat</span>
                 </span>
-                <span className="text-[9px] opacity-60 tracking-widest lowercase group-hover:text-black">
+                <span className="text-[9px] opacity-60 tracking-widest lowercase group-hover:text-black transition-colors">
                   start fresh
                 </span>
               </button>
 
               {/* History Section Header */}
-              <div className="flex items-center justify-between px-3 pt-3.5 pb-2 text-[9px] uppercase tracking-[0.25em] text-[#777] font-heading border-b border-white/5 mb-1.5">
+              <div className="flex items-center justify-between px-3.5 pt-3.5 pb-2 text-[9px] uppercase tracking-[0.25em] text-[#777] font-heading border-b border-white/5 mb-1.5">
                 <span>History ({mounted ? sessions.length : 0})</span>
                 {mounted && sessions.length > 0 && (
                   <button
@@ -248,9 +248,9 @@ export default function VesperLayout({
               </div>
 
               {/* History List */}
-              <div className="max-h-[300px] overflow-y-auto space-y-1 hide-scrollbar pr-0.5">
+              <div className="max-h-[320px] overflow-y-auto space-y-1.5 hide-scrollbar pr-0.5">
                 {!mounted || sessions.length === 0 ? (
-                  <div className="py-7 px-4 text-center">
+                  <div className="py-8 px-4 text-center">
                     <MessageSquare className="h-4 w-4 mx-auto mb-2 text-[#444]" />
                     <p className="text-[11px] text-[#777]">
                       No saved conversations yet.
@@ -267,9 +267,9 @@ export default function VesperLayout({
                         key={session.id}
                         onClick={() => handleSelectSession(session.id)}
                         className={cn(
-                          "group/item flex items-center justify-between gap-2.5 px-3.5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer relative",
+                          "group/item flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-300 cursor-pointer relative",
                           isCurrent
-                            ? "bg-white/15 text-white border border-white/20"
+                            ? "bg-white/15 text-white border border-white/20 shadow-sm"
                             : "text-[#888] hover:bg-white/5 hover:text-white border border-transparent"
                         )}
                       >
@@ -295,7 +295,7 @@ export default function VesperLayout({
                             e.stopPropagation();
                             deleteSession(session.id);
                           }}
-                          className="opacity-0 group-hover/item:opacity-100 p-1.5 hover:text-red-400 text-[#666] hover:bg-white/5 rounded-md transition-all shrink-0"
+                          className="opacity-0 group-hover/item:opacity-100 p-1.5 hover:text-red-400 text-[#666] hover:bg-white/5 rounded-full transition-all shrink-0"
                           title="Delete conversation"
                           aria-label="Delete conversation"
                         >
