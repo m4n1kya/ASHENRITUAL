@@ -2,11 +2,10 @@
  * @fileoverview ASHENRITUAL Vesper Mirror — Standalone Real-Time Virtual Try-On
  * @module page.tsx
  *
- * Implements two distinct fitting experiences:
- * 1. White Mask Silhouette (Architectural monochrome vector silhouette)
- * 2. Softwear 3D Colored Collection (Real-time textured 3D GLB mesh fitting)
- *
- * Garment drawer is permanently fixed on the RIGHT side of the window.
+ * Implements a pure monochrome architectural White Mask Silhouette fitting experience.
+ * Strictly NO color — renders crisp white outlines and frosted translucent masks
+ * anchored to detected body landmarks.
+ * Garment selection drawer is positioned vertically on the RIGHT side of the window.
  * Website products and 3D assets remain separate.
  */
 "use client";
@@ -36,7 +35,6 @@ import { drawWhiteGarmentSilhouette } from "@/lib/vto/WhiteSilhouetteRenderer";
 import {
   ASHEN_TRYON_CATALOGUE,
   TryOnProduct,
-  WardrobeSection,
 } from "@/lib/vto/garmentCatalog";
 import { cn } from "@/lib/utils";
 
@@ -57,10 +55,8 @@ export default function VesperMirrorPage() {
   const [status, setStatus] = useState<MirrorStatus>("IDLE");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Active section: "silhouette" (White Mask Silhouette) or "softwear-3d" (3D Colored Mesh)
-  const [activeSection, setActiveSection] = useState<WardrobeSection>("silhouette");
   const [selectedProduct, setSelectedProduct] = useState<TryOnProduct>(
-    ASHEN_TRYON_CATALOGUE.find((p) => p.section === "silhouette") || ASHEN_TRYON_CATALOGUE[0]
+    ASHEN_TRYON_CATALOGUE[0]
   );
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [renderMode, setRenderMode] = useState<RenderMode>("SILHOUETTE");
@@ -101,14 +97,11 @@ export default function VesperMirrorPage() {
   const frameCountRef = useRef<number>(0);
   const lastFpsTimestampRef = useRef<number>(performance.now());
 
-  // ─── Filtered Products per Active Section & Category ───────────────────────
+  // ─── Filtered Products ────────────────────────────────────────────────────
   const filteredProducts = useMemo(() => {
-    const sectionProducts = ASHEN_TRYON_CATALOGUE.filter(
-      (p) => p.section === activeSection
-    );
-    if (activeCategory === "all") return sectionProducts;
-    return sectionProducts.filter((p) => p.category === activeCategory);
-  }, [activeSection, activeCategory]);
+    if (activeCategory === "all") return ASHEN_TRYON_CATALOGUE;
+    return ASHEN_TRYON_CATALOGUE.filter((p) => p.category === activeCategory);
+  }, [activeCategory]);
 
   // ─── Fit Scale Mapping ────────────────────────────────────────────────────
   useEffect(() => {
@@ -172,31 +165,24 @@ export default function VesperMirrorPage() {
     async (product: TryOnProduct) => {
       setSelectedProduct(product);
 
-      if (product.section === "softwear-3d" && product.model3DPath) {
-        setRenderMode("3D");
-        if (garmentRendererRef.current) {
-          try {
-            setModelLoadingProgress(10);
-            const stats = await garmentRendererRef.current.loadGarment(
-              product.model3DPath,
-              (percent) => setModelLoadingProgress(percent)
-            );
-            setMeshStats(stats);
-            setModelLoadingProgress(null);
-          } catch (err) {
-            console.warn(`3D model load failed for ${product.name}, falling back to White Mask Silhouette.`, err);
-            setModelLoadingProgress(null);
-            setRenderMode("SILHOUETTE");
-          }
-        }
-      } else {
-        setRenderMode("SILHOUETTE");
-        if (garmentRendererRef.current) {
-          garmentRendererRef.current.clearCurrentModel();
+      // If in 3D mode and asset available, load GLB mesh
+      if (renderMode === "3D" && garmentRendererRef.current && product.is3DSupported && product.model3DPath) {
+        try {
+          setModelLoadingProgress(10);
+          const stats = await garmentRendererRef.current.loadGarment(
+            product.model3DPath,
+            (percent) => setModelLoadingProgress(percent)
+          );
+          setMeshStats(stats);
+          setModelLoadingProgress(null);
+        } catch (err) {
+          console.warn(`3D model load failed for ${product.name}, falling back to White Mask Silhouette.`, err);
+          setModelLoadingProgress(null);
+          setRenderMode("SILHOUETTE");
         }
       }
     },
-    []
+    [renderMode]
   );
 
   // ─── Start Camera & Live Tracking ─────────────────────────────────────────
@@ -227,11 +213,6 @@ export default function VesperMirrorPage() {
       if (!landmarker) return;
 
       setStatus("SEARCHING_BODY");
-
-      // If user had a 3D model active, preload it
-      if (selectedProduct.section === "softwear-3d" && selectedProduct.model3DPath && garmentRendererRef.current) {
-        garmentRendererRef.current.loadGarment(selectedProduct.model3DPath).catch(() => {});
-      }
     } catch (err) {
       console.error("Vesper Mirror: Camera access failed", err);
       const isDenied =
@@ -372,7 +353,7 @@ export default function VesperMirrorPage() {
               setShoulderCm(poseState.shoulderWidthCm);
               setChestYawDeg(Math.round((poseState.yawAngle * 180) / Math.PI));
 
-              // 3. Render White Mask Silhouette or Clear
+              // 3. Render White Mask Silhouette (Strictly NO COLOR)
               if (renderMode === "SILHOUETTE" && overlayCanvasRef.current) {
                 const currentProd = selectedProductRef.current;
                 drawWhiteGarmentSilhouette(
@@ -581,18 +562,6 @@ export default function VesperMirrorPage() {
             </div>
           )}
 
-          {/* Active Mode Indicator */}
-          <span
-            className={cn(
-              "hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-mono tracking-widest uppercase border",
-              renderMode === "3D"
-                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
-                : "bg-white/10 text-white border-white/20"
-            )}
-          >
-            {renderMode === "3D" ? "Softwear 3D Colored Mesh" : "White Mask Silhouette"}
-          </span>
-
           {status === "TRACKING_LOCKED" ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-mono tracking-widest uppercase bg-white/10 text-white border border-white/20">
               <CheckCircle2 className="w-3 h-3 text-white" />
@@ -702,10 +671,10 @@ export default function VesperMirrorPage() {
                   Vesper Mirror
                 </h2>
                 <p className="font-mono text-[9px] uppercase tracking-widest text-white/40 mb-3">
-                  Architectural White Mask Silhouette & 3D Colored Dressing
+                  Architectural White Mask Silhouette Fitting
                 </p>
                 <p className="text-white/70 text-xs font-sans leading-relaxed mb-6 max-w-md mx-auto">
-                  Live webcam body tracking calibrated to human shoulder span and torso geometry. Pure monochrome silhouette mask & real-time 3D textured mesh with zero cloud uploads.
+                  Live webcam body tracking calibrated to human shoulder span and torso geometry. Pure monochrome silhouette mask with zero cloud uploads.
                 </p>
                 <button
                   onClick={startCamera}
@@ -805,45 +774,8 @@ export default function VesperMirrorPage() {
                 Architectural Wardrobe
               </span>
               <span className="font-mono text-[8px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 bg-white/5 text-white/80">
-                {activeSection === "softwear-3d" ? "3D Textured Mesh" : "White Mask Silhouette"}
+                White Mask Silhouette
               </span>
-            </div>
-
-            {/* Section Switcher Tabs: White Silhouette vs Softwear 3D Colored */}
-            <div className="grid grid-cols-2 p-1 rounded-full border border-white/10 bg-white/[0.03] mb-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveSection("silhouette");
-                  const firstSil = ASHEN_TRYON_CATALOGUE.find((p) => p.section === "silhouette");
-                  if (firstSil) handleSelectProduct(firstSil);
-                }}
-                className={cn(
-                  "py-1.5 px-2 rounded-full font-heading text-[8.5px] uppercase tracking-[0.16em] transition-all flex items-center justify-center gap-1.5",
-                  activeSection === "silhouette"
-                    ? "bg-white text-black font-semibold shadow-sm"
-                    : "text-white/60 hover:text-white"
-                )}
-              >
-                <span>White Silhouette</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveSection("softwear-3d");
-                  const first3D = ASHEN_TRYON_CATALOGUE.find((p) => p.section === "softwear-3d");
-                  if (first3D) handleSelectProduct(first3D);
-                }}
-                className={cn(
-                  "py-1.5 px-2 rounded-full font-heading text-[8.5px] uppercase tracking-[0.16em] transition-all flex items-center justify-center gap-1.5",
-                  activeSection === "softwear-3d"
-                    ? "bg-white text-black font-semibold shadow-sm"
-                    : "text-white/60 hover:text-white"
-                )}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Softwear 3D Color</span>
-              </button>
             </div>
 
             {/* Active Selected Garment Summary Card */}
@@ -865,9 +797,7 @@ export default function VesperMirrorPage() {
                   ₹{selectedProduct.price.toLocaleString("en-IN")}
                 </span>
                 <span className="font-mono text-[8px] uppercase text-white/40 tracking-wider">
-                  {selectedProduct.section === "softwear-3d"
-                    ? "3D Real-Time Textured Mesh"
-                    : `Cut: ${selectedProduct.category.toUpperCase()} • ${selectedProduct.fitProfile}`}
+                  Cut: {selectedProduct.category.toUpperCase()} • {selectedProduct.fitProfile}
                 </span>
               </div>
             </div>
@@ -921,11 +851,6 @@ export default function VesperMirrorPage() {
                       sizes="56px"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    {product.section === "softwear-3d" && (
-                      <span className="absolute bottom-1 right-1 px-1 py-0.5 rounded text-[7px] font-mono font-bold bg-emerald-500/90 text-black border border-white/20">
-                        3D
-                      </span>
-                    )}
                   </div>
 
                   {/* Title & Metadata */}
@@ -937,9 +862,7 @@ export default function VesperMirrorPage() {
                       ₹{product.price.toLocaleString("en-IN")}
                     </span>
                     <span className="font-mono text-[8px] uppercase tracking-widest text-white/40 mt-0.5">
-                      {product.section === "softwear-3d"
-                        ? "Softwear 3D • Colored Mesh"
-                        : `${product.category} • Silhouette`}
+                      {product.category} • Silhouette
                     </span>
                   </div>
 
@@ -961,7 +884,7 @@ export default function VesperMirrorPage() {
             })}
           </div>
 
-          {/* Panel Footer: Fit Scale & Summary */}
+          {/* Panel Footer: Fit Scale & Snapshot */}
           <div className="p-4 border-t border-white/[0.08] bg-black/40 flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
               <span className="font-heading text-[8px] uppercase tracking-widest text-white/50">
@@ -987,7 +910,7 @@ export default function VesperMirrorPage() {
 
             <div className="flex items-center justify-between pt-1">
               <span className="font-mono text-[8px] text-white/40 uppercase tracking-widest">
-                {activeSection === "softwear-3d" ? "WebGL Three.js Engine" : "Monochrome Vector Mask"}
+                Monochrome Mask Engine
               </span>
               <span className="font-mono text-[8px] text-white/70">
                 {shoulderCm > 0 ? `${shoulderCm}cm Calibrated` : "Awaiting Frame"}

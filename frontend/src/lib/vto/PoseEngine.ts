@@ -198,9 +198,8 @@ export class VtoPoseEngine {
     const planeWidth = planeHeight * camera.aspect;
 
     // Normalized coordinates (0..1) to scene coordinates centered at (0,0)
-    // Anchored at shoulders/collar line for accurate 3D garment drape
     const targetX = (shoulderMidX - 0.5) * planeWidth;
-    const targetY = -(shoulderMidY - 0.5) * planeHeight + (planeHeight * 0.03);
+    const targetY = -(torsoCenterY - 0.5) * planeHeight;
     this._tmp.set(targetX, targetY, depthZ);
 
     // 4. Orientation: Roll, Yaw, Pitch
