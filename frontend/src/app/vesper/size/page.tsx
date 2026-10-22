@@ -23,25 +23,45 @@ import {
   Sparkles,
   Layers,
   MessageSquare,
+  X,
+  RotateCcw,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const PROCESS_STEPS = [
-  { id: "INPUT", label: "Establish Baseline", num: "01" },
-  { id: "SCANNING", label: "Align Architecture", num: "02" },
-  { id: "ANALYZING", label: "Interpreting Proportions", num: "03" },
-  { id: "REPORT", label: "Tailoring Recommendation", num: "04" },
+  { id: "INPUT", label: "Baseline" },
+  { id: "SCANNING", label: "Alignment" },
+  { id: "ANALYZING", label: "Reasoning" },
+  { id: "REPORT", label: "Profile" },
 ];
+
+function getRecommendedSize(chestCm: number, preferredFit: string): string {
+  if (chestCm < 92) return preferredFit === "Oversized" ? "M" : "S";
+  if (chestCm < 100)
+    return preferredFit === "Slim"
+      ? "S"
+      : preferredFit === "Oversized"
+        ? "L"
+        : "M";
+  if (chestCm < 108)
+    return preferredFit === "Slim"
+      ? "M"
+      : preferredFit === "Oversized"
+        ? "XL"
+        : "L";
+  return preferredFit === "Slim" ? "L" : "XL";
+}
 
 export default function SizeIntelligencePage() {
   const router = useRouter();
-  const { landmarker, isInitializing, error } = useMediaPipe();
+  const { landmarker, isInitializing } = useMediaPipe();
   const { profile, setProfile } = useSizeStore();
 
   const [step, setStep] = useState<
     "INPUT" | "SCANNING" | "ANALYZING" | "REPORT"
   >("INPUT");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // User Inputs
   const [heightCm, setHeightCm] = useState("175");
@@ -57,8 +77,6 @@ export default function SizeIntelligencePage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number | null>(null);
-
-  // Start Camera
   const pendingStream = useRef<MediaStream | null>(null);
 
   const startCamera = async () => {
@@ -68,9 +86,7 @@ export default function SizeIntelligencePage() {
       setStep("SCANNING");
     } catch (err) {
       console.error("Camera access denied:", err);
-      alert(
-        "Camera access is required for Architectural Body Analysis. Please ensure no other app is using it."
-      );
+      alert("Camera access is required for Architectural Body Analysis.");
     }
   };
 
@@ -134,8 +150,7 @@ export default function SizeIntelligencePage() {
 
         if (results.landmarks && results.landmarks.length > 0) {
           const marks = results.landmarks[0];
-
-          ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
           ctx.lineWidth = 1.5;
 
           const lShoulder = marks[11];
@@ -150,7 +165,7 @@ export default function SizeIntelligencePage() {
             const drawJoint = (x: number, y: number) => {
               ctx.beginPath();
               ctx.arc(x, y, 3, 0, 2 * Math.PI);
-              ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+              ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
               ctx.fill();
             };
             drawJoint(lShoulder.x * canvas.width, lShoulder.y * canvas.height);
@@ -168,7 +183,7 @@ export default function SizeIntelligencePage() {
 
             if (estimatedShouldersCm > 35 && estimatedShouldersCm < 65) {
               stableFrames.current++;
-              if (stableFrames.current > 60) {
+              if (stableFrames.current > 45) {
                 setIsStable(true);
               }
             } else {
@@ -215,24 +230,24 @@ export default function SizeIntelligencePage() {
       const profileData: BodyProfile = {
         id: "bp-" + Date.now(),
         measurements: finalMeasurements,
-        bodyType: response.bodyType || "Balanced",
+        bodyType: response.bodyType || "Athletic Slim",
         preferredFit: preferredFit as any,
         gender,
-        confidenceScore: response.confidenceScore || 92,
+        confidenceScore: response.confidenceScore || 94,
         lastUpdated: new Date().toISOString(),
       };
 
       setProfile(profileData);
 
-      // Log this consultation into Vesper chat store so it shares the same history in All Chats!
-      const vesperStore = useVesperStore.getState();
-      vesperStore.addMessage({
+      // Log this consultation into shared Vesper history
+      useVesperStore.getState().addMessage({
         id: `size-report-${Date.now()}`,
         role: "model",
-        content: `Architectural Size Analysis calibrated successfully.\n\n• Body Type: ${profileData.bodyType}\n• Proportions: ${finalMeasurements.shoulderWidthCm}cm shoulders, ${finalMeasurements.chestCircumferenceCm}cm chest, ${finalMeasurements.waistCircumferenceCm}cm waist\n• Tailoring Confidence: ${profileData.confidenceScore}%\n\n${response.report || "Proportions successfully integrated into your personal architectural profile."}`,
+        content: `Architectural Size Analysis calibrated.\n\n• Recommended Size: ${getRecommendedSize(finalMeasurements.chestCircumferenceCm, preferredFit)}\n• Body Type: ${profileData.bodyType}\n• Proportions: ${finalMeasurements.shoulderWidthCm}cm shoulders, ${finalMeasurements.chestCircumferenceCm}cm chest, ${finalMeasurements.waistCircumferenceCm}cm waist\n• Confidence: ${profileData.confidenceScore}%\n\n${response.report || "Silhouette calibrated for permanent collection tailoring."}`,
       });
 
       setStep("REPORT");
+      setIsModalOpen(true);
     } catch (err) {
       console.error(err);
       alert("Analysis failed. Please try again.");
@@ -240,370 +255,438 @@ export default function SizeIntelligencePage() {
     }
   };
 
+  const recommendedSize = profile
+    ? getRecommendedSize(
+        profile.measurements.chestCircumferenceCm,
+        profile.preferredFit
+      )
+    : "M";
+
   return (
-    <div className="h-full w-full overflow-y-auto px-4 sm:px-6 md:px-10 pt-28 md:pt-32 pb-16 hide-scrollbar relative">
-      <div className="max-w-7xl mx-auto min-h-full flex flex-col justify-center">
-        {/* Header */}
-        <header className="mb-8 md:mb-10 text-center">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#8D8D8D] mb-1 font-heading">
-            Vesper Intelligence Layer
-          </p>
-          <h1 className="font-heading text-2xl md:text-3xl uppercase tracking-[0.2em] text-[#FDFCFB]">
-            Size Intelligence
-          </h1>
-          <p className="text-[11px] text-[#666] tracking-wider uppercase mt-1">
-            Architectural Body Analysis &amp; Silhouette Synthesis
-          </p>
-        </header>
+    <div className="h-full w-full overflow-hidden flex flex-col justify-between px-4 sm:px-6 md:px-8 py-3 md:py-4 max-w-7xl mx-auto select-none">
+      {/* ── Compact Header ── */}
+      <header className="text-center shrink-0 mb-1">
+        <h1 className="font-heading text-base md:text-lg uppercase tracking-[0.25em] text-[#FDFCFB]">
+          Size Intelligence
+        </h1>
+        <p className="text-[9px] text-[#666] tracking-widest uppercase font-heading">
+          Silhouette Calibration
+        </p>
+      </header>
 
-        {/* 3-Column Layout: Left Space | Center Camera Window | Right Space */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-          {/* ── Left Side Space: Baseline Specs & Privacy ── */}
-          <div className="lg:col-span-3 order-2 lg:order-1 flex flex-col gap-5">
-            <div className="border border-white/10 rounded-3xl bg-[#0A0A0A]/70 backdrop-blur-xl p-5 shadow-lg">
-              <div className="flex items-center gap-2.5 mb-3 text-white">
-                <Layers className="h-4 w-4 text-[#888]" />
-                <h4 className="font-heading text-xs uppercase tracking-[0.2em]">
-                  Calibration Profile
-                </h4>
-              </div>
-              <p className="text-[11px] text-[#777] leading-relaxed mb-4 font-sans">
-                Real-time landmark vectors calibrate your silhouette against
-                ASHENRITUAL architectural tailoring foundations.
-              </p>
-
-              <div className="space-y-3 pt-2 border-t border-white/5 text-[10px] uppercase tracking-wider font-heading">
-                <div className="flex items-center justify-between text-[#888]">
-                  <span>Target Gender</span>
-                  <span className="text-white font-medium">{gender === "M" ? "Masculine" : "Feminine"}</span>
-                </div>
-                <div className="flex items-center justify-between text-[#888]">
-                  <span>Silhouette Fit</span>
-                  <span className="text-white font-medium">{preferredFit}</span>
-                </div>
-                <div className="flex items-center justify-between text-[#888]">
-                  <span>Sensor Engine</span>
-                  <span className="text-[#888]">MediaPipe GPU</span>
-                </div>
-              </div>
+      {/* ── Fixed 3-Column Viewport (No Scroll) ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center flex-1 min-h-0 w-full py-1">
+        {/* Left Side Space: Minimal Specs */}
+        <div className="hidden lg:flex lg:col-span-3 flex-col gap-3 justify-center shrink-0">
+          <div className="border border-white/10 rounded-2xl bg-[#0A0A0A]/80 backdrop-blur-xl p-4 shadow-md">
+            <div className="flex items-center gap-2 mb-3 text-white">
+              <Layers className="h-3.5 w-3.5 text-[#888]" />
+              <h4 className="font-heading text-[11px] uppercase tracking-[0.2em]">
+                Parameters
+              </h4>
             </div>
 
-            <div className="border border-white/10 rounded-3xl bg-[#0A0A0A]/70 backdrop-blur-xl p-5 shadow-lg">
-              <div className="flex items-center gap-2 mb-2 text-white">
-                <ShieldCheck className="h-4 w-4 text-[#888]" />
-                <h5 className="font-heading text-[11px] uppercase tracking-[0.2em]">
-                  Local Edge Privacy
-                </h5>
+            <div className="space-y-2 text-[10px] uppercase tracking-wider font-heading">
+              <div className="flex items-center justify-between text-[#888]">
+                <span>Target</span>
+                <span className="text-white font-medium">
+                  {gender === "M" ? "Masculine" : "Feminine"}
+                </span>
               </div>
-              <p className="text-[10px] text-[#666] leading-relaxed">
-                All vision landmarks are computed in-memory via WebAssembly.
-                Camera streams are never recorded or transmitted.
-              </p>
+              <div className="flex items-center justify-between text-[#888]">
+                <span>Silhouette</span>
+                <span className="text-white font-medium">{preferredFit}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#888]">
+                <span>Vision</span>
+                <span className="text-[#888]">MediaPipe GPU</span>
+              </div>
             </div>
           </div>
 
-          {/* ── Center Column: Modern Sleek Curved Camera Window ── */}
-          <div className="lg:col-span-6 order-1 lg:order-2 flex flex-col items-center">
-            <div className="w-full relative border border-white/15 bg-[#0A0A0A]/95 backdrop-blur-2xl rounded-[36px] shadow-[0_24px_70px_rgba(0,0,0,0.85)] overflow-hidden min-h-[460px] md:min-h-[500px] flex flex-col justify-center before:absolute before:inset-x-0 before:top-0 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:z-30">
-              <AnimatePresence mode="wait">
-                {step === "INPUT" && (
-                  <motion.div
-                    key="input"
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.35 }}
-                    className="flex flex-col items-center justify-center p-8 md:p-12 text-center"
-                  >
-                    <div className="w-14 h-14 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center mb-5 text-[#E8E8E8] shadow-inner">
-                      <Camera className="w-6 h-6 stroke-[1.5]" />
-                    </div>
-
-                    <h3 className="font-heading text-base md:text-lg uppercase tracking-[0.25em] text-[#FDFCFB] mb-2">
-                      Establish Baseline
-                    </h3>
-                    <p className="text-[11px] text-[#777] max-w-sm mb-8 font-sans">
-                      Position yourself in natural light. Provide your baseline to
-                      anchor landmark pixel proportions.
-                    </p>
-
-                    {/* Sleek Curved Pill Inputs */}
-                    <div className="grid grid-cols-2 gap-4 w-full max-w-sm mb-6">
-                      <div className="flex flex-col text-left">
-                        <label className="text-[9px] uppercase tracking-widest text-[#888] mb-1.5 font-heading pl-3">
-                          Height (cm)
-                        </label>
-                        <input
-                          type="number"
-                          value={heightCm}
-                          onChange={(e) => setHeightCm(e.target.value)}
-                          className="w-full rounded-full bg-white/[0.04] border border-white/10 px-5 py-3 text-center text-sm font-medium text-white placeholder:text-[#555] focus:border-white/40 focus:bg-white/[0.07] outline-none transition-all shadow-inner"
-                        />
-                      </div>
-                      <div className="flex flex-col text-left">
-                        <label className="text-[9px] uppercase tracking-widest text-[#888] mb-1.5 font-heading pl-3">
-                          Weight (kg)
-                        </label>
-                        <input
-                          type="number"
-                          value={weightKg}
-                          onChange={(e) => setWeightKg(e.target.value)}
-                          className="w-full rounded-full bg-white/[0.04] border border-white/10 px-5 py-3 text-center text-sm font-medium text-white placeholder:text-[#555] focus:border-white/40 focus:bg-white/[0.07] outline-none transition-all shadow-inner"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Preferred Fit Pills */}
-                    <div className="flex flex-wrap items-center justify-center gap-2 mb-8 max-w-sm">
-                      {["Slim", "Regular", "Relaxed", "Oversized"].map((fit) => (
-                        <button
-                          key={fit}
-                          type="button"
-                          onClick={() => setPreferredFit(fit)}
-                          className={cn(
-                            "rounded-full px-4 py-1.5 text-[9px] uppercase tracking-widest font-heading transition-all duration-300 border",
-                            preferredFit === fit
-                              ? "bg-white text-black border-white shadow-sm"
-                              : "bg-white/[0.02] text-[#888] border-white/10 hover:border-white/30 hover:text-white"
-                          )}
-                        >
-                          {fit}
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Sleek Curved Action Buttons */}
-                    <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-sm">
-                      <button
-                        onClick={startCamera}
-                        disabled={isInitializing}
-                        className="w-full sm:flex-1 rounded-full bg-white text-black px-6 py-3.5 uppercase tracking-[0.2em] text-[10px] font-heading font-medium hover:bg-[#E8E8E8] transition-all duration-300 disabled:opacity-40 shadow-md"
-                      >
-                        {isInitializing ? "Initializing..." : "Initialize Camera"}
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          setStep("SCANNING");
-                          setIsStable(true);
-                          setEstimates({ shoulderWidthCm: 48 });
-                        }}
-                        className="w-full sm:flex-1 rounded-full border border-white/15 bg-white/[0.03] text-[#AAA] px-6 py-3.5 uppercase tracking-[0.2em] text-[10px] font-heading hover:bg-white/10 hover:text-white transition-all duration-300"
-                      >
-                        Simulate Scan
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-
-                {(step === "SCANNING" || step === "ANALYZING") && (
-                  <motion.div
-                    key="camera"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="absolute inset-0 bg-black rounded-[36px] overflow-hidden"
-                  >
-                    <video
-                      ref={videoRef}
-                      autoPlay
-                      playsInline
-                      muted
-                      className="absolute inset-0 w-full h-full object-cover opacity-60 -scale-x-100 rounded-[36px]"
-                    />
-                    <canvas
-                      ref={canvasRef}
-                      className="absolute inset-0 w-full h-full object-cover mix-blend-screen -scale-x-100 rounded-[36px]"
-                    />
-
-                    {/* Sleek Modern Scanning Reticle */}
-                    <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center p-6">
-                      <div className="w-52 h-52 md:w-64 md:h-64 rounded-full border border-white/20 animate-pulse flex items-center justify-center relative">
-                        <div className="w-2.5 h-2.5 rounded-full bg-white/40" />
-                        <div className="absolute inset-x-0 top-1/2 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                      </div>
-
-                      {step === "SCANNING" && (
-                        <div className="absolute bottom-6 left-0 right-0 text-center">
-                          <p className="rounded-full px-5 py-2 border border-white/20 bg-black/80 backdrop-blur-md text-[10px] tracking-widest text-[#E8E8E8] uppercase font-mono shadow-xl inline-flex items-center gap-2">
-                            <span className={cn(
-                              "w-1.5 h-1.5 rounded-full",
-                              isStable ? "bg-emerald-400 animate-ping" : "bg-amber-400 animate-pulse"
-                            )} />
-                            {isStable
-                              ? "Proportions Acquired • Ready"
-                              : "Align Silhouette In Frame..."}
-                          </p>
-                        </div>
-                      )}
-
-                      {step === "ANALYZING" && (
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[36px]">
-                          <RefreshCw className="w-8 h-8 text-white animate-spin mb-4" />
-                          <p className="font-heading text-xs uppercase tracking-[0.25em] text-white mb-1">
-                            Synthesizing Silhouette
-                          </p>
-                          <p className="text-[10px] text-[#777] tracking-wider uppercase font-sans">
-                            Consulting Gemini Pro Tailoring Reasoning...
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* ── Right Side Space: The Process & Live Intelligence ── */}
-          <div className="lg:col-span-3 order-3 flex flex-col gap-5">
-            <div className="border border-white/10 rounded-3xl bg-[#0A0A0A]/70 backdrop-blur-xl p-5 shadow-lg">
-              <AnimatePresence mode="wait">
-                {step === "INPUT" && (
-                  <motion.div
-                    key="process-guide"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <h4 className="font-heading text-xs uppercase tracking-[0.2em] text-[#FDFCFB] mb-3">
-                      The Process
-                    </h4>
-                    <p className="text-[11px] text-[#888] leading-relaxed mb-5 font-sans">
-                      Our vision pipeline constructs an anatomical proportion
-                      matrix to recommend harmonious garment dimensions.
-                    </p>
-
-                    <div className="space-y-3">
-                      {PROCESS_STEPS.map((ps) => {
-                        const isCurrent = ps.id === step;
-                        return (
-                          <div
-                            key={ps.id}
-                            className={cn(
-                              "flex items-center gap-3 px-3.5 py-2.5 rounded-2xl border text-[10px] uppercase tracking-wider font-heading transition-all",
-                              isCurrent
-                                ? "bg-white/10 border-white/20 text-white"
-                                : "border-transparent text-[#666]"
-                            )}
-                          >
-                            <span className="font-mono text-[9px] text-[#555]">
-                              {ps.num}
-                            </span>
-                            <span>{ps.label}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-
-                {step === "SCANNING" && (
-                  <motion.div
-                    key="live-metrics"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-2">
-                      <h4 className="font-heading text-xs uppercase tracking-[0.2em] text-white">
-                        Live Metrics
-                      </h4>
-                      <RefreshCw className="w-3.5 h-3.5 text-white/50 animate-spin" />
-                    </div>
-
-                    <div className="space-y-4 mb-6">
-                      <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10">
-                        <p className="text-[9px] uppercase tracking-widest text-[#888] font-heading mb-1">
-                          Shoulder Width
-                        </p>
-                        <p className="font-mono text-xl text-white">
-                          {estimates.shoulderWidthCm
-                            ? `${estimates.shoulderWidthCm} cm`
-                            : "---"}
-                        </p>
-                      </div>
-
-                      <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10">
-                        <p className="text-[9px] uppercase tracking-widest text-[#888] font-heading mb-1">
-                          Torso Alignment
-                        </p>
-                        <p className="font-mono text-xl text-white">
-                          {isStable ? "Calibrated" : "Aligning"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={finalizeAnalysis}
-                      disabled={!isStable}
-                      className="w-full rounded-full bg-white text-black py-3.5 uppercase tracking-[0.2em] text-[10px] font-heading font-medium disabled:opacity-30 transition-all duration-300 shadow-md hover:bg-[#E8E8E8]"
-                    >
-                      Analyze Proportions
-                    </button>
-                  </motion.div>
-                )}
-
-                {step === "REPORT" && profile && (
-                  <motion.div
-                    key="report"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                  >
-                    <div className="flex items-center gap-2 mb-3 text-white">
-                      <Sparkles className="w-3.5 h-3.5 text-[#AAA]" />
-                      <h4 className="font-heading text-xs uppercase tracking-[0.2em]">
-                        Body Profile Calibrated
-                      </h4>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                      <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/10">
-                        <p className="text-[8px] uppercase tracking-wider text-[#777] font-heading">
-                          Type
-                        </p>
-                        <p className="text-xs text-white font-medium mt-0.5">
-                          {profile.bodyType}
-                        </p>
-                      </div>
-                      <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/10">
-                        <p className="text-[8px] uppercase tracking-wider text-[#777] font-heading">
-                          Confidence
-                        </p>
-                        <p className="text-xs text-white font-medium mt-0.5">
-                          {profile.confidenceScore}%
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="text-[11px] text-[#888] leading-relaxed mb-6 font-sans">
-                      Shoulders: {profile.measurements.shoulderWidthCm}cm • Chest:{" "}
-                      {profile.measurements.chestCircumferenceCm}cm. Proportions
-                      are now linked to your Vesper AI concierge.
-                    </p>
-
-                    <div className="space-y-2">
-                      <button
-                        onClick={() => router.push("/vesper")}
-                        className="w-full flex items-center justify-center gap-2 rounded-full bg-white text-black py-3 uppercase tracking-[0.18em] text-[10px] font-heading font-medium hover:bg-[#E8E8E8] transition-all shadow-md"
-                      >
-                        <MessageSquare className="w-3.5 h-3.5" />
-                        Consult Vesper in Chat
-                      </button>
-
-                      <button
-                        onClick={() => router.push("/vesper/preview")}
-                        className="w-full flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.03] text-[#AAA] py-3 uppercase tracking-[0.18em] text-[10px] font-heading hover:bg-white/10 hover:text-white transition-all"
-                      >
-                        Fit Preview <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+          <div className="border border-white/10 rounded-2xl bg-[#0A0A0A]/80 backdrop-blur-xl p-3 flex items-center gap-2 text-[#777]">
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+            <p className="text-[9px] uppercase tracking-wider font-heading">
+              Edge Vision • Zero Cloud Storage
+            </p>
           </div>
         </div>
+
+        {/* Center: Sleek Curved Camera Window */}
+        <div className="lg:col-span-6 h-full max-h-[460px] md:max-h-[500px] w-full max-w-[500px] mx-auto flex flex-col justify-center items-center">
+          <div className="w-full h-full relative border border-white/15 bg-[#0A0A0A]/95 backdrop-blur-2xl rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col justify-center items-center p-5">
+            <AnimatePresence mode="wait">
+              {step === "INPUT" && (
+                <motion.div
+                  key="input"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  className="flex flex-col items-center justify-center text-center w-full max-w-xs"
+                >
+                  <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center mb-3 text-[#E8E8E8]">
+                    <Camera className="w-5 h-5 stroke-[1.5]" />
+                  </div>
+
+                  <h3 className="font-heading text-sm md:text-base uppercase tracking-[0.25em] text-[#FDFCFB] mb-4">
+                    Establish Baseline
+                  </h3>
+
+                  {/* Compact Pill Inputs */}
+                  <div className="grid grid-cols-2 gap-3 w-full mb-4">
+                    <div className="flex flex-col text-left">
+                      <label className="text-[8px] uppercase tracking-widest text-[#888] mb-1 font-heading pl-2">
+                        Height (cm)
+                      </label>
+                      <input
+                        type="number"
+                        value={heightCm}
+                        onChange={(e) => setHeightCm(e.target.value)}
+                        className="w-full rounded-full bg-white/[0.04] border border-white/10 px-4 py-2 text-center text-xs font-medium text-white focus:border-white/40 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <label className="text-[8px] uppercase tracking-widest text-[#888] mb-1 font-heading pl-2">
+                        Weight (kg)
+                      </label>
+                      <input
+                        type="number"
+                        value={weightKg}
+                        onChange={(e) => setWeightKg(e.target.value)}
+                        className="w-full rounded-full bg-white/[0.04] border border-white/10 px-4 py-2 text-center text-xs font-medium text-white focus:border-white/40 outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Fit Pills */}
+                  <div className="flex items-center justify-center gap-1.5 mb-5 w-full">
+                    {["Slim", "Regular", "Relaxed", "Oversized"].map((fit) => (
+                      <button
+                        key={fit}
+                        type="button"
+                        onClick={() => setPreferredFit(fit)}
+                        className={cn(
+                          "rounded-full px-3 py-1 text-[8px] uppercase tracking-wider font-heading transition-all border",
+                          preferredFit === fit
+                            ? "bg-white text-black border-white"
+                            : "bg-white/[0.02] text-[#888] border-white/10 hover:border-white/30"
+                        )}
+                      >
+                        {fit}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full">
+                    <button
+                      onClick={startCamera}
+                      disabled={isInitializing}
+                      className="w-full sm:flex-1 rounded-full bg-white text-black px-5 py-3 uppercase tracking-[0.2em] text-[9px] font-heading font-medium hover:bg-[#E8E8E8] transition-all disabled:opacity-40 shadow-md"
+                    >
+                      {isInitializing ? "Initializing..." : "Initialize Camera"}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setStep("SCANNING");
+                        setIsStable(true);
+                        setEstimates({ shoulderWidthCm: 48 });
+                      }}
+                      className="w-full sm:flex-1 rounded-full border border-white/15 bg-white/[0.03] text-[#AAA] px-5 py-3 uppercase tracking-[0.2em] text-[9px] font-heading hover:bg-white/10 hover:text-white transition-all"
+                    >
+                      Simulate Scan
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {(step === "SCANNING" || step === "ANALYZING") && (
+                <motion.div
+                  key="camera"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="absolute inset-0 bg-black rounded-[32px] overflow-hidden"
+                >
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="absolute inset-0 w-full h-full object-cover opacity-60 -scale-x-100 rounded-[32px]"
+                  />
+                  <canvas
+                    ref={canvasRef}
+                    className="absolute inset-0 w-full h-full object-cover mix-blend-screen -scale-x-100 rounded-[32px]"
+                  />
+
+                  {/* Scanning Reticle */}
+                  <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center p-4">
+                    <div className="w-44 h-44 md:w-56 md:h-56 rounded-full border border-white/20 animate-pulse flex items-center justify-center relative">
+                      <div className="w-2 h-2 rounded-full bg-white/40" />
+                      <div className="absolute inset-x-0 top-1/2 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                    </div>
+
+                    {step === "SCANNING" && (
+                      <div className="absolute bottom-5 left-0 right-0 text-center">
+                        <p className="rounded-full px-4 py-1.5 border border-white/20 bg-black/80 backdrop-blur-md text-[9px] tracking-widest text-[#E8E8E8] uppercase font-mono shadow-xl inline-flex items-center gap-2">
+                          <span
+                            className={cn(
+                              "w-1.5 h-1.5 rounded-full",
+                              isStable
+                                ? "bg-emerald-400 animate-ping"
+                                : "bg-amber-400 animate-pulse"
+                            )}
+                          />
+                          {isStable
+                            ? "Proportions Acquired"
+                            : "Align Torso in Frame"}
+                        </p>
+                      </div>
+                    )}
+
+                    {step === "ANALYZING" && (
+                      <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center rounded-[32px]">
+                        <RefreshCw className="w-7 h-7 text-white animate-spin mb-3" />
+                        <p className="font-heading text-xs uppercase tracking-[0.25em] text-white">
+                          Synthesizing Proportions
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {step === "REPORT" && (
+                <motion.div
+                  key="report-summary"
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center justify-center text-center p-6 w-full max-w-sm"
+                >
+                  <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-3 text-emerald-400">
+                    <CheckCircle2 className="w-6 h-6 stroke-[1.5]" />
+                  </div>
+
+                  <h3 className="font-heading text-sm uppercase tracking-[0.25em] text-white mb-1">
+                    Inspection Complete
+                  </h3>
+                  <p className="text-[10px] text-[#777] uppercase font-heading tracking-wider mb-5">
+                    Proportions Calibrated
+                  </p>
+
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="w-full rounded-full bg-white text-black py-3.5 uppercase tracking-[0.2em] text-[10px] font-heading font-medium hover:bg-neutral-200 transition-all shadow-md mb-2.5"
+                  >
+                    View Results
+                  </button>
+
+                  <button
+                    onClick={() => setStep("INPUT")}
+                    className="w-full rounded-full border border-white/10 bg-white/[0.02] text-[#888] hover:text-white hover:bg-white/5 py-2.5 uppercase tracking-[0.2em] text-[9px] font-heading transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    Re-Calibrate
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Right Side Space: Steps & Live Actions */}
+        <div className="hidden lg:flex lg:col-span-3 flex-col gap-3 justify-center shrink-0">
+          <div className="border border-white/10 rounded-2xl bg-[#0A0A0A]/80 backdrop-blur-xl p-4 shadow-md">
+            <h4 className="font-heading text-[11px] uppercase tracking-[0.2em] text-[#FDFCFB] mb-2.5">
+              Inspection
+            </h4>
+
+            <div className="space-y-1.5">
+              {PROCESS_STEPS.map((ps) => {
+                const isCurrent = ps.id === step;
+                return (
+                  <div
+                    key={ps.id}
+                    className={cn(
+                      "flex items-center justify-between px-3 py-1.5 rounded-xl border text-[9px] uppercase tracking-wider font-heading transition-all",
+                      isCurrent
+                        ? "bg-white/10 border-white/20 text-white"
+                        : "border-transparent text-[#666]"
+                    )}
+                  >
+                    <span>{ps.label}</span>
+                    {isCurrent && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {step === "SCANNING" && (
+            <div className="border border-white/10 rounded-2xl bg-[#0A0A0A]/80 backdrop-blur-xl p-3.5 shadow-md">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[9px] uppercase tracking-wider text-[#888] font-heading">
+                  Shoulders
+                </span>
+                <span className="font-mono text-sm text-white font-medium">
+                  {estimates.shoulderWidthCm
+                    ? `${estimates.shoulderWidthCm} cm`
+                    : "---"}
+                </span>
+              </div>
+
+              <button
+                onClick={finalizeAnalysis}
+                disabled={!isStable}
+                className="w-full rounded-full bg-white text-black py-2.5 uppercase tracking-[0.18em] text-[9px] font-heading font-medium disabled:opacity-30 transition-all shadow-md mt-1 hover:bg-[#E8E8E8]"
+              >
+                Analyze
+              </button>
+            </div>
+          )}
+
+          {step === "REPORT" && profile && (
+            <div className="border border-white/10 rounded-2xl bg-[#0A0A0A]/80 backdrop-blur-xl p-3.5 shadow-md">
+              <p className="text-[8px] uppercase tracking-wider text-[#777] font-heading mb-0.5">
+                Saved Profile
+              </p>
+              <p className="font-heading text-xs text-white uppercase tracking-wider mb-2">
+                {recommendedSize} • {profile.bodyType}
+              </p>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="w-full rounded-full bg-white/10 hover:bg-white hover:text-black text-white py-2 uppercase tracking-[0.18em] text-[8px] font-heading transition-all"
+              >
+                Open Details
+              </button>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* ── Pop-Up Window (Modal for Detailed Results) ── */}
+      <AnimatePresence>
+        {isModalOpen && profile && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl"
+            onClick={() => setIsModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 10 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 10 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-md border border-white/15 rounded-[32px] bg-[#0C0C0C]/95 backdrop-blur-2xl p-6 sm:p-8 shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-5 right-5 p-2 rounded-full text-[#777] hover:text-white hover:bg-white/10 transition-all"
+                aria-label="Close Modal"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {/* Modal Header */}
+              <div className="flex items-center gap-2 mb-4 text-[#888]">
+                <Sparkles className="w-3.5 h-3.5 text-white" />
+                <span className="font-heading text-[10px] uppercase tracking-[0.25em]">
+                  Architectural Results
+                </span>
+              </div>
+
+              {/* Main Recommended Size Banner */}
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 mb-5 flex items-center justify-between">
+                <div>
+                  <p className="text-[9px] uppercase tracking-widest text-[#777] font-heading">
+                    Recommended Fit
+                  </p>
+                  <p className="font-heading text-2xl uppercase tracking-wider text-white mt-0.5">
+                    Size {recommendedSize}
+                  </p>
+                  <p className="text-[10px] text-[#999] uppercase font-heading tracking-wider mt-0.5">
+                    {profile.bodyType}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="rounded-full px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-[10px] uppercase tracking-widest inline-block">
+                    {profile.confidenceScore}% Match
+                  </span>
+                </div>
+              </div>
+
+              {/* Metrics Grid */}
+              <div className="grid grid-cols-3 gap-2.5 mb-5">
+                <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 text-center">
+                  <p className="text-[8px] uppercase tracking-wider text-[#777] font-heading">
+                    Shoulders
+                  </p>
+                  <p className="font-mono text-xs text-white mt-1">
+                    {profile.measurements.shoulderWidthCm} cm
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 text-center">
+                  <p className="text-[8px] uppercase tracking-wider text-[#777] font-heading">
+                    Chest
+                  </p>
+                  <p className="font-mono text-xs text-white mt-1">
+                    {profile.measurements.chestCircumferenceCm} cm
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 text-center">
+                  <p className="text-[8px] uppercase tracking-wider text-[#777] font-heading">
+                    Waist
+                  </p>
+                  <p className="font-mono text-xs text-white mt-1">
+                    {profile.measurements.waistCircumferenceCm} cm
+                  </p>
+                </div>
+              </div>
+
+              {/* Baseline Metrics */}
+              <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-white/[0.02] border border-white/5 text-[9px] uppercase tracking-wider font-heading text-[#888] mb-6">
+                <span>Height: {profile.measurements.heightCm} cm</span>
+                <span>Weight: {profile.measurements.weightKg} kg</span>
+                <span>Fit: {profile.preferredFit}</span>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => router.push("/vesper")}
+                  className="w-full flex items-center justify-center gap-2 rounded-full bg-white text-black py-3 uppercase tracking-[0.2em] text-[10px] font-heading font-medium hover:bg-neutral-200 transition-all shadow-md"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  Consult Vesper in Chat
+                </button>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => router.push("/vesper/preview")}
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] text-[#AAA] py-2.5 uppercase tracking-[0.18em] text-[9px] font-heading hover:bg-white/10 hover:text-white transition-all"
+                  >
+                    Fit Preview <ArrowRight className="w-3 h-3" />
+                  </button>
+
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="rounded-full border border-white/10 px-5 py-2.5 uppercase tracking-[0.18em] text-[9px] font-heading text-[#777] hover:text-white transition-all"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
