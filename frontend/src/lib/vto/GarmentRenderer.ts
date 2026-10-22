@@ -125,10 +125,15 @@ export class GarmentRenderer {
           const center = bbox.getCenter(new THREE.Vector3());
           const size = bbox.getSize(new THREE.Vector3());
 
+          // Automatic scale normalization: normalize garment span to 0.52 meters (nominal human shoulder span)
+          const targetGarmentWidth = 0.52;
+          const currentWidth = Math.max(size.x, 0.01);
+          const autoNormScale = targetGarmentWidth / currentWidth;
+          rawScene.scale.setScalar(autoNormScale);
+
           // Offset geometry so its neck/shoulder collar line sits near local origin
-          // Typically upper garments have neck at ~top 20%
-          const collarOffsetY = center.y + size.y * 0.32;
-          rawScene.position.set(-center.x, -collarOffsetY, -center.z);
+          const collarOffsetY = (center.y + size.y * 0.35) * autoNormScale;
+          rawScene.position.set(-center.x * autoNormScale, -collarOffsetY, -center.z * autoNormScale);
 
           // Enhance materials for luxury matte cloth rendering
           rawScene.traverse((child) => {
